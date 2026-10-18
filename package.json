@@ -22,7 +22,8 @@
     "screenshots": "node scripts/screenshots.mjs",
     "placeholders": "node scripts/generate-placeholders.mjs",
     "build:test": "astro build --mode test",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:preview": "astro build --mode preview && tsx scripts/check-compliance.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

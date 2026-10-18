@@ -1,0 +1,36 @@
+---
+/** Slim fixed notice shown only on preview builds (PUBLIC_PREVIEW=1). */
+const preview = import.meta.env.PUBLIC_PREVIEW === "1";
+---
+
+{preview && (
+  <div class="preview-banner" role="note">
+    Preview site: forms not connected yet. Please call or WhatsApp.
+  </div>
+)}
+
+<style>
+  .preview-banner {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 60;
+    height: 30px;
+    padding: 0 var(--gutter);
+    overflow: hidden;
+    background: #e4cfa8;
+    color: var(--ink);
+    font-size: 0.74rem;
+    font-weight: 600;
+    line-height: 30px;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  /* Push the page and the fixed nav below the strip. */
+  :global(body:has(.preview-banner)) {
+    padding-top: 30px;
+  }
+  :global(body:has(.preview-banner) .nav) {
+    top: 30px;
+  }
+</style>

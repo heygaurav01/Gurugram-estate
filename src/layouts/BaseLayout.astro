@@ -6,6 +6,7 @@
 import Fonts from "~/components/Fonts.astro";
 import Seo from "~/components/Seo.astro";
 import FloatingContact from "~/components/FloatingContact.astro";
+import PreviewBanner from "~/components/PreviewBanner.astro";
 import { getSettings } from "~/lib/data";
 import { graph, realEstateAgentLd } from "~/lib/seo";
 import "~/styles/tokens.css";
@@ -72,6 +73,7 @@ const themeStyle = theme
     <slot name="head" />
   </head>
   <body class:list={{ "has-sticky-bar": stickyBar }}>
+    <PreviewBanner />
     <a class="skip-link" href="#main">
       Skip to content
     </a>

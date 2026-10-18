@@ -164,8 +164,9 @@ export async function submitLead(
   const endpoint = (opts.endpoint ?? import.meta.env.PUBLIC_CRM_LEAD_URL ?? "").trim();
 
   if (!endpoint) {
-    // Local development without a CRM: simulate success so the flow can be reviewed.
-    if (import.meta.env.DEV) {
+    // Local development or a labeled preview build without a CRM: simulate success so
+    // the flow can be reviewed. The preview banner tells visitors forms are not connected.
+    if (import.meta.env.DEV || import.meta.env.PUBLIC_PREVIEW === "1") {
       console.info("[api] PUBLIC_CRM_LEAD_URL is not set; simulating a successful submit in dev.");
       await new Promise((r) => setTimeout(r, 600));
       return { ok: true, leadId: lead.idempotencyKey };

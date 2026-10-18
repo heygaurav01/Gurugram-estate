@@ -35,7 +35,11 @@ const ld = jsonLd ? JSON.stringify(jsonLd).replace(/</g, "\\u003c") : undefined;
 <link rel="canonical" href={canonical} />
 <meta
   name="robots"
-  content={noindex ? "noindex,nofollow" : "index,follow,max-image-preview:large"}
+  content={
+    noindex || import.meta.env.PUBLIC_PREVIEW === "1"
+      ? "noindex,nofollow"
+      : "index,follow,max-image-preview:large"
+  }
 />
 <meta name="theme-color" content="#12110F" />
 

@@ -25,7 +25,7 @@ const brand = settings.business.brand_name;
 const c = contactView(settings, project);
 const headings = Object.fromEntries(formIntents.map((i) => [i, intentHeading(i, project)]));
 const consent = consentText(brand);
-const consentLead = consent.replace(/ I have read the Privacy Policy\.$/, "");
+const consentLead = consent.replace(/ the Privacy Policy.$/, "");
 const ri = isRegisterInterestMode(project);
 const asideId = project.sectionImages.virtualTour ?? project.theme.heroImageId;
 const asideImage = asideId ? asset(asideId) : undefined;
@@ -153,24 +153,6 @@ const benefits = ri
           <p id="enq-email-error" class="field__error" data-error-for="email"></p>
         </div>
 
-        <div class="field field--check">
-          <input
-            id="enq-consent"
-            name="consent"
-            type="checkbox"
-            required
-            aria-describedby="enq-consent-error"
-          />
-          <label for="enq-consent">
-            {consentLead} I have read the{" "}
-            <a href="/privacy-policy/" target="_blank" rel="noopener">
-              Privacy Policy<span class="visually-hidden"> (opens in a new tab)</span>
-            </a>
-            .
-          </label>
-          <p id="enq-consent-error" class="field__error" data-error-for="consent"></p>
-        </div>
-
         <!-- Honeypot: hidden from people and assistive tech; bots tend to fill it. -->
         <div class="enquiry__hp" aria-hidden="true">
           <label for="enq-company">Company website</label>
@@ -185,7 +167,20 @@ const benefits = ri
 
         <p class="visually-hidden" aria-live="polite" data-enquiry-live></p>
 
-        <button type="submit" class="btn enquiry__submit" data-enquiry-submit>
+        <p class="enquiry__consent" id="enq-consent-note">
+          {consentLead} the{" "}
+          <a href="/privacy-policy/" target="_blank" rel="noopener">
+            Privacy Policy<span class="visually-hidden"> (opens in a new tab)</span>
+          </a>
+          .
+        </p>
+
+        <button
+          type="submit"
+          class="btn enquiry__submit"
+          data-enquiry-submit
+          aria-describedby="enq-consent-note"
+        >
           <span class="enquiry__spinner" aria-hidden="true"></span>
           <span data-submit-label>Send</span>
         </button>
@@ -456,30 +451,13 @@ const benefits = ri
   .field__error:empty {
     display: none;
   }
-  .field--check {
-    grid-template-columns: auto 1fr;
-    column-gap: var(--space-3);
-    align-items: start;
-  }
-  .field--check input {
-    width: 22px;
-    height: 22px;
-    margin-top: 0.15rem;
-    accent-color: var(--ink);
-  }
-  .field--check input:focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: 2px;
-  }
-  .field--check label {
-    font-weight: 400;
-    font-size: 0.85rem;
+  .enquiry__consent {
+    font-size: 0.8rem;
     line-height: 1.5;
-    letter-spacing: 0;
-    color: var(--ink-2);
+    color: var(--stone);
   }
-  .field--check .field__error {
-    grid-column: 2;
+  .enquiry__consent a {
+    color: var(--ink-2);
   }
   .enquiry__hp {
     position: absolute;

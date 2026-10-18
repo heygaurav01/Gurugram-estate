@@ -16,7 +16,7 @@ import { getAttribution } from "./attribution";
 
 /** Submissions faster than this after opening are treated as bots. */
 const MIN_FILL_MS = 3000;
-const FIELDS: LeadField[] = ["name", "phone", "email", "consent"];
+const FIELDS: LeadField[] = ["name", "phone", "email"];
 
 /** Fired for analytics (Phase 5). Payloads never contain personal data. */
 function emit(name: string, detail: Record<string, string>): void {
@@ -51,7 +51,6 @@ export function initEnquiry(): void {
     name: input("name").value,
     phone: input("phone").value,
     email: input("email").value,
-    consent: input("consent").checked,
   });
 
   const showError = (field: LeadField, message: string | undefined) => {
@@ -68,7 +67,6 @@ export function initEnquiry(): void {
     submitButtons.forEach((b) => (b.disabled = on));
     submitLabel.textContent = on ? "Sending..." : "Send";
     for (const f of ["name", "phone", "email"]) input(f).readOnly = on;
-    input("consent").disabled = on;
   };
 
   const setFailed = (on: boolean) => {
@@ -160,11 +158,11 @@ export function initEnquiry(): void {
   for (const f of FIELDS) {
     const el = input(f);
     el.addEventListener("blur", () => {
-      if (f !== "consent" && el.value === "") return;
+      if (el.value === "") return;
       touched.add(f);
       showError(f, validateField(f, values()));
     });
-    el.addEventListener(f === "consent" ? "change" : "input", () => {
+    el.addEventListener("input", () => {
       if (touched.has(f)) showError(f, validateField(f, values()));
     });
   }

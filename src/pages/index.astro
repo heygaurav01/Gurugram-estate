@@ -1,11 +1,15 @@
 ---
-/** Hub: brand intro and a card for every published project. */
+/** Hub: 3D "Coming Soon" hero, published projects, About with an inline enquiry form. */
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Nav from "~/components/Nav.astro";
+import ComingSoon from "~/components/ComingSoon.astro";
 import ProjectCard from "~/components/ProjectCard.astro";
-import AboutAgent from "~/components/AboutAgent.astro";
+import ContactForm from "~/components/ContactForm.astro";
+import Disclosure from "~/components/Disclosure.astro";
 import Footer from "~/components/Footer.astro";
 import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
+import { ON_REQUEST } from "~/lib/compliance";
+import { contactView } from "~/lib/view";
 
 const settings = await getSettings();
 const projects = await getProjects({ publishedOnly: true });
@@ -16,65 +20,124 @@ const cards = await Promise.all(
     return { project: p, image: imageId ? asset(imageId) : undefined };
   }),
 );
+const featured = cards[0];
+const c = contactView(settings);
+const brand = settings.business.brand_name;
 ---
 
 <BaseLayout
-  title={`New and upcoming homes in Gurugram | ${settings.business.brand_name}`}
-  description="New and upcoming residential projects in Gurugram, tracked by an independent HARERA-registered agent. Verified facts, RERA status and launch updates."
+  title={`New and upcoming homes in Gurugram | ${brand}`}
+  description="New and upcoming residential projects in Gurugram, tracked by a HARERA-registered agent. Verified facts, RERA status and launch updates."
   path="/"
 >
-  <Nav settings={settings} />
+  <Nav settings={settings} overHero />
   <main id="main">
-    <section class="container hub-intro">
-      <p class="eyebrow">Gurugram, Haryana</p>
-      <h1>New and upcoming homes in Gurugram, curated by {settings.business.brand_name}</h1>
-      <p class="hub-intro__lead">
-        We track new residential projects from land acquisition to possession. Every fact on these
-        pages links to its source, and pricing appears only after a project is registered with
-        HARERA.
-      </p>
+    <ComingSoon brand={brand} project={featured?.project} image={featured?.image} />
+
+    <section class="section hub-projects" id="projects" aria-labelledby="projects-title">
+      <div class="container">
+        <div class="hub-head" data-reveal>
+          <p class="eyebrow">Launching soon</p>
+          <h2 id="projects-title">Projects we are tracking</h2>
+          <p class="hub-head__intro">
+            Every fact on these pages links to its source, and pricing appears only after a project
+            is registered with HARERA.
+          </p>
+        </div>
+        {cards.length > 0 ? (
+          <ul class="hub-grid" role="list">
+            {cards.map((card) => (
+              <li>
+                <ProjectCard project={card.project} image={card.image} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="card">New projects will be listed here once we have verified details.</p>
+        )}
+      </div>
     </section>
 
-    <section class="container hub-projects" aria-labelledby="projects-title">
-      <h2 id="projects-title" class="visually-hidden">
-        Projects
-      </h2>
-      {cards.length > 0 ? (
-        <ul class="hub-grid" role="list">
-          {cards.map((c) => (
+    <section class="section hub-about" id="contact" aria-labelledby="about-title">
+      <div class="container hub-about__grid">
+        <div class="hub-about__copy" data-reveal>
+          <p class="eyebrow">About us</p>
+          <h2 id="about-title">About {brand}</h2>
+          <p class="hub-about__lead">
+            We are a real estate agent in Gurugram. We help buyers compare new projects, visit sites
+            and handle paperwork, and we tell you what is confirmed and what is not.
+          </p>
+          <ul class="hub-about__points" role="list">
             <li>
-              <ProjectCard project={c.project} image={c.image} />
+              <span class="hub-about__num">01</span>
+              <span>
+                <strong>Verified facts only.</strong> Each claim links to its source and date.
+              </span>
             </li>
-          ))}
-        </ul>
-      ) : (
-        <p class="card">New projects will be listed here once we have verified details.</p>
-      )}
+            <li>
+              <span class="hub-about__num">02</span>
+              <span>
+                <strong>RERA first.</strong> No prices or offers before a project is registered.
+              </span>
+            </li>
+            <li>
+              <span class="hub-about__num">03</span>
+              <span>
+                <strong>One advisor, start to finish.</strong> Site visits, comparison and
+                paperwork.
+              </span>
+            </li>
+          </ul>
+          <dl class="hub-about__facts">
+            <div>
+              <dt>HARERA agent registration</dt>
+              <dd>{c.reraNo ?? ON_REQUEST}</dd>
+            </div>
+            {c.phone && (
+              <div>
+                <dt>Phone</dt>
+                <dd>
+                  <a href={c.phone.href}>{c.phone.display}</a>
+                </dd>
+              </div>
+            )}
+            {c.email && (
+              <div>
+                <dt>Email</dt>
+                <dd>
+                  <a href={`mailto:${c.email}`}>{c.email}</a>
+                </dd>
+              </div>
+            )}
+            {c.address && (
+              <div>
+                <dt>Office</dt>
+                <dd>{c.address}</dd>
+              </div>
+            )}
+          </dl>
+          <Disclosure settings={settings} />
+        </div>
+        <div data-reveal>
+          <ContactForm settings={settings} />
+        </div>
+      </div>
     </section>
-
-    <AboutAgent settings={settings} />
   </main>
   <Footer settings={settings} />
 </BaseLayout>
 
 <style>
-  .hub-intro {
+  .hub-head {
     display: grid;
-    gap: var(--space-5);
-    padding-top: calc(4.25rem + var(--space-section) * 0.6);
-    padding-bottom: var(--space-7);
+    gap: var(--space-3);
+    margin-bottom: var(--space-7);
   }
-  .hub-intro h1 {
-    max-width: 18ch;
-  }
-  .hub-intro__lead {
+  .hub-head__intro {
+    max-width: 52ch;
     font-size: var(--step-1);
-    line-height: 1.5;
+    line-height: 1.45;
     color: var(--ink-2);
-    max-width: 46ch;
-  }
-  .hub-projects {
-    padding-bottom: var(--space-section);
   }
   .hub-grid {
     display: grid;
@@ -83,6 +146,65 @@ const cards = await Promise.all(
   @media (min-width: 1024px) {
     .hub-grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .hub-about {
+    background: var(--paper);
+  }
+  .hub-about__grid {
+    display: grid;
+    gap: var(--space-7) var(--gutter);
+    align-items: start;
+  }
+  .hub-about__copy {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .hub-about__lead {
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  .hub-about__points {
+    display: grid;
+    border-top: 1px solid var(--hairline);
+  }
+  .hub-about__points li {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    gap: var(--space-3);
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--hairline);
+    color: var(--ink-2);
+  }
+  .hub-about__points strong {
+    color: var(--ink);
+  }
+  .hub-about__num {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--accent-ink);
+  }
+  .hub-about__facts {
+    display: grid;
+    gap: var(--space-3) var(--gutter);
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  }
+  .hub-about__facts dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .hub-about__facts dd {
+    font-size: 1.05rem;
+  }
+  @media (min-width: 1024px) {
+    .hub-about__grid {
+      grid-template-columns: 1.1fr 1fr;
     }
   }
 </style>

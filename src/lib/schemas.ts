@@ -71,6 +71,7 @@ export const formIntents = [
   "nav",
   "amenities",
   "virtual-tour",
+  "general",
 ] as const;
 
 const configurationSchema = z.object({

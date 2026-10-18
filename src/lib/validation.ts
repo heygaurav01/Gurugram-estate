@@ -1,24 +1,26 @@
 /**
- * Enquiry form rules. Pure functions, used by the browser form and unit tests.
+ * Enquiry form rules. Pure functions, used by the browser forms and unit tests.
  * If the CRM validates too, keep its rules in line with these.
  */
 
-/** Bump when the consent wording changes; stored with every lead. */
-export const CONSENT_VERSION = "2026-10-v1";
+/**
+ * Bump when the consent wording changes; stored with every lead.
+ * v2: consent is given by pressing Send after a clear notice (no checkbox).
+ */
+export const CONSENT_VERSION = "2026-10-v2";
 
-/** Exact consent wording (the Privacy Policy link is added around the last words in the UI). */
+/** Exact consent notice shown above the Send button and stored with each lead. */
 export function consentText(brand: string): string {
-  return `I agree to be contacted by ${brand} by call, SMS, WhatsApp or email about this project. I have read the Privacy Policy.`;
+  return `By sending this form, you agree to be contacted by ${brand} by call, SMS, WhatsApp or email about this enquiry, and you confirm you have read the Privacy Policy.`;
 }
 
-export type LeadField = "name" | "phone" | "email" | "consent";
+export type LeadField = "name" | "phone" | "email";
 export type FieldErrors = Partial<Record<LeadField, string>>;
 
 export const ERROR_TEXT: Record<LeadField, string> = {
   name: "Please enter your name.",
   phone: "Please enter a valid 10-digit Indian mobile number.",
   email: "Please check your email address.",
-  consent: "Please confirm so we can contact you.",
 };
 
 const NAME_RE = /^[A-Za-z][A-Za-z .']{1,59}$/;
@@ -59,7 +61,7 @@ export function isValidEmail(raw: string): boolean {
   return v === "" || (v.length <= 254 && EMAIL_RE.test(v));
 }
 
-export type LeadInput = { name: string; phone: string; email: string; consent: boolean };
+export type LeadInput = { name: string; phone: string; email: string };
 export type CleanLead = { name: string; phoneE164: string; email?: string };
 
 export function validateField(field: LeadField, input: LeadInput): string | undefined {
@@ -70,8 +72,6 @@ export function validateField(field: LeadField, input: LeadInput): string | unde
       return normalizeIndianMobile(input.phone) ? undefined : ERROR_TEXT.phone;
     case "email":
       return isValidEmail(input.email) ? undefined : ERROR_TEXT.email;
-    case "consent":
-      return input.consent ? undefined : ERROR_TEXT.consent;
   }
 }
 
@@ -79,7 +79,7 @@ export function validateLead(
   input: LeadInput,
 ): { ok: true; value: CleanLead } | { ok: false; errors: FieldErrors } {
   const errors: FieldErrors = {};
-  for (const f of ["name", "phone", "email", "consent"] as const) {
+  for (const f of ["name", "phone", "email"] as const) {
     const e = validateField(f, input);
     if (e) errors[f] = e;
   }

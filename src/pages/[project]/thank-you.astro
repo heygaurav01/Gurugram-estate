@@ -31,6 +31,7 @@ const promise = isPlaceholder(settings.site.callback_promise)
   path={`/${project.slug}/thank-you/`}
   theme={theme}
   noindex
+  contactProject={project}
 >
   <Nav settings={settings} partner={{ project, assets }} />
   <main id="main" class="container thanks">

@@ -112,13 +112,22 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: linear-gradient(
-      to top,
-      rgb(18 17 15 / 0.94) 0%,
-      rgb(18 17 15 / 0.72) 34%,
-      rgb(18 17 15 / 0.28) 68%,
-      rgb(18 17 15 / 0.45) 100%
-    );
+    /* Two layers: a left-side wash behind the text column and a bottom fade for the info strip. */
+    background:
+      linear-gradient(
+        to right,
+        rgb(18 17 15 / 0.82) 0%,
+        rgb(18 17 15 / 0.62) 32%,
+        rgb(18 17 15 / 0.18) 62%,
+        rgb(18 17 15 / 0) 80%
+      ),
+      linear-gradient(
+        to top,
+        rgb(18 17 15 / 0.94) 0%,
+        rgb(18 17 15 / 0.6) 30%,
+        rgb(18 17 15 / 0.2) 62%,
+        rgb(18 17 15 / 0.5) 100%
+      );
   }
   .hero--no-image .hero__scrim {
     display: none;
@@ -143,7 +152,8 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
-    color: rgb(244 241 234 / 0.82);
+    color: var(--bone);
+    text-shadow: 0 1px 12px rgb(0 0 0 / 0.55);
   }
   .hero__rule {
     width: 2.5rem;
@@ -155,6 +165,7 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     opacity: 0.5;
   }
   .hero__title {
+    text-shadow: 0 2px 30px rgb(0 0 0 / 0.45);
     font-size: clamp(3.1rem, 2rem + 5vw, 6.6rem);
     font-weight: 500;
     line-height: 0.95;
@@ -170,7 +181,8 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     max-width: 34ch;
     font-size: var(--step-1);
     line-height: 1.45;
-    color: rgb(244 241 234 / 0.88);
+    color: var(--bone);
+    text-shadow: 0 1px 16px rgb(0 0 0 / 0.55);
   }
   .hero__ctas {
     display: flex;

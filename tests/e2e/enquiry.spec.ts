@@ -42,7 +42,6 @@ async function openFrom(page: Page, intent: string) {
 async function fillValid(page: Page) {
   await page.getByLabel("Name").fill("Ravi Kumar");
   await page.getByLabel("Mobile number").fill("98765 43210");
-  await page.getByLabel(/I agree to be contacted/).check();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -74,13 +73,13 @@ test.describe("triggers", () => {
 });
 
 test.describe("validation", () => {
-  test("empty submit shows 3 errors, focuses name and announces the count", async ({ page }) => {
+  test("empty submit shows 2 errors, focuses name and announces the count", async ({ page }) => {
     const posts = await mockCrm(page, { status: 200 });
     await openFrom(page, "hero");
     await page.getByRole("button", { name: "Send" }).click();
-    await expect(page.locator(".field__error:not(:empty)")).toHaveCount(3);
+    await expect(page.locator(".field__error:not(:empty)")).toHaveCount(2);
     await expect(page.getByLabel("Name")).toBeFocused();
-    await expect(page.locator("[data-enquiry-live]")).toHaveText("3 fields need attention.");
+    await expect(page.locator("[data-enquiry-live]")).toHaveText("2 fields need attention.");
     expect(posts).toHaveLength(0);
   });
 
@@ -96,15 +95,15 @@ test.describe("validation", () => {
     expect(posts).toHaveLength(0);
   });
 
-  test("unchecked consent blocks submit", async ({ page }) => {
-    const posts = await mockCrm(page, { status: 200 });
+  test("consent notice is shown above Send and linked to the button", async ({ page }) => {
     await openFrom(page, "hero");
-    await fillValid(page);
-    await page.getByLabel(/I agree to be contacted/).uncheck();
-    await page.clock.fastForward(4000);
-    await page.getByRole("button", { name: "Send" }).click();
-    await expect(page.locator("#enq-consent-error")).toHaveText(/confirm/);
-    expect(posts).toHaveLength(0);
+    await expect(page.locator("#enq-consent-note")).toContainText(
+      "By sending this form, you agree to be contacted",
+    );
+    await expect(page.getByRole("button", { name: "Send" })).toHaveAttribute(
+      "aria-describedby",
+      "enq-consent-note",
+    );
   });
 });
 
@@ -267,5 +266,38 @@ test.describe("reduced motion", () => {
     expect(
       await page.evaluate(() => document.documentElement.classList.contains("reveal-ready")),
     ).toBe(false);
+  });
+});
+
+test.describe("floating contact", () => {
+  test("WhatsApp and Call stay fixed in the bottom-right corner while scrolling", async ({
+    page,
+  }) => {
+    const fab = page.locator(".fab");
+    await expect(fab).toBeVisible();
+    const vp = page.viewportSize()!;
+    for (const y of [0, 2500, 6000]) {
+      await page.evaluate((top) => window.scrollTo(0, top), y);
+      const box = (await fab.boundingBox())!;
+      expect(box.x + box.width).toBeGreaterThan(vp.width - 40);
+      expect(box.y + box.height).toBeLessThanOrEqual(vp.height);
+    }
+  });
+});
+
+test.describe("hub", () => {
+  test("coming soon hero and inline form validate and submit", async ({ page }) => {
+    const posts = await mockCrm(page, { status: 200, body: { id: "HUB-1" } });
+    await page.goto("/");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Coming soon");
+    const form = page.locator("[data-contact-form]");
+    await form.getByRole("button", { name: "Send" }).click();
+    await expect(form.locator(".cf__error:not(:empty)")).toHaveCount(2);
+    await form.getByLabel("Name").fill("Ravi Kumar");
+    await form.getByLabel("Mobile number").fill("98765 43210");
+    await page.clock.fastForward(4000);
+    await form.getByRole("button", { name: "Send" }).click();
+    await page.waitForURL(/\/thank-you\/\?ref=HUB-1$/);
+    expect(posts[0]).toMatchObject({ project_slug: "general", intent: "general", consent: true });
   });
 });

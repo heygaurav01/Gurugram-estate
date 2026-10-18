@@ -1,0 +1,478 @@
+---
+/**
+ * Hub hero: 3D "Coming Soon" scene.
+ * - Pointer-driven tilt with spring smoothing (scripts/coming-soon.ts).
+ * - Letters flip in one by one; extruded 3D text shadow.
+ * - Slow orbit rings and floating glass chips at different depths.
+ * All motion is off under prefers-reduced-motion; content is static and readable.
+ */
+import type { Asset, Project } from "~/lib/schemas";
+import Picture from "./Picture.astro";
+
+type Props = {
+  brand: string;
+  /** Project to feature (first published). */
+  project?: Project | undefined;
+  image?: Asset | undefined;
+};
+const { brand, project, image } = Astro.props;
+const word = (w: string) => Array.from(w);
+---
+
+<section class="cs" aria-labelledby="cs-title" data-cs>
+  {image && project && (
+    <Picture slug={project.slug} asset={image} sizes="100vw" eager class="cs__bg" />
+  )}
+  <div class="cs__veil" aria-hidden="true"></div>
+
+  <div class="cs__stage">
+    <div class="cs__scene" data-cs-scene>
+      <div class="cs__ring cs__ring--a" aria-hidden="true"></div>
+      <div class="cs__ring cs__ring--b" aria-hidden="true"></div>
+      <div class="cs__ring cs__ring--c" aria-hidden="true"></div>
+
+      <p class="cs__chip cs__chip--1" aria-hidden="true">
+        Gurugram
+      </p>
+      {project && (
+        <p class="cs__chip cs__chip--2" aria-hidden="true">
+          {project.location.sector}
+        </p>
+      )}
+      <p class="cs__chip cs__chip--3" aria-hidden="true">
+        New launches
+      </p>
+
+      <div class="cs__content">
+        <p class="cs__eyebrow">
+          <span class="cs__rule" aria-hidden="true"></span>
+          {brand}
+          <span class="cs__rule" aria-hidden="true"></span>
+        </p>
+        <h1 id="cs-title" class="cs__title">
+          <span class="visually-hidden">New homes in Gurugram: </span>
+          <span class="cs__word" aria-hidden="true">
+            {word("Coming").map((ch, i) => (
+              <span class="cs__ch" style={`--i:${i}`}>
+                {ch}
+              </span>
+            ))}
+          </span>
+          <span class="cs__word cs__word--accent" aria-hidden="true">
+            {word("Soon").map((ch, i) => (
+              <span class="cs__ch" style={`--i:${i + 7}`}>
+                {ch}
+              </span>
+            ))}
+          </span>
+          <span class="visually-hidden">Coming soon</span>
+        </h1>
+        <p class="cs__lead">
+          Curated new launches in Gurugram
+          {project && <span>, starting with {project.name}</span>}.
+        </p>
+        <div class="cs__ctas">
+          {project && (
+            <a class="btn cs__primary" href={`/${project.slug}/`}>
+              Explore {project.name}
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6"></path>
+              </svg>
+            </a>
+          )}
+          <a class="btn cs__secondary" href="#contact">
+            Get launch updates
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a class="cs__scroll" href="#projects">
+    <span class="visually-hidden">Scroll to projects</span>
+    <span class="cs__mouse" aria-hidden="true">
+      <span></span>
+    </span>
+  </a>
+  {image?.caption && <p class="cs__caption">{image.caption}</p>}
+</section>
+
+<script>
+  import { initComingSoon } from "~/scripts/coming-soon";
+  initComingSoon();
+</script>
+
+<style>
+  .cs {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    min-height: max(640px, 100svh);
+    padding: calc(4.25rem + var(--space-6)) var(--gutter) var(--space-8);
+    overflow: hidden;
+    background: var(--night);
+    color: var(--bone);
+    text-align: center;
+  }
+  .cs :global(.cs__bg) {
+    position: absolute;
+    inset: -2%;
+    z-index: -2;
+    width: 104%;
+    height: 104%;
+    object-fit: cover;
+    filter: blur(3px) saturate(0.9);
+  }
+  .cs__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse at 50% 45%, rgb(18 17 15 / 0.55) 0%, rgb(18 17 15 / 0.88) 70%),
+      rgb(18 17 15 / 0.35);
+  }
+
+  /* 3D stage: the scene tilts with the pointer via --rx / --ry. */
+  .cs__stage {
+    width: min(100%, 1100px);
+    perspective: 1300px;
+  }
+  .cs__scene {
+    --rx: 0deg;
+    --ry: 0deg;
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: min(70vh, 640px);
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
+    will-change: transform;
+  }
+  .cs__content {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-5);
+    transform: translateZ(80px);
+    transform-style: preserve-3d;
+  }
+
+  .cs__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #e4cfa8;
+  }
+  .cs__rule {
+    width: 2.5rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.7;
+  }
+
+  .cs__title {
+    display: grid;
+    justify-items: center;
+    font-size: clamp(3.6rem, 1.4rem + 11vw, 11rem);
+    font-weight: 500;
+    line-height: 0.86;
+    letter-spacing: -0.01em;
+    color: var(--bone);
+  }
+  .cs__word {
+    display: block;
+    white-space: nowrap;
+  }
+  .cs__word--accent {
+    font-style: italic;
+    font-weight: 400;
+    color: #e4cfa8;
+  }
+  /* Extruded 3D lettering: stacked brass layers plus a soft cast shadow. */
+  .cs__ch {
+    display: inline-block;
+    text-shadow:
+      1px 1px 0 #b8925d,
+      2px 2px 0 #a7834f,
+      3px 3px 0 #957443,
+      4px 4px 0 #846638,
+      5px 5px 0 #73582e,
+      6px 6px 0 #5f4824,
+      14px 22px 34px rgb(0 0 0 / 0.6);
+    transform-origin: 50% 80%;
+  }
+
+  .cs__lead {
+    max-width: 34ch;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: rgb(244 241 234 / 0.9);
+  }
+  .cs__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .cs__primary {
+    background: var(--bone);
+    color: var(--ink);
+    border-color: var(--bone);
+    box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.7);
+  }
+  .cs__primary svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+  }
+  .cs__primary:hover {
+    background: var(--paper);
+  }
+  .cs__secondary {
+    background: rgb(244 241 234 / 0.08);
+    color: var(--bone);
+    border-color: rgb(244 241 234 / 0.5);
+    backdrop-filter: blur(6px);
+  }
+  .cs__secondary:hover {
+    background: var(--bone);
+    color: var(--ink);
+  }
+  .cs :focus-visible {
+    outline-color: var(--bone);
+  }
+
+  /* Orbit rings in 3D space behind the text. */
+  .cs__ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border-radius: 50%;
+    border: 1px solid rgb(228 207 168 / 0.32);
+    pointer-events: none;
+  }
+  .cs__ring--a {
+    width: min(92vw, 980px);
+    height: min(92vw, 980px);
+    margin: calc(min(92vw, 980px) / -2) 0 0 calc(min(92vw, 980px) / -2);
+    transform: translateZ(-120px) rotateX(74deg);
+  }
+  .cs__ring--b {
+    width: min(70vw, 720px);
+    height: min(70vw, 720px);
+    margin: calc(min(70vw, 720px) / -2) 0 0 calc(min(70vw, 720px) / -2);
+    border-style: dashed;
+    border-color: rgb(228 207 168 / 0.22);
+    transform: translateZ(-60px) rotateX(74deg) rotateZ(20deg);
+  }
+  .cs__ring--c {
+    width: min(50vw, 520px);
+    height: min(50vw, 520px);
+    margin: calc(min(50vw, 520px) / -2) 0 0 calc(min(50vw, 520px) / -2);
+    border-color: rgb(244 241 234 / 0.16);
+    transform: translateZ(-200px) rotateY(68deg);
+  }
+
+  /* Floating glass chips at different depths. */
+  .cs__chip {
+    position: absolute;
+    display: none;
+    padding: 0.55rem 1rem;
+    border: 1px solid rgb(244 241 234 / 0.28);
+    border-radius: 999px;
+    background: rgb(244 241 234 / 0.08);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 40px -20px rgb(0 0 0 / 0.7);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bone);
+  }
+  .cs__chip--1 {
+    left: 2%;
+    top: 18%;
+    transform: translateZ(140px);
+  }
+  .cs__chip--2 {
+    right: 4%;
+    top: 26%;
+    transform: translateZ(40px);
+  }
+  .cs__chip--3 {
+    left: 10%;
+    bottom: 12%;
+    transform: translateZ(100px);
+  }
+  @media (min-width: 900px) {
+    .cs__chip {
+      display: block;
+    }
+  }
+  /* Small screens have no tilt; flat rendering keeps the lettering crisp. */
+  @media (max-width: 899.98px) {
+    .cs__scene,
+    .cs__content {
+      transform: none;
+    }
+  }
+
+  .cs__scroll {
+    position: absolute;
+    left: 50%;
+    bottom: var(--space-5);
+    transform: translateX(-50%);
+    display: grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+  }
+  .cs__mouse {
+    display: grid;
+    justify-items: center;
+    width: 22px;
+    height: 34px;
+    padding-top: 6px;
+    border: 1.5px solid rgb(244 241 234 / 0.6);
+    border-radius: 12px;
+  }
+  .cs__mouse span {
+    width: 3px;
+    height: 7px;
+    border-radius: 2px;
+    background: var(--bone);
+  }
+  .cs__caption {
+    position: absolute;
+    right: var(--gutter);
+    top: calc(4.25rem + var(--space-3));
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    background: rgb(18 17 15 / 0.55);
+    font-size: 0.72rem;
+    color: rgb(244 241 234 / 0.85);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cs__ch {
+      animation: cs-flip 900ms cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+      animation-delay: calc(250ms + var(--i) * 55ms);
+    }
+    .cs__eyebrow,
+    .cs__lead,
+    .cs__ctas {
+      animation: cs-rise 900ms var(--ease) both;
+    }
+    .cs__eyebrow {
+      animation-delay: 120ms;
+    }
+    .cs__lead {
+      animation-delay: 900ms;
+    }
+    .cs__ctas {
+      animation-delay: 1050ms;
+    }
+    .cs__ring--a {
+      animation: cs-spin-a 60s linear infinite;
+    }
+    .cs__ring--b {
+      animation: cs-spin-b 45s linear infinite reverse;
+    }
+    .cs__ring--c {
+      animation: cs-spin-c 70s linear infinite;
+    }
+    .cs__chip--1 {
+      animation: cs-bob-1 7s ease-in-out infinite alternate;
+    }
+    .cs__chip--2 {
+      animation: cs-bob-2 8s ease-in-out infinite alternate;
+    }
+    .cs__chip--3 {
+      animation: cs-bob-3 9s ease-in-out infinite alternate;
+    }
+    .cs__mouse span {
+      animation: cs-wheel 1.8s ease-in-out infinite;
+    }
+    .cs :global(.cs__bg) {
+      animation: cs-zoom 2.4s var(--ease) both;
+    }
+  }
+  @keyframes cs-flip {
+    from {
+      opacity: 0;
+      transform: perspective(600px) rotateX(-92deg) translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes cs-rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+  @keyframes cs-spin-a {
+    from {
+      transform: translateZ(-120px) rotateX(74deg) rotateZ(0deg);
+    }
+    to {
+      transform: translateZ(-120px) rotateX(74deg) rotateZ(360deg);
+    }
+  }
+  @keyframes cs-spin-b {
+    from {
+      transform: translateZ(-60px) rotateX(74deg) rotateZ(20deg);
+    }
+    to {
+      transform: translateZ(-60px) rotateX(74deg) rotateZ(380deg);
+    }
+  }
+  @keyframes cs-spin-c {
+    from {
+      transform: translateZ(-200px) rotateY(68deg) rotateZ(0deg);
+    }
+    to {
+      transform: translateZ(-200px) rotateY(68deg) rotateZ(360deg);
+    }
+  }
+  @keyframes cs-bob-1 {
+    to {
+      transform: translateZ(140px) translateY(-18px);
+    }
+  }
+  @keyframes cs-bob-2 {
+    to {
+      transform: translateZ(40px) translateY(16px);
+    }
+  }
+  @keyframes cs-bob-3 {
+    to {
+      transform: translateZ(100px) translateY(-14px);
+    }
+  }
+  @keyframes cs-wheel {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+  }
+  @keyframes cs-zoom {
+    from {
+      transform: scale(1.08);
+    }
+  }
+</style>

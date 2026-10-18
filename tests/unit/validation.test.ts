@@ -47,11 +47,11 @@ describe("name and email", () => {
 });
 
 describe("validateLead", () => {
-  it("returns all three required errors for an empty form", () => {
-    const r = validateLead({ name: "", phone: "", email: "", consent: false });
+  it("returns both required errors for an empty form", () => {
+    const r = validateLead({ name: "", phone: "", email: "" });
     expect(r.ok).toBe(false);
     if (!r.ok) {
-      expect(Object.keys(r.errors).sort()).toEqual(["consent", "name", "phone"]);
+      expect(Object.keys(r.errors).sort()).toEqual(["name", "phone"]);
       expect(r.errors.phone).toBe(ERROR_TEXT.phone);
     }
   });
@@ -61,7 +61,6 @@ describe("validateLead", () => {
       name: " Ravi  Kumar ",
       phone: "098765 43210",
       email: " R@Example.IN ",
-      consent: true,
     });
     expect(r).toEqual({
       ok: true,
@@ -70,13 +69,13 @@ describe("validateLead", () => {
   });
 
   it("omits an empty email", () => {
-    const r = validateLead({ name: "Ravi", phone: "9876543210", email: "", consent: true });
+    const r = validateLead({ name: "Ravi", phone: "9876543210", email: "" });
     expect(r.ok && "email" in r.value).toBe(false);
   });
 
   it("uses the exact consent wording", () => {
     expect(consentText("Gurgaon Properties")).toBe(
-      "I agree to be contacted by Gurgaon Properties by call, SMS, WhatsApp or email about this project. I have read the Privacy Policy.",
+      "By sending this form, you agree to be contacted by Gurgaon Properties by call, SMS, WhatsApp or email about this enquiry, and you confirm you have read the Privacy Policy.",
     );
   });
 });

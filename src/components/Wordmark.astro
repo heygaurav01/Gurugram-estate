@@ -1,0 +1,31 @@
+---
+/** Text wordmark used until a logo file is supplied (settings.business.logo_file). */
+import type { SiteSettings } from "~/lib/schemas";
+import { isPlaceholder } from "~/lib/compliance";
+
+type Props = { settings: SiteSettings; class?: string };
+const { settings, class: className } = Astro.props;
+const logo = isPlaceholder(settings.business.logo_file) ? undefined : settings.business.logo_file;
+---
+
+<a class:list={["wordmark", className]} href="/">
+  {logo ? (
+    <img src={logo} alt={settings.business.brand_name} height="28" />
+  ) : (
+    <span>{settings.business.brand_name}</span>
+  )}
+</a>
+
+<style>
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-variation-settings: "opsz" 48;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+</style>

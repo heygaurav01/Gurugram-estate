@@ -1,6 +1,7 @@
 ---
 /**
  * Root layout. Phase 5 replaces the inline meta tags with Seo.astro and JsonLd.astro.
+ * Pages render their own Nav and Footer so each can configure them.
  */
 import Fonts from "~/components/Fonts.astro";
 import "~/styles/tokens.css";
@@ -16,9 +17,11 @@ type Props = {
   path: string;
   noindex?: boolean;
   theme?: { accent: string; accentInk: string } | undefined;
+  /** Reserve space for the mobile sticky bar. */
+  stickyBar?: boolean;
 };
 
-const { title, description, path, noindex = false, theme } = Astro.props;
+const { title, description, path, noindex = false, theme, stickyBar = false } = Astro.props;
 const canonical = new URL(path, Astro.site).href;
 const themeStyle = theme
   ? `--project-accent:${theme.accent};--project-accent-ink:${theme.accentInk}`
@@ -36,11 +39,20 @@ const themeStyle = theme
     <meta name="robots" content={noindex ? "noindex,nofollow" : "index,follow"} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <Fonts />
+    <slot name="head" />
   </head>
-  <body>
+  <body class:list={{ "has-sticky-bar": stickyBar }}>
     <a class="skip-link" href="#main">
       Skip to content
     </a>
     <slot />
   </body>
 </html>
+
+<style is:global>
+  @media (max-width: 767.98px) {
+    body.has-sticky-bar {
+      padding-bottom: calc(var(--sticky-bar-h) + env(safe-area-inset-bottom));
+    }
+  }
+</style>

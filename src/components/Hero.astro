@@ -1,0 +1,164 @@
+---
+/**
+ * Full-bleed hero: H1 (project name with primary keyword), tagline, two CTAs,
+ * RERA badge and agent disclosure. The only gradient on the site is the scrim.
+ */
+import type { Asset, Project, SiteSettings } from "~/lib/schemas";
+import { ctaCopy } from "~/lib/view";
+import Picture from "./Picture.astro";
+import ReraBadge from "./ReraBadge.astro";
+import Disclosure from "./Disclosure.astro";
+
+type Props = { project: Project; settings: SiteSettings; image?: Asset | undefined };
+const { project, settings, image } = Astro.props;
+const cta = ctaCopy(project);
+const focus = project.theme.heroFocus ?? "50% 50%";
+---
+
+<section class:list={["hero", { "hero--no-image": !image }]} aria-labelledby="hero-title">
+  {image && (
+    <Picture
+      slug={project.slug}
+      asset={image}
+      sizes="100vw"
+      eager
+      class="hero__img"
+      style={`object-position:${focus}`}
+    />
+  )}
+  <div class="hero__scrim" aria-hidden="true"></div>
+
+  <div class="container hero__content">
+    <p class="eyebrow hero__eyebrow" data-hero-line>
+      {project.location.sector}, {project.location.city}
+    </p>
+    <h1 id="hero-title" class="hero__title" data-hero-line>
+      {project.name}
+    </h1>
+    {project.tagline && (
+      <p class="hero__tagline" data-hero-line>
+        {project.tagline}
+      </p>
+    )}
+    <div class="hero__ctas" data-hero-line>
+      <a class="btn hero__primary" href="#contact" data-enquire="hero">
+        {cta.primary}
+      </a>
+      <a class="btn btn--ghost hero__secondary" href="#homes">
+        Homes and sizes
+      </a>
+    </div>
+    <div class="hero__meta" data-hero-line>
+      <ReraBadge project={project} tone="dark" />
+      <Disclosure settings={settings} developer={project.developer} tone="dark" />
+    </div>
+  </div>
+
+  {image?.caption && <p class="hero__caption">{image.caption}</p>}
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(640px, 100svh, 920px);
+    padding-top: 6rem;
+    padding-bottom: var(--space-7);
+    overflow: hidden;
+    background: var(--night);
+    color: var(--bone);
+  }
+  .hero :global(.hero__img),
+  .hero :global(picture) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+  }
+  .hero :global(.hero__img) {
+    object-fit: cover;
+    transform-origin: 50% 60%;
+  }
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to top,
+      rgb(18 17 15 / 0.92) 0%,
+      rgb(18 17 15 / 0.7) 40%,
+      rgb(18 17 15 / 0.15) 75%,
+      rgb(18 17 15 / 0.35) 100%
+    );
+  }
+  .hero--no-image .hero__scrim {
+    display: none;
+  }
+  .hero__content {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .hero__eyebrow {
+    color: rgb(244 241 234 / 0.8);
+  }
+  .hero__title {
+    max-width: 14ch;
+    font-size: var(--step-4);
+  }
+  .hero__tagline {
+    max-width: 38ch;
+    font-size: var(--step-1);
+    line-height: 1.4;
+    color: rgb(244 241 234 / 0.9);
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .hero__primary {
+    background: var(--bone);
+    color: var(--ink);
+    border-color: var(--bone);
+  }
+  .hero__primary:hover {
+    background: var(--paper);
+  }
+  .hero__secondary {
+    color: var(--bone);
+    border-color: rgb(244 241 234 / 0.6);
+  }
+  .hero__secondary:hover {
+    background: var(--bone);
+    color: var(--ink);
+  }
+  .hero :focus-visible {
+    outline-color: var(--bone);
+  }
+  .hero__meta {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: 1px solid rgb(244 241 234 / 0.22);
+    max-width: 62ch;
+  }
+  .hero__caption {
+    position: absolute;
+    right: var(--gutter);
+    top: 5.25rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: rgb(244 241 234 / 0.82);
+  }
+  @media (min-width: 768px) {
+    .hero__caption {
+      top: auto;
+      bottom: var(--space-5);
+    }
+  }
+</style>

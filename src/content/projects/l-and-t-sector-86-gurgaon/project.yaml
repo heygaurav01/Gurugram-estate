@@ -1,11 +1,25 @@
 # L&T Sector 86, Gurgaon
-# Populated ONLY with values from section 0 of the master prompt (2026-10-18).
-# Everything else is intentionally empty. Do not fill gaps with plausible text.
+# Facts below are sourced and dated. Do not fill gaps with plausible text.
 # A fact renders only when it has a real `source` and an ISO `verifiedOn` date.
+#
+# Sources (checked 2026-10-18). Both are secondary reports; swap in L&T's own
+# press release or stock exchange filing when available.
+#   SCC Online deal report, 2026-05-16:
+#     https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/
+#   Outlook Business, 2026-04-27:
+#     https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition
 
 slug: l-and-t-sector-86-gurgaon
 name: "L&T Sector 86, Gurgaon"
+tagline: "Tracking L&T Realty's Sector 86 land from acquisition to launch."
 published: true
+
+overview:
+  title: "What we know so far"
+  body:
+    - "In April 2026, L&T Realty bought International Green Scapes Ltd, a company that holds about 19.97 acres of land in Sector 81 and Sector 86, Gurugram. The land is held under three residential licenses issued by the Department of Town and Country Planning, Haryana. Published reports put its development potential at about 3.6 million sq ft."
+    - "We have not yet seen an official project name, home types, sizes, prices or a launch date from the developer, and the project is not registered with HARERA. Until it is, this page lists only verified progress, each item with its source."
+    - "Gurgaon Properties is an independent agent. Register interest and we will share official details, including plans and pricing, once the developer releases them after registration. Registering is free and does not reserve a unit."
 
 developer:
   name: "L&T Realty"
@@ -25,12 +39,24 @@ location:
   region: "Haryana"
   connectivity: [] # add only measured, dated distances
 
+land:
+  areaAcres: 19.97
+  note: "Held across Sector 81 and Sector 86"
+  source: "https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/"
+  verifiedOn: "2026-10-18"
+
 highlights:
-  - text: "L&T Realty acquired about 19.97 acres across Sector 81 and Sector 86, Gurugram"
-    # Secondary source (law-firm deal report). Swap for L&T's own press release or
-    # stock exchange filing when available. Also reported by Outlook Business, 2026-04-27:
-    # https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition
+  - text: "About 19.97 acres of land held across Sector 81 and Sector 86, Gurugram."
     source: "https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/"
+    verifiedOn: "2026-10-18"
+  - text: "Held under three residential licenses issued by DTCP Haryana."
+    source: "https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/"
+    verifiedOn: "2026-10-18"
+  - text: "Reported development potential of about 3.6 million sq ft."
+    source: "https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition"
+    verifiedOn: "2026-10-18"
+  - text: "Reported as L&T Realty's first land acquisition in the NCR."
+    source: "https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition"
     verifiedOn: "2026-10-18"
 
 configurations: [] # "3 and 4 BHK" is an agency claim, not confirmed by L&T
@@ -58,7 +84,7 @@ faqs:
   - q: "Who are you?"
     a: "{{agent_disclosure}} We help buyers compare projects, arrange site visits and handle paperwork."
   - q: "How do I verify a project's RERA registration?"
-    a: "Open haryanarera.gov.in and use the project search. Search by project name, developer or registration number. Check that the registration number, developer name and project address match what you were told. If a project is not listed, it is not registered."
+    a: "Open haryanarera.gov.in and use the project search. Search by project name, developer or registration number. Check that the registration number, developer name and project address match what you were told. If you cannot find it, ask for the registration number in writing and search again."
   - q: "Where is Sector 86?"
     a: "Sector 86 is in Gurugram, Haryana. We will add travel distances here only after we have measured and dated them."
 
@@ -71,9 +97,12 @@ seo:
     - "L&T Realty Gurgaon"
     - "L&T new launch Gurgaon"
     - "Sector 86 Gurgaon"
+  ogImageId: skyline-illustration
 
 theme:
   accent: "#8C6A3F"
+  heroImageId: skyline-illustration
+  heroFocus: "50% 60%"
 
 form:
   otp: false

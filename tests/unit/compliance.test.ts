@@ -60,8 +60,19 @@ const asset = (over: Partial<Asset> = {}): Asset => ({
   ...over,
 });
 
+/** The real project minus image references, so asset tests control the asset list. */
+const baseProject: Project = {
+  ...realProject,
+  theme: { ...realProject.theme, heroImageId: undefined },
+  seo: { ...realProject.seo, ogImageId: undefined },
+  location: { ...realProject.location, mapImageId: undefined },
+};
+const realAssets = assetsFileSchema.parse(
+  readYaml("../../src/content/projects/l-and-t-sector-86-gurgaon/assets.yaml"),
+).assets;
+
 const input = (over: Partial<ProjectCheckInput> = {}): ProjectCheckInput => ({
-  project: realProject,
+  project: baseProject,
   assets: [],
   imageFiles: [],
   settings: goodSettings,
@@ -70,7 +81,7 @@ const input = (over: Partial<ProjectCheckInput> = {}): ProjectCheckInput => ({
 });
 
 const withProject = (patch: (p: Project) => Project) =>
-  input({ project: patch(structuredClone(realProject)) });
+  input({ project: patch(structuredClone(baseProject)) });
 const ruleIds = (r: { errors: { rule: string }[] }) => r.errors.map((e) => e.rule);
 
 describe("schema: price before RERA registration", () => {
@@ -146,6 +157,16 @@ describe("checkProjectData", () => {
 
   it("flags listed assets whose file is missing", () => {
     expect(ruleIds(checkProjectData(input({ assets: [asset()] })))).toContain("asset-missing-file");
+  });
+
+  it("passes the real project with its real asset inventory", () => {
+    const r = checkProjectData({
+      ...input(),
+      project: realProject,
+      assets: realAssets,
+      imageFiles: realAssets.map((a) => a.file),
+    });
+    expect(r.errors).toEqual([]);
   });
 
   it("accepts a correctly listed and licensed asset", () => {

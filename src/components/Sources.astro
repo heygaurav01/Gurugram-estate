@@ -1,0 +1,71 @@
+---
+/** Numbered sources for every fact marker on the page. */
+import type { Project } from "~/lib/schemas";
+import { formatDate } from "~/lib/format";
+import { buildSources, sourceLabel } from "~/lib/view";
+
+type Props = { project: Project };
+const { project } = Astro.props;
+const { list } = buildSources(project);
+---
+
+{list.length > 0 && (
+  <section class="sources" aria-labelledby="sources-title">
+    <div class="container">
+      <h2 id="sources-title" class="sources__title">
+        Sources
+      </h2>
+      <ol class="sources__list">
+        {list.map((s) => (
+          <li id={`source-${s.n}`}>
+            {s.isUrl ? (
+              <a href={s.source} rel="noopener" target="_blank">
+                {sourceLabel(s.source)}
+                <span class="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            ) : (
+              <span>{s.source}</span>
+            )}
+            {s.verifiedOn && (
+              <span class="sources__date">, checked {formatDate(s.verifiedOn)}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+)}
+
+<style>
+  .sources {
+    padding-block: var(--space-7);
+    border-top: 1px solid var(--hairline);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .sources__title {
+    margin-bottom: var(--space-3);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .sources__list {
+    display: grid;
+    gap: var(--space-2);
+    padding-left: 1.5rem;
+  }
+  .sources__list li:target {
+    background: var(--paper);
+    outline: 1px solid var(--accent);
+  }
+  .sources__list a {
+    display: inline-block;
+    min-height: 24px;
+  }
+  .sources__date {
+    color: var(--stone);
+  }
+</style>

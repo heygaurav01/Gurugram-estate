@@ -1,0 +1,70 @@
+---
+/** Amenities grid (#amenities). Hidden when no amenity is verified. */
+import type { Project } from "~/lib/schemas";
+import type { ProjectBundle } from "~/lib/data";
+import { buildSources, verifiedView } from "~/lib/view";
+import SectionHeading from "./SectionHeading.astro";
+import SourceRef from "./SourceRef.astro";
+import Picture from "./Picture.astro";
+
+type Props = { project: Project; asset: ProjectBundle["asset"] };
+const { project, asset } = Astro.props;
+const items = verifiedView(project).amenities;
+const { ref } = buildSources(project);
+---
+
+{items.length > 0 && (
+  <section class="section" id="amenities" aria-labelledby="amenities-title">
+    <div class="container">
+      <SectionHeading id="amenities-title" eyebrow="Amenities" title="Amenities" />
+      <ul class="amenities" role="list">
+        {items.map((a) => {
+          const img = a.imageId ? asset(a.imageId) : undefined;
+          return (
+            <li class="amenities__item" data-reveal>
+              {img && (
+                <Picture
+                  slug={project.slug}
+                  asset={img}
+                  sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw"
+                  class="amenities__img"
+                  figure
+                />
+              )}
+              <p class="amenities__name">
+                {a.name}
+                <SourceRef n={ref(a.source)} />
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .amenities {
+    display: grid;
+    gap: var(--space-6) var(--gutter);
+  }
+  .amenities__item :global(.amenities__img) {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+  .amenities__name {
+    margin-top: var(--space-3);
+    font-weight: 600;
+  }
+  @media (min-width: 768px) {
+    .amenities {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .amenities {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

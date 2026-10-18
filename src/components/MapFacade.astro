@@ -1,0 +1,97 @@
+---
+/**
+ * Static map preview; the Google Maps iframe loads only after a click
+ * (no third-party request on page load).
+ */
+import type { Asset, Project } from "~/lib/schemas";
+import Picture from "./Picture.astro";
+
+type Props = { project: Project; lat: number; lng: number; image?: Asset | undefined };
+const { project, lat, lng, image } = Astro.props;
+const embed = `https://www.google.com/maps?q=${lat},${lng}&z=14&output=embed`;
+const external = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+---
+
+<div
+  class="map"
+  data-map
+  data-embed={embed}
+  data-title={`Map of ${project.location.sector}, ${project.location.city}`}
+>
+  <div class="map__frame" data-map-frame>
+    {image ? (
+      <Picture
+        slug={project.slug}
+        asset={image}
+        sizes="(min-width: 1024px) 55vw, 100vw"
+        class="map__img"
+      />
+    ) : (
+      <div class="map__blank" aria-hidden="true" />
+    )}
+    <button type="button" class="btn map__load" data-map-load>
+      Load interactive map
+    </button>
+  </div>
+  <p class="map__meta">
+    {image?.caption && <span>{image.caption}. </span>}
+    <a href={external} rel="noopener" target="_blank">
+      Open in Google Maps<span class="visually-hidden"> (opens in a new tab)</span>
+    </a>
+  </p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-map]").forEach((map) => {
+    map.querySelector("[data-map-load]")?.addEventListener("click", () => {
+      const frame = map.querySelector<HTMLElement>("[data-map-frame]")!;
+      const iframe = document.createElement("iframe");
+      iframe.src = map.dataset.embed!;
+      iframe.title = map.dataset.title ?? "Map";
+      iframe.loading = "lazy";
+      iframe.referrerPolicy = "no-referrer-when-downgrade";
+      iframe.className = "map__iframe";
+      frame.replaceChildren(iframe);
+      iframe.focus();
+      window.dispatchEvent(new CustomEvent("gp:map_load"));
+    });
+  });
+</script>
+
+<style>
+  .map__frame {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .map__frame :global(.map__img),
+  .map__blank {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .map__blank {
+    background:
+      repeating-linear-gradient(0deg, transparent 0 39px, var(--hairline) 39px 40px),
+      repeating-linear-gradient(90deg, transparent 0 39px, var(--hairline) 39px 40px);
+  }
+  .map__load {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .map__frame :global(.map__iframe) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .map__meta {
+    margin-top: var(--space-2);
+    font-size: var(--step--1);
+    color: var(--stone);
+  }
+</style>

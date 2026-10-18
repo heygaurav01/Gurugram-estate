@@ -3,4 +3,16 @@
 # Developer renders, plans and logos need fromDeveloper: true AND the matching
 # authorization flag in project.yaml. Renders: caption "Artist's impression".
 # Stand-in photos/illustrations: caption "Representative image".
-assets: []
+#
+# The L&T Realty logo is NOT listed: developer.authorizedToUseLogo is false.
+assets:
+  - id: skyline-illustration
+    file: gurugram-skyline-dusk-illustration.png
+    alt: "Flat illustration of residential towers at dusk with lit windows. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    fromDeveloper: false
+    projectSpecific: false
+    license: owned
+    source: "Generated in-house by scripts/generate-placeholders.mjs (seed 86)"
+    usage: [hero, og, card]

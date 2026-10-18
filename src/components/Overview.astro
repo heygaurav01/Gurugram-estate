@@ -1,0 +1,36 @@
+---
+/** Overview: original editorial copy from project.overview, 5/7 split. Hidden if absent. */
+import type { Project } from "~/lib/schemas";
+
+type Props = { project: Project };
+const { project } = Astro.props;
+const o = project.overview;
+---
+
+{o && (
+  <section class="section" id="overview" aria-labelledby="overview-title">
+    <div class="container grid split-5-7">
+      <div class="overview__head" data-reveal>
+        <p class="eyebrow">Overview</p>
+        <h2 id="overview-title">{o.title}</h2>
+      </div>
+      <div class="overview__body stack" data-reveal>
+        {o.body.map((p, i) => (
+          <p class:list={{ overview__lead: i === 0 }}>{p}</p>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .overview__body {
+    --stack-gap: var(--space-5);
+    color: var(--ink-2);
+  }
+  .overview__lead {
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+</style>

@@ -1,0 +1,38 @@
+---
+/** Superscript footnote marker linking to the Sources list. */
+type Props = { n: number | undefined };
+const { n } = Astro.props;
+---
+
+{n !== undefined && (
+  <sup class="source-ref">
+    <a href={`#source-${n}`} aria-label={`Source ${n}`}>
+      {n}
+    </a>
+  </sup>
+)}
+
+<style>
+  .source-ref {
+    font-family: var(--font-body);
+    /* Fixed size so markers stay small next to large display numerals. */
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 0;
+    margin-left: 0.15em;
+    vertical-align: super;
+  }
+  .source-ref a {
+    display: inline-block;
+    min-width: 24px;
+    min-height: 24px;
+    line-height: 24px;
+    text-align: center;
+    color: var(--accent-ink);
+    text-decoration: none;
+  }
+  .source-ref a:hover {
+    text-decoration: underline;
+  }
+</style>

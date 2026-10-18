@@ -1,0 +1,26 @@
+---
+/** Eyebrow + H2 + optional one-line intro, left aligned. */
+type Props = { id: string; eyebrow: string; title: string; intro?: string | undefined };
+const { id, eyebrow, title, intro } = Astro.props;
+---
+
+<div class="section-heading" data-reveal>
+  <p class="eyebrow">{eyebrow}</p>
+  <h2 id={id}>{title}</h2>
+  {intro && <p class="section-heading__intro">{intro}</p>}
+</div>
+
+<style>
+  .section-heading {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-7);
+  }
+  .section-heading__intro {
+    color: var(--ink-2);
+    font-size: var(--step-1);
+    line-height: 1.45;
+    max-width: 52ch;
+  }
+</style>

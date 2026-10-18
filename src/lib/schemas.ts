@@ -87,6 +87,14 @@ export const projectSchema = z
     slug,
     name: z.string().min(2),
     tagline: z.string().max(90).optional(),
+    /** Overview section: original editorial copy built only from verified facts. */
+    overview: z
+      .object({
+        title: z.string().min(2),
+        /** Paragraphs. 120 to 180 words in total. */
+        body: z.array(z.string().min(1)).min(1),
+      })
+      .optional(),
     published: z.boolean(),
     developer: z.object({
       name: z.string().min(1),
@@ -107,6 +115,8 @@ export const projectSchema = z
       sector: z.string().min(1),
       city: z.string().min(1),
       region: z.string().optional(),
+      /** Static map image (asset id, kind: map) shown before the live map loads. */
+      mapImageId: z.string().optional(),
       lat: z.number().min(-90).max(90).optional(),
       lng: z.number().min(-180).max(180).optional(),
       connectivity: z
@@ -121,7 +131,14 @@ export const projectSchema = z
         )
         .default([]),
     }),
-    land: z.object({ areaAcres: z.number().positive(), ...sourced }).optional(),
+    land: z
+      .object({
+        areaAcres: z.number().positive(),
+        /** Clarifies scope, e.g. "Held across Sector 81 and Sector 86". */
+        note: z.string().optional(),
+        ...sourced,
+      })
+      .optional(),
     highlights: z.array(z.object({ text: z.string().min(1), ...sourced })).default([]),
     configurations: z.array(configurationSchema).default([]),
     amenities: z

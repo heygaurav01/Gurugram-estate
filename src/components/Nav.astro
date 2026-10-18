@@ -1,0 +1,252 @@
+---
+/**
+ * Sticky nav. Transparent over the hero, solid (frosted) after 80px of scroll.
+ * Mobile: menu button opens a full-screen sheet (native <dialog>, focus trapped).
+ */
+import type { SiteSettings } from "~/lib/schemas";
+import Wordmark from "./Wordmark.astro";
+
+type Props = {
+  settings: SiteSettings;
+  links?: Array<{ href: string; label: string }>;
+  /** Starts transparent with light text over a dark hero image. */
+  overHero?: boolean;
+  /** Label for the nav CTA, which opens the enquiry modal. Omit to hide it. */
+  cta?: string | undefined;
+};
+const { settings, links = [], overHero = false, cta } = Astro.props;
+---
+
+<header class:list={["nav", { "nav--over-hero": overHero }]} data-nav>
+  <div class="container nav__inner">
+    <Wordmark settings={settings} />
+    {links.length > 0 && (
+      <nav class="nav__links" aria-label="Page sections">
+        <ul role="list">
+          {links.map((l) => (
+            <li>
+              <a href={l.href}>{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+    <div class="nav__actions">
+      {cta && (
+        <a class="btn nav__cta" href="#contact" data-enquire="nav">
+          {cta}
+        </a>
+      )}
+      {links.length > 0 && (
+        <button
+          class="nav__menu"
+          type="button"
+          aria-haspopup="dialog"
+          aria-controls="nav-sheet"
+          data-nav-open
+        >
+          Menu
+        </button>
+      )}
+    </div>
+  </div>
+
+  {links.length > 0 && (
+    <dialog id="nav-sheet" class="nav-sheet" aria-label="Menu">
+      <div class="nav-sheet__top">
+        <Wordmark settings={settings} />
+        <button type="button" class="nav__menu" data-nav-close>
+          Close
+        </button>
+      </div>
+      <nav aria-label="Page sections (menu)">
+        <ul role="list" class="nav-sheet__links">
+          {links.map((l) => (
+            <li>
+              <a href={l.href} data-nav-link>
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      {cta && (
+        <a class="btn nav-sheet__cta" href="#contact" data-enquire="nav" data-nav-link>
+          {cta}
+        </a>
+      )}
+    </dialog>
+  )}
+</header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>("[data-nav]");
+  if (nav) {
+    // Solid background after 80px of scroll.
+    let ticking = false;
+    const update = () => {
+      nav.classList.toggle("is-solid", window.scrollY > 80);
+      ticking = false;
+    };
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
+
+    // Mobile sheet: native modal dialog traps focus and handles Esc.
+    const sheet = nav.querySelector<HTMLDialogElement>("#nav-sheet");
+    const opener = nav.querySelector<HTMLButtonElement>("[data-nav-open]");
+    if (sheet && opener) {
+      opener.addEventListener("click", () => sheet.showModal());
+      sheet.querySelector("[data-nav-close]")?.addEventListener("click", () => sheet.close());
+      sheet
+        .querySelectorAll("[data-nav-link]")
+        .forEach((a) => a.addEventListener("click", () => sheet.close()));
+      sheet.addEventListener("close", () => opener.focus());
+    }
+  }
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    color: var(--ink);
+    background: var(--bone);
+    border-bottom: 1px solid var(--hairline);
+    transition:
+      background var(--dur) var(--ease),
+      color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+  .nav--over-hero {
+    color: var(--bone);
+    background: transparent;
+    border-color: transparent;
+  }
+  /* The single glass effect on the site. Solid fallback where blur is unsupported. */
+  .nav.is-solid {
+    color: var(--ink);
+    background: var(--bone);
+    border-color: var(--hairline);
+  }
+  @supports (backdrop-filter: blur(12px)) {
+    .nav.is-solid {
+      background: rgb(244 241 234 / 0.82);
+      backdrop-filter: blur(12px);
+    }
+  }
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    min-height: 4.25rem;
+  }
+  .nav__links {
+    display: none;
+  }
+  .nav__links ul {
+    display: flex;
+    gap: var(--space-5);
+  }
+  .nav__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .nav__links a:hover {
+    text-decoration: underline;
+  }
+  .nav__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .nav__cta {
+    display: none;
+    min-height: 2.75rem;
+    padding-block: var(--space-2);
+    font-size: 0.95rem;
+  }
+  .nav--over-hero:not(.is-solid) .nav__cta {
+    background: var(--bone);
+    color: var(--ink);
+    border-color: var(--bone);
+  }
+  .nav__menu {
+    min-height: var(--tap-min);
+    min-width: var(--tap-min);
+    padding: 0 var(--space-4);
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .nav--over-hero:not(.is-solid) :focus-visible {
+    outline-color: var(--bone);
+  }
+
+  @media (min-width: 768px) {
+    .nav__cta {
+      display: inline-flex;
+    }
+  }
+  @media (min-width: 1024px) {
+    .nav__links {
+      display: block;
+    }
+    .nav__menu {
+      display: none;
+    }
+  }
+
+  .nav-sheet {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-4) var(--gutter) var(--space-7);
+    border: 0;
+    background: var(--bone);
+    color: var(--ink);
+  }
+  .nav-sheet::backdrop {
+    background: var(--bone);
+  }
+  .nav-sheet__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-7);
+  }
+  .nav-sheet__links {
+    display: grid;
+    border-top: 1px solid var(--hairline);
+  }
+  .nav-sheet__links a {
+    display: block;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--hairline);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    text-decoration: none;
+  }
+  .nav-sheet__cta {
+    margin-top: var(--space-7);
+    width: 100%;
+  }
+</style>

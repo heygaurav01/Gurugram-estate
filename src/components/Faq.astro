@@ -1,0 +1,66 @@
+---
+/** FAQ (#faq): native details/summary, fully keyboard operable without JS. */
+import type { Project, SiteSettings } from "~/lib/schemas";
+import { resolveTokens } from "~/lib/view";
+import SectionHeading from "./SectionHeading.astro";
+
+type Props = { project: Project; settings: SiteSettings };
+const { project, settings } = Astro.props;
+---
+
+{project.faqs.length > 0 && (
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="container grid split-5-7">
+      <SectionHeading id="faq-title" eyebrow="FAQ" title="Questions buyers ask us" />
+      <div class="faq" data-reveal>
+        {project.faqs.map((f, i) => (
+          <details class="faq__item" data-faq-index={i}>
+            <summary class="faq__q">{f.q}</summary>
+            <p class="faq__a">{resolveTokens(f.a, project, settings)}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .faq {
+    border-top: 1px solid var(--ink);
+  }
+  .faq__item {
+    border-bottom: 1px solid var(--hairline);
+  }
+  .faq__q {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: var(--tap-min);
+    padding: var(--space-5) 0;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    line-height: 1.3;
+  }
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+  .faq__q::after {
+    content: "+";
+    flex: none;
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--accent);
+    transition: transform var(--dur) var(--ease);
+  }
+  .faq__item[open] .faq__q::after {
+    transform: rotate(45deg);
+  }
+  .faq__a {
+    padding-bottom: var(--space-5);
+    color: var(--ink-2);
+  }
+</style>

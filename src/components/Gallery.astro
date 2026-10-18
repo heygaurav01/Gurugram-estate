@@ -1,0 +1,168 @@
+---
+/**
+ * Gallery with a keyboard-accessible lightbox (arrows, Esc, focus trapped by
+ * the native modal dialog). Rendered only when sections.gallery is on and
+ * gallery assets exist. Without JS, thumbnails link to the full images.
+ */
+import { getImage } from "astro:assets";
+import type { Asset, Project } from "~/lib/schemas";
+import { projectImage } from "~/lib/images";
+import SectionHeading from "./SectionHeading.astro";
+import Picture from "./Picture.astro";
+
+type Props = { project: Project; assets: Asset[] };
+const { project, assets } = Astro.props;
+const items = project.sections.gallery ? assets.filter((a) => a.usage.includes("gallery")) : [];
+const full = await Promise.all(
+  items.map((a) =>
+    getImage({ src: projectImage(project.slug, a.file), width: 1920, format: "webp" }),
+  ),
+);
+---
+
+{items.length > 0 && (
+  <section class="section" id="gallery" aria-labelledby="gallery-title">
+    <div class="container">
+      <SectionHeading id="gallery-title" eyebrow="Gallery" title="Gallery" />
+      <ul class="gallery" role="list" data-gallery>
+        {items.map((a, i) => (
+          <li data-reveal>
+            <a
+              class="gallery__link"
+              href={full[i]!.src}
+              data-gallery-item
+              data-full={full[i]!.src}
+              data-alt={a.alt}
+              data-caption={a.caption ?? ""}
+            >
+              <Picture
+                slug={project.slug}
+                asset={a}
+                sizes="(min-width: 1024px) 30vw, 50vw"
+                class="gallery__img"
+              />
+              <span class="visually-hidden">
+                Open image {i + 1} of {items.length}
+              </span>
+            </a>
+            {a.caption && <p class="gallery__caption">{a.caption}</p>}
+          </li>
+        ))}
+      </ul>
+      <p class="gallery__cta">
+        <a class="btn btn--ghost" href="#contact" data-enquire="gallery">
+          Get project images and updates
+        </a>
+      </p>
+    </div>
+
+    <dialog class="lightbox" aria-label="Image viewer" data-lightbox>
+      <figure class="lightbox__figure">
+        <img class="lightbox__img" alt="" data-lightbox-img />
+        <figcaption class="lightbox__caption" data-lightbox-caption />
+      </figure>
+      <div class="lightbox__controls">
+        <button type="button" class="lightbox__btn" data-lightbox-prev>
+          Previous
+        </button>
+        <p class="lightbox__count" aria-live="polite" data-lightbox-count />
+        <button type="button" class="lightbox__btn" data-lightbox-next>
+          Next
+        </button>
+        <button type="button" class="lightbox__btn" data-lightbox-close>
+          Close
+        </button>
+      </div>
+    </dialog>
+  </section>
+)}
+
+<script>
+  import { initGallery } from "~/scripts/gallery";
+  initGallery();
+</script>
+
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+  .gallery__link {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .gallery__link :global(.gallery__img) {
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform var(--dur) var(--ease);
+  }
+  .gallery__link:hover :global(.gallery__img) {
+    transform: scale(1.02);
+  }
+  .gallery__caption {
+    margin-top: var(--space-2);
+    font-size: var(--step--1);
+    color: var(--stone);
+  }
+  .gallery__cta {
+    margin-top: var(--space-6);
+  }
+  @media (min-width: 1024px) {
+    .gallery {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .lightbox {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-5) var(--gutter);
+    border: 0;
+    background: var(--night);
+    color: var(--bone);
+  }
+  .lightbox[open] {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: var(--space-4);
+  }
+  .lightbox::backdrop {
+    background: var(--night);
+  }
+  .lightbox__figure {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+  }
+  .lightbox__img {
+    max-height: 78vh;
+    width: auto;
+    object-fit: contain;
+  }
+  .lightbox__caption {
+    margin-top: var(--space-2);
+    font-size: var(--step--1);
+  }
+  .lightbox__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+  .lightbox__btn {
+    min-height: var(--tap-min);
+    padding: 0 var(--space-4);
+    background: transparent;
+    border: 1px solid rgb(244 241 234 / 0.6);
+    border-radius: var(--radius);
+    color: var(--bone);
+  }
+  .lightbox :focus-visible {
+    outline-color: var(--bone);
+  }
+</style>

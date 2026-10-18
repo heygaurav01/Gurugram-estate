@@ -1,0 +1,94 @@
+---
+/** Mobile-only bottom bar: Call, WhatsApp, Enquire (intent "sticky"). Hidden at 768px and up. */
+import type { Project, SiteSettings } from "~/lib/schemas";
+import { contactView, ctaCopy } from "~/lib/view";
+
+type Props = { settings: SiteSettings; project: Project };
+const { settings, project } = Astro.props;
+const c = contactView(settings, project);
+const cta = ctaCopy(project);
+---
+
+<nav class="sticky-bar" aria-label="Quick contact">
+  {c.phone && (
+    <a href={c.phone.href} class="sticky-bar__item" data-track="call_click">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" />
+      </svg>
+      Call
+    </a>
+  )}
+  {c.whatsapp && (
+    <a
+      href={c.whatsapp.href}
+      class="sticky-bar__item"
+      rel="noopener"
+      target="_blank"
+      data-track="whatsapp_click"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 20l1.4-4A8 8 0 1 1 8.3 18.8z" />
+      </svg>
+      WhatsApp<span class="visually-hidden"> (opens in a new tab)</span>
+    </a>
+  )}
+  <a href="#contact" class="sticky-bar__item sticky-bar__item--primary" data-enquire="sticky">
+    Enquire<span class="visually-hidden"> ({cta.primary})</span>
+  </a>
+</nav>
+
+<style>
+  .sticky-bar {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 40;
+    display: flex;
+    height: var(--sticky-bar-h);
+    background: var(--bone);
+    border-top: 1px solid var(--hairline);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .sticky-bar__item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border-left: 1px solid var(--hairline);
+  }
+  .sticky-bar__item:first-child {
+    border-left: 0;
+  }
+  @media (max-width: 359.98px) {
+    .sticky-bar svg {
+      display: none;
+    }
+  }
+  .sticky-bar__item--primary {
+    flex: 1.2;
+    background: var(--ink);
+    color: var(--bone);
+  }
+  .sticky-bar__item--primary:focus-visible {
+    outline-color: var(--accent);
+    outline-offset: -4px;
+  }
+  .sticky-bar svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  @media (min-width: 768px) {
+    .sticky-bar {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,114 @@
+---
+/**
+ * Plans (#plans). Blurred previews only when plans are authorized and listed;
+ * otherwise a calm placeholder card with a "Get notified" CTA.
+ */
+import type { Asset, Project } from "~/lib/schemas";
+import SectionHeading from "./SectionHeading.astro";
+import Picture from "./Picture.astro";
+
+type Props = { project: Project; assets: Asset[] };
+const { project, assets } = Astro.props;
+const authorized = project.sections.plans && project.developer.authorizedAssets;
+const plans = authorized ? assets.filter((a) => a.kind === "plan" && a.usage.includes("plan")) : [];
+---
+
+<section class="section" id="plans" aria-labelledby="plans-title">
+  <div class="container">
+    <SectionHeading id="plans-title" eyebrow="Plans" title="Master plan and floor plans" />
+    {plans.length > 0 ? (
+      <ul class="plans" role="list">
+        {plans.map((a) => (
+          <li class="plans__item card" data-reveal>
+            <div class="plans__preview">
+              <Picture
+                slug={project.slug}
+                asset={a}
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                class="plans__img"
+              />
+            </div>
+            <p class="plans__name">{a.alt}</p>
+            <a class="btn btn--ghost" href="#contact" data-enquire="floor-plan">
+              View full plan
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <div class="card plans__empty" data-reveal>
+        <svg class="plans__icon" viewBox="0 0 48 48" aria-hidden="true">
+          <rect
+            x="6"
+            y="6"
+            width="36"
+            height="36"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+          <path
+            d="M6 22h20V6M26 30h16M18 22v20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          />
+        </svg>
+        <div class="stack">
+          <p class="plans__empty-title">
+            Official plans will appear here once released by the developer.
+          </p>
+          <p>We do not publish unofficial or estimated layouts.</p>
+          <p>
+            <a class="btn" href="#contact" data-enquire="floor-plan">
+              Get notified
+            </a>
+          </p>
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .plans {
+    display: grid;
+    gap: var(--gutter);
+  }
+  .plans__item {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .plans__preview {
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .plans__preview :global(.plans__img) {
+    filter: blur(6px);
+    transform: scale(1.04);
+  }
+  .plans__empty {
+    display: grid;
+    gap: var(--space-5);
+    align-items: start;
+    max-width: 44rem;
+  }
+  .plans__icon {
+    width: 3rem;
+    height: 3rem;
+    color: var(--accent);
+  }
+  .plans__empty-title {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    line-height: 1.3;
+  }
+  @media (min-width: 768px) {
+    .plans {
+      grid-template-columns: 1fr 1fr;
+    }
+    .plans__empty {
+      grid-template-columns: auto 1fr;
+    }
+  }
+</style>

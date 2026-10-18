@@ -1,0 +1,129 @@
+---
+/** Privacy policy written to the Digital Personal Data Protection Act, 2023 standard. */
+import LegalLayout from "~/layouts/LegalLayout.astro";
+import { getSettings } from "~/lib/data";
+import { isPlaceholder } from "~/lib/compliance";
+
+const settings = await getSettings();
+const b = settings.business;
+const brand = b.brand_name;
+const pending = "to be published before this site goes live";
+const officer = isPlaceholder(b.grievance_officer_name) ? undefined : b.grievance_officer_name;
+const officerEmail = isPlaceholder(b.grievance_officer_email)
+  ? undefined
+  : b.grievance_officer_email;
+const address = isPlaceholder(b.office_address) ? undefined : b.office_address;
+const email = isPlaceholder(b.email) ? undefined : b.email;
+---
+
+<LegalLayout
+  title={`Privacy policy | ${brand}`}
+  description={`What personal data ${brand} collects when you enquire, why, who sees it, and how to exercise your rights.`}
+  path="/privacy-policy/"
+  heading="Privacy policy"
+  lastUpdated="2026-10-18"
+>
+  <p>
+    This policy explains how {brand} handles your personal data when you use this site. It is
+    written to meet the Digital Personal Data Protection Act, 2023.
+  </p>
+
+  <h2>Who is responsible for your data</h2>
+  <p>
+    {brand} is the data fiduciary for data collected on this site. Office address:{" "}
+    {address ?? pending}. Email: {email ? <a href={`mailto:${email}`}>{email}</a> : pending}.
+  </p>
+
+  <h2>What we collect</h2>
+  <ul>
+    <li>Your name and mobile number, and your email address if you choose to give it.</li>
+    <li>The project you asked about and which button you used to contact us.</li>
+    <li>Campaign information such as the ad or website that brought you here.</li>
+    <li>
+      A one-way hash of your IP address (not the address itself) and your browser type, to prevent
+      spam.
+    </li>
+  </ul>
+
+  <h2>Why we collect it</h2>
+  <ul>
+    <li>To respond to your enquiry by call, SMS, WhatsApp or email.</li>
+    <li>To send you updates about the project you asked about.</li>
+    <li>
+      To understand which of our campaigns are useful, using campaign data rather than your contact
+      details.
+    </li>
+  </ul>
+
+  <h2>Legal basis</h2>
+  <p>
+    We process your data on the basis of your consent, which you give by ticking the consent box on
+    our form. We record the version of the consent text and the time you gave it.
+  </p>
+
+  <h2>Who we share it with</h2>
+  <ul>
+    <li>Our own sales team.</li>
+    <li>
+      Service providers that store or process data for us, such as our hosting provider and our
+      customer relationship software.
+    </li>
+    <li>The developer of a project, only if you ask us to share your details with them.</li>
+  </ul>
+  <p>We do not sell your personal data.</p>
+
+  <h2>How long we keep it</h2>
+  <p>We keep your data for 12 months from our last contact with you, then delete it.</p>
+
+  <h2>Your rights</h2>
+  <ul>
+    <li>Access the personal data we hold about you.</li>
+    <li>Correct or update it.</li>
+    <li>Have it deleted.</li>
+    <li>
+      Withdraw your consent at any time. This does not affect anything done before you withdrew it.
+    </li>
+    <li>
+      Nominate another person to exercise these rights for you in case of death or incapacity.
+    </li>
+    <li>
+      Raise a grievance with us, and then with the Data Protection Board of India if you are not
+      satisfied.
+    </li>
+  </ul>
+
+  <h2>How to exercise your rights</h2>
+  <p>
+    Write to our grievance officer, {officer ?? `name ${pending}`}, at{" "}
+    {officerEmail ? (
+      <a href={`mailto:${officerEmail}`}>{officerEmail}</a>
+    ) : (
+      `an email address ${pending}`
+    )}
+    . We respond within 30 days.
+  </p>
+
+  <h2>Cookies and analytics</h2>
+  <p>
+    If enabled, we use Google Analytics to measure visits, and Google Ads and the Meta pixel to
+    measure our ads. These tools may set cookies. We never send your name, phone number or email
+    address to them from your browser. You can block these cookies in your browser settings, or opt
+    out using Google's and Meta's ad settings pages.
+  </p>
+  <p>
+    We keep campaign information (such as which ad you clicked) in your browser for the current
+    visit only. We never store your name, phone number or email address in your browser.
+  </p>
+
+  <h2>Security</h2>
+  <p>
+    Data is sent over encrypted connections and stored with access limited to named people in our
+    team. Spam protection runs on our server, and secret keys never reach your browser.
+  </p>
+
+  <h2>Children</h2>
+  <p>This site is not directed at anyone under 18, and we do not knowingly collect their data.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>We will update the date at the top of this page whenever this policy changes.</p>
+</LegalLayout>

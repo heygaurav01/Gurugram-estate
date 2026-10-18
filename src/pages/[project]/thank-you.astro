@@ -1,0 +1,122 @@
+---
+/**
+ * Thank-you page (noindex). Phase 5 adds the generate_lead conversion, fired
+ * only when ?ref= is present and only once per ref.
+ */
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Nav from "~/components/Nav.astro";
+import Footer from "~/components/Footer.astro";
+import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
+import { HARERA_URL, isPlaceholder } from "~/lib/compliance";
+import { contactView } from "~/lib/view";
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects({ publishedOnly: true });
+  return projects.map((p) => ({ params: { project: p.slug } }));
+}) satisfies GetStaticPaths;
+
+const { project: slug } = Astro.params;
+const settings = await getSettings();
+const { project, theme } = await getProjectBundle(slug);
+const c = contactView(settings, project);
+const promise = isPlaceholder(settings.site.callback_promise)
+  ? undefined
+  : settings.site.callback_promise;
+---
+
+<BaseLayout
+  title={`Thank you | ${project.name}`}
+  description={`Your details for ${project.name} have been received.`}
+  path={`/${project.slug}/thank-you/`}
+  theme={theme}
+  noindex
+>
+  <Nav settings={settings} />
+  <main id="main" class="container thanks">
+    <p class="eyebrow">{project.name}</p>
+    <h1>Thank you. We have your details.</h1>
+    <div class="thanks__next stack">
+      <h2 class="thanks__h2">What happens next</h2>
+      <p>
+        An advisor from {settings.business.brand_name} will call you on the number you shared
+        {promise ? `, ${promise}` : ""}.
+      </p>
+      <p>
+        We will only share official details released by the developer. Registering interest is free
+        and does not reserve a unit.
+      </p>
+    </div>
+    <div class="thanks__actions">
+      {c.whatsapp && (
+        <a
+          class="btn"
+          href={c.whatsapp.href}
+          rel="noopener"
+          target="_blank"
+          data-track="whatsapp_click"
+        >
+          Message us on WhatsApp<span class="visually-hidden"> (opens in a new tab)</span>
+        </a>
+      )}
+      {c.phone && (
+        <a class="btn btn--ghost" href={c.phone.href} data-track="call_click">
+          Call {c.phone.display}
+        </a>
+      )}
+    </div>
+    <ul class="thanks__links" role="list">
+      <li>
+        <a href={`/${project.slug}/`}>Back to {project.name}</a>
+      </li>
+      <li>
+        <a href={HARERA_URL} rel="noopener" target="_blank">
+          How to check a project on haryanarera.gov.in
+          <span class="visually-hidden"> (opens in a new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </main>
+  <Footer settings={settings} project={project} />
+</BaseLayout>
+
+<style>
+  .thanks {
+    display: grid;
+    gap: var(--space-6);
+    padding-top: calc(4.25rem + var(--space-8));
+    padding-bottom: var(--space-section);
+  }
+  .thanks > * {
+    max-width: 52rem;
+  }
+  .thanks h1 {
+    font-size: var(--step-3);
+    max-width: 18ch;
+  }
+  .thanks__h2 {
+    font-size: var(--step-1);
+    font-family: var(--font-body);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .thanks__next {
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--hairline);
+    max-width: 40rem;
+  }
+  .thanks__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .thanks__links {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .thanks__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+  }
+</style>

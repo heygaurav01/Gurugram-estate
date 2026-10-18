@@ -1,9 +1,29 @@
 ---
-/** Project page. Phase 1 stub proving the data pipeline; Phase 2 builds every section. */
+/** Project page. Every section reads from the project's data file; nothing here is project-specific. */
 import type { GetStaticPaths } from "astro";
+import { getImage } from "astro:assets";
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import Nav from "~/components/Nav.astro";
+import Hero from "~/components/Hero.astro";
+import KeyFacts from "~/components/KeyFacts.astro";
+import Overview from "~/components/Overview.astro";
+import Highlights from "~/components/Highlights.astro";
+import Configurations from "~/components/Configurations.astro";
+import Plans from "~/components/Plans.astro";
+import Amenities from "~/components/Amenities.astro";
+import Gallery from "~/components/Gallery.astro";
+import Location from "~/components/Location.astro";
+import StatusTimeline from "~/components/StatusTimeline.astro";
+import Developer from "~/components/Developer.astro";
+import AboutAgent from "~/components/AboutAgent.astro";
+import Faq from "~/components/Faq.astro";
+import CtaBand from "~/components/CtaBand.astro";
+import Sources from "~/components/Sources.astro";
+import Footer from "~/components/Footer.astro";
+import StickyBar from "~/components/StickyBar.astro";
 import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
-import { agentDisclosure, reraStatusLine } from "~/lib/compliance";
+import { IMAGE_WIDTHS, projectImage } from "~/lib/images";
+import { ctaCopy, verifiedView } from "~/lib/view";
 
 export const getStaticPaths = (async () => {
   const projects = await getProjects({ publishedOnly: true });
@@ -12,7 +32,29 @@ export const getStaticPaths = (async () => {
 
 const { project: slug } = Astro.params;
 const settings = await getSettings();
-const { project, theme } = await getProjectBundle(slug);
+const { project, assets, asset, theme } = await getProjectBundle(slug);
+const v = verifiedView(project);
+const heroImage = project.theme.heroImageId ? asset(project.theme.heroImageId) : undefined;
+
+// Preload the hero AVIF with the same widths the <Picture> uses.
+const heroSrc = heroImage ? projectImage(slug, heroImage.file) : undefined;
+const heroPreload = heroSrc
+  ? await getImage({
+      src: heroSrc,
+      format: "avif",
+      widths: IMAGE_WIDTHS.filter((w) => w <= heroSrc.width),
+      sizes: "100vw",
+    })
+  : undefined;
+
+const links = [
+  project.overview && { href: "#overview", label: "Overview" },
+  { href: "#homes", label: "Homes" },
+  { href: "#plans", label: "Plans" },
+  v.amenities.length > 0 && { href: "#amenities", label: "Amenities" },
+  { href: "#location", label: "Location" },
+  project.faqs.length > 0 && { href: "#faq", label: "FAQ" },
+].filter((l): l is { href: string; label: string } => Boolean(l));
 ---
 
 <BaseLayout
@@ -20,13 +62,37 @@ const { project, theme } = await getProjectBundle(slug);
   description={project.seo.description}
   path={`/${project.slug}/`}
   theme={theme}
+  stickyBar
 >
-  <main id="main" class="container section stack">
-    <p class="eyebrow">
-      {project.location.sector}, {project.location.city}
-    </p>
-    <h1>{project.name}</h1>
-    <p>{reraStatusLine(project)}</p>
-    <p>{agentDisclosure(settings, project.developer)}</p>
+  {heroPreload && (
+    <link
+      slot="head"
+      rel="preload"
+      as="image"
+      type="image/avif"
+      imagesrcset={heroPreload.srcSet.attribute}
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
+  )}
+  <Nav settings={settings} links={links} overHero cta={ctaCopy(project).primary} />
+  <main id="main">
+    <Hero project={project} settings={settings} image={heroImage} />
+    <KeyFacts project={project} />
+    <Overview project={project} />
+    <Highlights project={project} />
+    <Configurations project={project} />
+    <Plans project={project} assets={assets} />
+    <Amenities project={project} asset={asset} />
+    <Gallery project={project} assets={assets} />
+    <Location project={project} asset={asset} />
+    <StatusTimeline project={project} />
+    <Developer project={project} assets={assets} />
+    <AboutAgent settings={settings} project={project} />
+    <Faq project={project} settings={settings} />
+    <CtaBand project={project} />
+    <Sources project={project} />
   </main>
+  <Footer settings={settings} project={project} />
+  <StickyBar settings={settings} project={project} />
 </BaseLayout>

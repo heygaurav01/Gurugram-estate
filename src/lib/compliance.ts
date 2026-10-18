@@ -180,6 +180,11 @@ function projectCopy(p: Project): Array<{ where: string; text: string }> {
   ];
   if (p.tagline) out.push({ where: "tagline", text: p.tagline });
   if (p.developer.about) out.push({ where: "developer.about", text: p.developer.about });
+  if (p.overview) {
+    out.push({ where: "overview.title", text: p.overview.title });
+    p.overview.body.forEach((t, i) => out.push({ where: `overview.body[${i}]`, text: t }));
+  }
+  if (p.land?.note) out.push({ where: "land.note", text: p.land.note });
   p.highlights.forEach((h, i) => out.push({ where: `highlights[${i}]`, text: h.text }));
   p.faqs.forEach((f, i) => out.push({ where: `faqs[${i}]`, text: `${f.q} ${f.a}` }));
   p.timeline.forEach((t, i) => out.push({ where: `timeline[${i}]`, text: t.label }));
@@ -234,11 +239,18 @@ export function checkProjectData(input: ProjectCheckInput): Report {
     }
   }
 
+  if (p.overview) {
+    const words = p.overview.body.join(" ").split(/\s+/).filter(Boolean).length;
+    if (words < 120 || words > 180)
+      warn("overview", `overview.body is ${words} words (target 120 to 180).`);
+  }
+
   // Rule 4: asset references and licenses.
   const byId = new Map(assets.map((a) => [a.id, a]));
   const refs: Array<{ where: string; id: string | undefined }> = [
     { where: "theme.heroImageId", id: p.theme.heroImageId },
     { where: "seo.ogImageId", id: p.seo.ogImageId },
+    { where: "location.mapImageId", id: p.location.mapImageId },
     ...p.amenities.map((a, i) => ({ where: `amenities[${i}].imageId`, id: a.imageId })),
   ];
   for (const { where, id } of refs) {
@@ -374,6 +386,18 @@ export function checkProjectData(input: ProjectCheckInput): Report {
       "whatsapp",
       `business.whatsapp_e164 "${b.whatsapp_e164}" is not a real Indian mobile number.`,
     );
+  }
+  // The privacy policy (DPDP Act) and disclaimer need a reachable controller and grievance contact.
+  const contactFields = [
+    "email",
+    "office_address",
+    "grievance_officer_name",
+    "grievance_officer_email",
+  ] as const;
+  for (const field of contactFields) {
+    if (isPlaceholder(b[field])) {
+      blocker("contact", `business.${field} is TBD. Needed by the privacy policy and disclaimer.`);
+    }
   }
 
   return { errors, warnings };

@@ -1,24 +1,70 @@
 ---
-/** Layout for disclaimer, privacy policy and terms. Built out in Phase 2. */
+/** Layout for disclaimer, privacy policy and terms: readable single column. */
 import BaseLayout from "./BaseLayout.astro";
+import Nav from "~/components/Nav.astro";
+import Footer from "~/components/Footer.astro";
+import { getSettings } from "~/lib/data";
+import { formatDate } from "~/lib/format";
 
 type Props = {
   title: string;
   description: string;
   path: string;
   heading: string;
+  /** ISO date. */
   lastUpdated: string;
 };
 
 const { title, description, path, heading, lastUpdated } = Astro.props;
+const settings = await getSettings();
 ---
 
 <BaseLayout title={title} description={description} path={path}>
-  <main id="main" class="container section">
-    <article class="legal stack">
-      <h1>{heading}</h1>
-      <p class="eyebrow">Last updated {lastUpdated}</p>
+  <Nav settings={settings} />
+  <main id="main" class="container legal-main">
+    <article class="legal">
+      <header class="legal__head">
+        <p class="eyebrow">Last updated {formatDate(lastUpdated)}</p>
+        <h1>{heading}</h1>
+      </header>
       <slot />
     </article>
   </main>
+  <Footer settings={settings} />
 </BaseLayout>
+
+<style>
+  .legal-main {
+    padding-top: calc(4.25rem + var(--space-8));
+    padding-bottom: var(--space-section);
+  }
+  .legal {
+    max-width: 46rem;
+  }
+  .legal__head {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-7);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .legal h1 {
+    font-size: var(--step-3);
+  }
+  .legal :global(h2) {
+    margin-top: var(--space-7);
+    margin-bottom: var(--space-3);
+    font-size: var(--step-2);
+  }
+  .legal :global(p),
+  .legal :global(ul) {
+    margin-bottom: var(--space-4);
+    color: var(--ink-2);
+  }
+  .legal :global(ul) {
+    padding-left: 1.25rem;
+  }
+  .legal :global(li + li) {
+    margin-top: var(--space-2);
+  }
+</style>

@@ -1,0 +1,120 @@
+---
+/** Footer: disclosure, agent RERA, project RERA status, HARERA link, legal links. */
+import type { Project, SiteSettings } from "~/lib/schemas";
+import { HARERA_URL, ON_REQUEST, isPlaceholder, reraStatusLine } from "~/lib/compliance";
+import Disclosure from "./Disclosure.astro";
+import Wordmark from "./Wordmark.astro";
+
+type Props = { settings: SiteSettings; project?: Project | undefined };
+const { settings, project } = Astro.props;
+const reraNo = isPlaceholder(settings.business.agent_rera_number)
+  ? ON_REQUEST
+  : settings.business.agent_rera_number;
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand stack">
+      <Wordmark settings={settings} />
+      <Disclosure settings={settings} developer={project?.developer} tone="dark" />
+    </div>
+    <dl class="footer__rera">
+      <div>
+        <dt>Agent HARERA registration</dt>
+        <dd>{reraNo}</dd>
+      </div>
+      {project && (
+        <div>
+          <dt>{project.name}</dt>
+          <dd>{reraStatusLine(project)}</dd>
+        </div>
+      )}
+      <div>
+        <dt>Verify any project</dt>
+        <dd>
+          <a href={HARERA_URL} rel="noopener" target="_blank">
+            haryanarera.gov.in<span class="visually-hidden"> (opens in a new tab)</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+    <nav class="footer__links" aria-label="Legal">
+      <ul role="list">
+        <li>
+          <a href="/">All projects</a>
+        </li>
+        <li>
+          <a href="/disclaimer/">Disclaimer</a>
+        </li>
+        <li>
+          <a href="/privacy-policy/">Privacy policy</a>
+        </li>
+        <li>
+          <a href="/terms/">Terms</a>
+        </li>
+      </ul>
+    </nav>
+    <p class="footer__copy">
+      &copy; {year} {settings.business.brand_name}. Images marked "Representative image" do not show
+      the actual project.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: var(--space-8) var(--space-6);
+    background: var(--night);
+    color: var(--bone);
+  }
+  .footer__inner {
+    display: grid;
+    gap: var(--space-7);
+  }
+  .footer__rera {
+    display: grid;
+    gap: var(--space-4);
+    font-size: var(--step--1);
+  }
+  .footer__rera dt {
+    font-weight: 600;
+    color: rgb(244 241 234 / 0.7);
+  }
+  .footer__rera dd {
+    color: var(--bone);
+  }
+  .footer__links ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+  }
+  .footer__links a,
+  .footer__rera a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+  }
+  .footer__copy {
+    padding-top: var(--space-5);
+    border-top: 1px solid rgb(244 241 234 / 0.18);
+    font-size: 0.8rem;
+    color: rgb(244 241 234 / 0.7);
+    max-width: none;
+  }
+  .footer :focus-visible {
+    outline-color: var(--bone);
+  }
+  @media (min-width: 1024px) {
+    .footer__inner {
+      grid-template-columns: 5fr 4fr 3fr;
+      column-gap: var(--gutter);
+    }
+    .footer__links ul {
+      flex-direction: column;
+    }
+    .footer__copy {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

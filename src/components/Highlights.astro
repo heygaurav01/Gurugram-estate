@@ -1,0 +1,66 @@
+---
+/** Verified highlights, each with a footnote marker. Hidden when none are verified. */
+import type { Project } from "~/lib/schemas";
+import { buildSources, verifiedView } from "~/lib/view";
+import SectionHeading from "./SectionHeading.astro";
+import SourceRef from "./SourceRef.astro";
+
+type Props = { project: Project };
+const { project } = Astro.props;
+const items = verifiedView(project).highlights;
+const { ref } = buildSources(project);
+---
+
+{items.length > 0 && (
+  <section class="section" id="highlights" aria-labelledby="highlights-title">
+    <div class="container">
+      <SectionHeading
+        id="highlights-title"
+        eyebrow="Highlights"
+        title="Verified so far"
+        intro="Each point links to its source at the bottom of this page."
+      />
+      <ol class="highlights" role="list">
+        {items.map((h, i) => (
+          <li class="highlights__item" data-reveal>
+            <span class="highlights__num" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <p>
+              {h.text}
+              <SourceRef n={ref(h.source)} />
+            </p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+)}
+
+<style>
+  .highlights {
+    display: grid;
+    border-top: 1px solid var(--hairline);
+  }
+  .highlights__item {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: var(--space-4);
+    align-items: baseline;
+    padding: var(--space-5) 0;
+    border-bottom: 1px solid var(--hairline);
+    font-size: var(--step-1);
+    line-height: 1.4;
+  }
+  .highlights__num {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--accent);
+  }
+  @media (min-width: 1024px) {
+    .highlights {
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--gutter);
+    }
+  }
+</style>

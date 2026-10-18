@@ -1,0 +1,49 @@
+---
+/** Developer section. Rendered only with written authorization to use the developer's name. */
+import type { Project } from "~/lib/schemas";
+import type { ProjectBundle } from "~/lib/data";
+import SectionHeading from "./SectionHeading.astro";
+import Picture from "./Picture.astro";
+
+type Props = { project: Project; assets: ProjectBundle["assets"] };
+const { project, assets } = Astro.props;
+const { developer } = project;
+const show =
+  developer.authorizedToUseName && project.sections.developer && Boolean(developer.about);
+const logo = developer.authorizedToUseLogo
+  ? assets.find((a) => a.kind === "logo" && a.fromDeveloper && a.license === "authorized")
+  : undefined;
+---
+
+{show && (
+  <section class="section" id="developer" aria-labelledby="developer-title">
+    <div class="container grid split-5-7">
+      <div>
+        <SectionHeading id="developer-title" eyebrow="Developer" title={developer.name} />
+        {logo && <Picture slug={project.slug} asset={logo} sizes="240px" class="developer__logo" />}
+      </div>
+      <div class="stack" data-reveal>
+        <p>{developer.about}</p>
+        {developer.aboutSource && (
+          <p class="developer__source">
+            Source:{" "}
+            <a href={developer.aboutSource} rel="noopener" target="_blank">
+              {developer.aboutSource}
+            </a>
+          </p>
+        )}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .developer__logo {
+    max-width: 240px;
+  }
+  .developer__source {
+    font-size: var(--step--1);
+    color: var(--stone);
+    overflow-wrap: anywhere;
+  }
+</style>

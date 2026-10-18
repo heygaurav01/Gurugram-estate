@@ -20,7 +20,9 @@
     "format:check": "prettier --check .",
     "new-project": "node scripts/new-project.mjs",
     "screenshots": "node scripts/screenshots.mjs",
-    "placeholders": "node scripts/generate-placeholders.mjs"
+    "placeholders": "node scripts/generate-placeholders.mjs",
+    "build:test": "astro build --mode test",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

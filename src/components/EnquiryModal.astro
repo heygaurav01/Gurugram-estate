@@ -1,0 +1,356 @@
+---
+/**
+ * Enquiry modal (one per page). Opened by any [data-enquire="<intent>"] trigger.
+ * Native <dialog>: modal, Esc closes, rest of the page inert. Logic in scripts/enquiry.ts.
+ * Without JS, triggers fall back to their href (#contact).
+ */
+import type { Project, SiteSettings } from "~/lib/schemas";
+import { formIntents } from "~/lib/schemas";
+import { CONSENT_VERSION, consentText } from "~/lib/validation";
+import { contactView, intentHeading } from "~/lib/view";
+import { isRegisterInterestMode } from "~/lib/compliance";
+
+type Props = { project: Project; settings: SiteSettings };
+const { project, settings } = Astro.props;
+const brand = settings.business.brand_name;
+const c = contactView(settings, project);
+const headings = Object.fromEntries(formIntents.map((i) => [i, intentHeading(i, project)]));
+const consent = consentText(brand);
+const consentLead = consent.replace(/ I have read the Privacy Policy\.$/, "");
+---
+
+<dialog
+  class="enquiry"
+  aria-labelledby="enquiry-title"
+  data-enquiry
+  data-slug={project.slug}
+  data-project-name={project.name}
+  data-headings={JSON.stringify(headings)}
+  data-consent-version={CONSENT_VERSION}
+  data-consent-text={consent}
+>
+  <div class="enquiry__panel">
+    <div class="enquiry__top">
+      <p class="eyebrow">{project.name}</p>
+      <button type="button" class="enquiry__close" aria-label="Close" data-enquiry-close>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
+    </div>
+    <h2 id="enquiry-title" class="enquiry__title" data-enquiry-title>
+      {headings.hero}
+    </h2>
+    <p class="enquiry__intro">
+      {isRegisterInterestMode(project)
+        ? "Free, with no obligation. Registering does not reserve a unit."
+        : "Free, with no obligation. An advisor will call you back."}
+    </p>
+
+    <form class="enquiry__form" novalidate data-enquiry-form>
+      <div class="field">
+        <label for="enq-name">Name</label>
+        <input
+          id="enq-name"
+          name="name"
+          type="text"
+          autocomplete="name"
+          required
+          maxlength="60"
+          aria-describedby="enq-name-error"
+        />
+        <p id="enq-name-error" class="field__error" data-error-for="name"></p>
+      </div>
+
+      <div class="field">
+        <label for="enq-phone">Mobile number</label>
+        <div class="field__phone">
+          <span class="field__prefix" aria-hidden="true">
+            +91
+          </span>
+          <input
+            id="enq-phone"
+            name="phone"
+            type="tel"
+            inputmode="numeric"
+            autocomplete="tel-national"
+            required
+            maxlength="16"
+            aria-describedby="enq-phone-hint enq-phone-error"
+          />
+        </div>
+        <p id="enq-phone-hint" class="visually-hidden">
+          Indian mobile number, 10 digits.
+        </p>
+        <p id="enq-phone-error" class="field__error" data-error-for="phone"></p>
+      </div>
+
+      <div class="field">
+        <label for="enq-email">
+          Email <span class="field__optional">(optional)</span>
+        </label>
+        <input
+          id="enq-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          maxlength="254"
+          aria-describedby="enq-email-error"
+        />
+        <p id="enq-email-error" class="field__error" data-error-for="email"></p>
+      </div>
+
+      <div class="field field--check">
+        <input
+          id="enq-consent"
+          name="consent"
+          type="checkbox"
+          required
+          aria-describedby="enq-consent-error"
+        />
+        <label for="enq-consent">
+          {consentLead} I have read the{" "}
+          <a href="/privacy-policy/" target="_blank" rel="noopener">
+            Privacy Policy<span class="visually-hidden"> (opens in a new tab)</span>
+          </a>
+          .
+        </label>
+        <p id="enq-consent-error" class="field__error" data-error-for="consent"></p>
+      </div>
+
+      <!-- Honeypot: hidden from people and assistive tech; bots tend to fill it. -->
+      <div class="enquiry__hp" aria-hidden="true">
+        <label for="enq-company">Company website</label>
+        <input
+          id="enq-company"
+          name="company_website"
+          type="text"
+          tabindex="-1"
+          autocomplete="off"
+        />
+      </div>
+
+      <p class="visually-hidden" aria-live="polite" data-enquiry-live></p>
+
+      <button type="submit" class="btn enquiry__submit" data-enquiry-submit>
+        <span class="enquiry__spinner" aria-hidden="true"></span>
+        <span data-submit-label>Send</span>
+      </button>
+
+      <div class="enquiry__failure" role="alert" hidden data-enquiry-failure>
+        <p>We could not send your details. Please try again, or call or WhatsApp us.</p>
+        <div class="enquiry__failure-actions">
+          <button type="submit" class="btn">
+            Try again
+          </button>
+          {c.phone && (
+            <a class="btn btn--ghost" href={c.phone.href} data-track="call_click">
+              Call
+            </a>
+          )}
+          {c.whatsapp && (
+            <a
+              class="btn btn--ghost"
+              href={c.whatsapp.href}
+              target="_blank"
+              rel="noopener"
+              data-track="whatsapp_click"
+            >
+              WhatsApp<span class="visually-hidden"> (opens in a new tab)</span>
+            </a>
+          )}
+        </div>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<script>
+  import { initEnquiry } from "~/scripts/enquiry";
+  import { captureAttribution } from "~/scripts/attribution";
+  captureAttribution();
+  initEnquiry();
+</script>
+
+<style>
+  .enquiry {
+    width: min(100% - 2rem, 34rem);
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    background: var(--bone);
+    color: var(--ink);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .enquiry::backdrop {
+    background: rgb(18 17 15 / 0.6);
+  }
+  .enquiry__panel {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-6);
+  }
+  .enquiry__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .enquiry__close {
+    display: grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    margin-right: calc(var(--space-3) * -1);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius);
+  }
+  .enquiry__close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    fill: none;
+  }
+  .enquiry__title {
+    font-size: var(--step-2);
+  }
+  .enquiry__intro {
+    color: var(--ink-2);
+  }
+  .enquiry__form {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-2);
+  }
+  .field {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .field label {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .field__optional {
+    font-weight: 400;
+    color: var(--stone);
+  }
+  .field input[type="text"],
+  .field input[type="tel"],
+  .field input[type="email"] {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 var(--space-3);
+    background: var(--paper);
+    border: 1px solid var(--stone);
+    border-radius: var(--radius);
+    font-size: 1rem;
+  }
+  .field input:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+  .field input[aria-invalid="true"] {
+    border-color: var(--error);
+  }
+  .field__phone {
+    display: flex;
+  }
+  .field__prefix {
+    display: grid;
+    place-items: center;
+    padding: 0 var(--space-3);
+    background: var(--hairline);
+    border: 1px solid var(--stone);
+    border-right: 0;
+    border-radius: var(--radius) 0 0 var(--radius);
+    font-weight: 600;
+  }
+  .field__phone input {
+    border-radius: 0 var(--radius) var(--radius) 0 !important;
+  }
+  .field__error {
+    min-height: 0;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--error);
+  }
+  .field__error:empty {
+    display: none;
+  }
+  .field--check {
+    grid-template-columns: auto 1fr;
+    column-gap: var(--space-3);
+    align-items: start;
+  }
+  .field--check input {
+    width: 24px;
+    height: 24px;
+    margin-top: 0.1rem;
+    accent-color: var(--ink);
+  }
+  .field--check label {
+    font-weight: 400;
+    font-size: var(--step--1);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .field--check .field__error {
+    grid-column: 2;
+  }
+  .enquiry__hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .enquiry__submit {
+    width: 100%;
+    margin-top: var(--space-2);
+  }
+  .enquiry__spinner {
+    display: none;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: enquiry-spin 0.8s linear infinite;
+  }
+  .enquiry__form[aria-busy="true"] .enquiry__spinner {
+    display: inline-block;
+  }
+  .enquiry__form[aria-busy="true"] .enquiry__submit {
+    opacity: 0.85;
+    cursor: progress;
+  }
+  @keyframes enquiry-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .enquiry__failure {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 1px solid var(--error);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .enquiry__failure[hidden] {
+    display: none;
+  }
+  .enquiry__failure-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .enquiry__form.is-failed .enquiry__submit {
+    display: none;
+  }
+</style>

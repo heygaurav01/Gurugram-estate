@@ -123,6 +123,28 @@ if (!dataOnly && existsSync(DIST)) {
   }
 }
 
+/* 4. CRM endpoint --------------------------------------------------- */
+// The enquiry form posts straight to the CRM (src/scripts/api.ts). Without an
+// endpoint, a production page would show an error to every enquirer.
+function envValue(name) {
+  if (process.env[name]) return process.env[name];
+  for (const file of [".env.production", ".env"]) {
+    const path = join(ROOT, file);
+    if (!existsSync(path)) continue;
+    const m = readFileSync(path, "utf8").match(new RegExp(`^${name}=(.*)$`, "m"));
+    if (m && m[1].trim()) return m[1].trim().replace(/^["']|["']$/g, "");
+  }
+  return "";
+}
+const crmUrl = envValue("PUBLIC_CRM_LEAD_URL");
+if (!crmUrl) {
+  (production ? errors : warnings).push(
+    "env: [crm] PUBLIC_CRM_LEAD_URL is not set. Enquiries are simulated in dev and fail in production.",
+  );
+} else if (!crmUrl.startsWith("https://")) {
+  errors.push(`env: [crm] PUBLIC_CRM_LEAD_URL must use https (got "${crmUrl}").`);
+}
+
 /* Report ------------------------------------------------------------ */
 const mode = production ? "production" : "development";
 console.log(

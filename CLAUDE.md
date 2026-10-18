@@ -66,7 +66,9 @@ The master prompt and blueprint are the source of truth. The rules below apply t
 - `astro:assets` `<Picture>` for AVIF + WebP, explicit width and height, `loading="lazy"` except the hero.
 - Fonts self-hosted via Fontsource: Fraunces Variable (display) and Manrope Variable (body), Latin only, `font-display: swap`, both preloaded (`src/components/Fonts.astro`).
 - GSAP + ScrollTrigger for motion only, dynamically imported after `load`, skipped under `prefers-reduced-motion`.
-- Cloudflare Pages + Pages Functions (`/api/lead`) + D1 + Turnstile. Wrangler for local dev.
+- Fully static hosting (Cloudflare Pages). NO backend, no serverless functions, no database (owner's decision, 2026-10-18).
+- Leads: the enquiry form posts from the browser straight to the CRM's PUBLIC lead-capture endpoint via `src/scripts/api.ts` (the only external API call), configured by `PUBLIC_CRM_LEAD_URL`. Never put a private API key or token in the frontend or in any `PUBLIC_` variable. The CRM must allow CORS from the site domain. Adapt to a CRM by editing only `toCrmBody()` and `readCrmResponse()`.
+- Spam: client-side honeypot (`company_website`) and a 3 s minimum fill time; dedupe via `idempotency_key` in the CRM. Redirect to thank-you only after the CRM returns 2xx.
 - `@astrojs/sitemap`. Vitest, Playwright, @axe-core/playwright, Lighthouse CI. ESLint + Prettier. npm.
 
 ## 3. Folder structure
@@ -81,8 +83,11 @@ src/lib/compliance.ts          rules: verification, disclosure, banned words, HT
 src/lib/data.ts                getSettings, getProjects, getProjectBundle (asset guard)
 src/lib/format.ts, color.ts    INR/sq ft/dates; WCAG contrast + accent ink
 src/layouts/, src/components/, src/scripts/, src/styles/, src/pages/
-functions/api/lead.ts, functions/_lib/*   (Phase 3)
-migrations/                    D1 SQL (Phase 3)
+src/lib/validation.ts          form rules + consent wording (CONSENT_VERSION)
+src/scripts/api.ts             CRM connector + types (LeadSubmission, SubmitResult, ...)
+src/scripts/enquiry.ts         modal: open by intent, validate, submit, states
+src/scripts/attribution.ts     first-touch UTM/click IDs in sessionStorage (no PII)
+.env.test                      fake CRM URL for Playwright (intercepted)
 scripts/check-compliance.mjs, scripts/new-project.mjs
 docs/, tests/unit|e2e|a11y
 ```

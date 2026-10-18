@@ -21,6 +21,7 @@ import CtaBand from "~/components/CtaBand.astro";
 import Sources from "~/components/Sources.astro";
 import Footer from "~/components/Footer.astro";
 import StickyBar from "~/components/StickyBar.astro";
+import EnquiryModal from "~/components/EnquiryModal.astro";
 import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
 import { IMAGE_WIDTHS, projectImage } from "~/lib/images";
 import { ctaCopy, verifiedView } from "~/lib/view";
@@ -95,4 +96,5 @@ const links = [
   </main>
   <Footer settings={settings} project={project} />
   <StickyBar settings={settings} project={project} />
+  <EnquiryModal project={project} settings={settings} />
 </BaseLayout>

@@ -4,11 +4,13 @@
 # Never put secrets here: this file is public. Secrets go in Cloudflare env vars.
 
 business:
-  brand_name: "Gurgaon Properties"
+  brand_name: "Gurgaon Properties" # trading name used on project pages
+  legal_name: "Gurugram Estate Private Limited" # as on the official logo; homepage + legal lines
+  company_logo_file: "/brand/gurugram-estate-mark.png" # official GE mark (full logo: /brand/gurugram-estate-logo.png)
   agent_rera_number: "TBD" # HARERA agent registration number
-  phone_display: "+91 1234567890" # PLACEHOLDER: flagged by check, replace before launch
-  phone_e164: "+911234567890" # PLACEHOLDER
-  whatsapp_e164: "+911234567890" # PLACEHOLDER
+  phone_display: "+91 99588 33329"
+  phone_e164: "+919958833329"
+  whatsapp_e164: "+919958833329"
   email: "TBD"
   office_address: "TBD"
   grievance_officer_name: "TBD" # privacy policy (DPDP Act)

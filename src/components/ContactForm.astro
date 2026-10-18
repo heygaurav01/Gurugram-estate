@@ -7,10 +7,11 @@
 import type { SiteSettings } from "~/lib/schemas";
 import { CONSENT_VERSION, consentText } from "~/lib/validation";
 import { contactView } from "~/lib/view";
+import { companyName } from "~/lib/compliance";
 
 type Props = { settings: SiteSettings };
 const { settings } = Astro.props;
-const brand = settings.business.brand_name;
+const brand = companyName(settings);
 const consent = consentText(brand);
 const consentLead = consent.replace(/ the Privacy Policy\.$/, "");
 const c = contactView(settings);
@@ -26,7 +27,7 @@ const c = contactView(settings);
 >
   <p class="cf__eyebrow">Enquiry</p>
   <h3 id="cf-title" class="cf__title">
-    Get launch updates
+    Get notified at launch
   </h3>
   <p class="cf__intro">Tell us how to reach you. Free, with no obligation.</p>
 

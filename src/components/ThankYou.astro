@@ -1,0 +1,241 @@
+---
+/** Shared thank-you content: animated check, confirmation, next steps, contact actions. */
+import type { SiteSettings } from "~/lib/schemas";
+import { HARERA_URL, isPlaceholder } from "~/lib/compliance";
+import { contactView } from "~/lib/view";
+
+type Props = {
+  settings: SiteSettings;
+  /** Who will call back, e.g. the brand or company name. */
+  from: string;
+  /** Project the enquiry was about, if any. */
+  projectName?: string | undefined;
+  back: { href: string; label: string };
+};
+const { settings, from, projectName, back } = Astro.props;
+const c = contactView(settings, projectName ? { name: projectName } : undefined);
+const promise = isPlaceholder(settings.site.callback_promise)
+  ? undefined
+  : settings.site.callback_promise;
+const steps = [
+  {
+    title: "We call you",
+    text: `An advisor from ${from} calls the number you shared${promise ? `, ${promise}` : ""}.`,
+  },
+  {
+    title: "Official details only",
+    text: "Only what the developer has officially released, with sources.",
+  },
+  {
+    title: "We help you decide",
+    text: "Site visits, comparisons and paperwork, at no cost to you.",
+  },
+];
+---
+
+<section class="ty">
+  <div class="container ty__inner">
+    <div class="ty__card">
+      <svg class="ty__check" viewBox="0 0 64 64" aria-hidden="true">
+        <circle class="ty__ring" cx="32" cy="32" r="29"></circle>
+        <path class="ty__tick" d="M20 33l8 8 16-18"></path>
+      </svg>
+      {projectName && <p class="ty__eyebrow">{projectName}</p>}
+      <h1 class="ty__title">Thank you. We have your details.</h1>
+      <p class="ty__lead">
+        Your enquiry has reached {from}. There is nothing more you need to do right now.
+      </p>
+
+      <ol class="ty__steps" role="list">
+        {steps.map((s, i) => (
+          <li class="ty__step">
+            <span class="ty__num" aria-hidden="true">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <p class="ty__step-title">{s.title}</p>
+            <p class="ty__step-text">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+
+      <div class="ty__actions">
+        {c.whatsapp && (
+          <a
+            class="btn ty__wa"
+            href={c.whatsapp.href}
+            target="_blank"
+            rel="noopener"
+            data-track="whatsapp_click"
+          >
+            Message us on WhatsApp<span class="visually-hidden"> (opens in a new tab)</span>
+          </a>
+        )}
+        {c.phone && (
+          <a class="btn btn--ghost" href={c.phone.href} data-track="call_click">
+            Call {c.phone.display}
+          </a>
+        )}
+      </div>
+      <p class="ty__links">
+        <a href={back.href}>&larr; {back.label}</a>
+        <a href={HARERA_URL} rel="noopener" target="_blank">
+          Check a project on haryanarera.gov.in
+          <span class="visually-hidden"> (opens in a new tab)</span>
+        </a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ty {
+    padding: calc(4.25rem + var(--space-7)) 0 var(--space-section);
+    background:
+      radial-gradient(ellipse at 50% 0%, rgb(140 106 63 / 0.12), transparent 60%), var(--bone);
+  }
+  .ty__inner {
+    display: grid;
+    justify-items: center;
+  }
+  .ty__card {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-4);
+    width: min(100%, 52rem);
+    padding: clamp(var(--space-6), 5vw, var(--space-8));
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    background: var(--paper);
+    box-shadow: 0 40px 80px -50px rgb(18 17 15 / 0.45);
+    text-align: center;
+  }
+  .ty__check {
+    width: 84px;
+    height: 84px;
+    fill: none;
+    stroke: var(--success);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ty__ring {
+    stroke: rgb(47 93 58 / 0.25);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ty__ring {
+      stroke: var(--success);
+      stroke-dasharray: 183;
+      stroke-dashoffset: 183;
+      animation: ty-draw 900ms var(--ease) 150ms forwards;
+    }
+    .ty__tick {
+      stroke-dasharray: 40;
+      stroke-dashoffset: 40;
+      animation: ty-draw 500ms var(--ease) 850ms forwards;
+    }
+    .ty__step {
+      animation: gp-rise 700ms var(--ease) both;
+    }
+    .ty__step:nth-child(1) {
+      animation-delay: 900ms;
+    }
+    .ty__step:nth-child(2) {
+      animation-delay: 1000ms;
+    }
+    .ty__step:nth-child(3) {
+      animation-delay: 1100ms;
+    }
+  }
+  @keyframes ty-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  .ty__eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .ty__title {
+    max-width: 16ch;
+    font-size: clamp(2.4rem, 1.8rem + 2.6vw, 3.8rem);
+  }
+  .ty__lead {
+    max-width: 46ch;
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .ty__steps {
+    display: grid;
+    gap: var(--space-3);
+    width: 100%;
+    margin-top: var(--space-4);
+    text-align: left;
+  }
+  .ty__step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-1) var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    background: var(--bone);
+  }
+  .ty__num {
+    grid-row: span 2;
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent-ink);
+  }
+  .ty__step-title {
+    font-weight: 700;
+  }
+  .ty__step-text {
+    font-size: 0.92rem;
+    color: var(--ink-2);
+  }
+  .ty__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  .ty__wa {
+    background: #1f9e53;
+    border-color: #1f9e53;
+  }
+  .ty__wa:hover {
+    background: #198646;
+  }
+  .ty__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2) var(--space-6);
+    max-width: none;
+    font-size: 0.9rem;
+  }
+  .ty__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    color: var(--ink-2);
+  }
+  @media (min-width: 768px) {
+    .ty__steps {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .ty__step {
+      grid-template-columns: 1fr;
+    }
+    .ty__num {
+      grid-row: auto;
+    }
+  }
+</style>

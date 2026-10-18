@@ -17,8 +17,10 @@ type Props = {
   cta?: string | undefined;
   /** Co-brand with the developer's logo (authorized channel partners only). */
   partner?: { project: Project; assets: Asset[] } | undefined;
+  /** "company" shows the registered company name/logo (homepage). */
+  variant?: "brand" | "company";
 };
-const { settings, links = [], overHero = false, cta, partner } = Astro.props;
+const { settings, links = [], overHero = false, cta, partner, variant = "brand" } = Astro.props;
 const coBrand = partner?.project.developer.authorizedToUseLogo === true;
 ---
 
@@ -53,7 +55,7 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
         </div>
       </div>
     ) : (
-      <Wordmark settings={settings} />
+      <Wordmark settings={settings} variant={variant} />
     )}
     {links.length > 0 && (
       <nav class="nav__links" aria-label="Page sections">
@@ -91,7 +93,7 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
   {links.length > 0 && (
     <dialog id="nav-sheet" class="nav-sheet" aria-label="Menu">
       <div class="nav-sheet__top">
-        <Wordmark settings={settings} />
+        <Wordmark settings={settings} variant={variant} />
         <button type="button" class="nav__menu" data-nav-close>
           Close
         </button>

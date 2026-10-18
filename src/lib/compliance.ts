@@ -62,7 +62,7 @@ export function agentDisclosure(
   developer?: Pick<Project["developer"], "name" | "authorizedChannelPartner">,
 ): string {
   const authorizedChannelPartner = developer?.authorizedChannelPartner === true;
-  const brand = settings.business.brand_name;
+  const brand = brandWithLegalName(settings);
   const reraNo = isPlaceholder(settings.business.agent_rera_number)
     ? ON_REQUEST
     : settings.business.agent_rera_number;
@@ -71,6 +71,20 @@ export function agentDisclosure(
       ? `an authorized channel partner of ${developer.name}`
       : "an independent real estate agent";
   return `${brand} is ${role}, HARERA agent registration no. ${reraNo}. This is not the developer's official website.`;
+}
+
+/** "Gurgaon Properties, a brand of Gurugram Real Estate Pvt Ltd," or just the brand. */
+export function brandWithLegalName(settings: SiteSettings): string {
+  const { brand_name, legal_name } = settings.business;
+  return legal_name && !isPlaceholder(legal_name) && legal_name !== brand_name
+    ? `${brand_name}, a brand of ${legal_name},`
+    : brand_name;
+}
+
+/** Name of the company for the homepage: the legal name when set, else the brand. */
+export function companyName(settings: SiteSettings): string {
+  const legal = settings.business.legal_name;
+  return legal && !isPlaceholder(legal) ? legal : settings.business.brand_name;
 }
 
 export const HARERA_URL = "https://haryanarera.gov.in";
@@ -136,10 +150,16 @@ const URGENCY_BANNED: RegExp[] = [
 
 const EM_DASH = "—";
 
-export function findBannedRegisterInterest(text: string): string[] {
+/**
+ * @param companyPage The company's own pages (homepage) may truthfully say
+ * "official website"; every other banned term still applies.
+ */
+export function findBannedRegisterInterest(text: string, companyPage = false): string[] {
   let cleaned = text;
   for (const re of ALLOWED_PHRASES) cleaned = cleaned.replace(re, " ");
-  return REGISTER_INTEREST_BANNED.filter(({ re }) => re.test(cleaned)).map(({ label }) => label);
+  return REGISTER_INTEREST_BANNED.filter(
+    ({ label, re }) => !(companyPage && label === "official site") && re.test(cleaned),
+  ).map(({ label }) => label);
 }
 
 export function findFiller(text: string): string[] {
@@ -485,6 +505,8 @@ export function countH1(html: string): number {
 export type HtmlScanOptions = {
   /** Apply the register-interest banned word list. */
   registerInterestMode: boolean;
+  /** The company's own pages (homepage): "official website" is allowed there. */
+  companyPage?: boolean;
 };
 
 export function scanHtml(html: string, opts: HtmlScanOptions): Finding[] {
@@ -502,7 +524,7 @@ export function scanHtml(html: string, opts: HtmlScanOptions): Finding[] {
     });
   }
   if (opts.registerInterestMode) {
-    for (const hit of findBannedRegisterInterest(text)) {
+    for (const hit of findBannedRegisterInterest(text, opts.companyPage)) {
       findings.push({
         rule: "register-interest-copy",
         message: `Banned term "${hit}" on a page for an unregistered project.`,

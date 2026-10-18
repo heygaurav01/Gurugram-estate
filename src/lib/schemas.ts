@@ -31,6 +31,10 @@ const sourced = {
 export const siteSettingsSchema = z.object({
   business: z.object({
     brand_name: z.string().min(2),
+    /** Registered company that owns the brand; shown on the homepage and in legal lines. */
+    legal_name: z.string().optional(),
+    /** Company logo for the homepage (path in public/), or TBD for a text wordmark. */
+    company_logo_file: z.string().optional(),
     agent_rera_number: z.string(),
     phone_display: z.string(),
     phone_e164: z.string(),

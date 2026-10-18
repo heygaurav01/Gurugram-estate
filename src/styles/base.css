@@ -25,6 +25,7 @@ body {
   font-feature-settings: "kern", "liga";
   /* Lining figures everywhere: Cormorant defaults to old-style numerals. */
   font-variant-numeric: lining-nums;
+  font-feature-settings: "kern", "liga", "lnum";
 }
 
 h1,

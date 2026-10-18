@@ -6,22 +6,26 @@
  * - Slow orbit rings and floating glass chips at different depths.
  * All motion is off under prefers-reduced-motion; content is static and readable.
  */
-import type { Asset, Project } from "~/lib/schemas";
+import type { Asset } from "~/lib/schemas";
 import Picture from "./Picture.astro";
 
 type Props = {
-  brand: string;
-  /** Project to feature (first published). */
-  project?: Project | undefined;
-  image?: Asset | undefined;
+  /** Company the official website belongs to. */
+  company: string;
+  /** Mood image behind the scene (any listed asset). */
+  background?: { slug: string; asset: Asset } | undefined;
+  /** tel: link for the secondary button. */
+  phone?: { href: string; display: string } | undefined;
+  /** Link to a live project page, shown as a pill under the buttons. */
+  featured?: { href: string; label: string } | undefined;
 };
-const { brand, project, image } = Astro.props;
+const { company, background, phone, featured } = Astro.props;
 const word = (w: string) => Array.from(w);
 ---
 
 <section class="cs" aria-labelledby="cs-title" data-cs>
-  {image && project && (
-    <Picture slug={project.slug} asset={image} sizes="100vw" eager class="cs__bg" />
+  {background && (
+    <Picture slug={background.slug} asset={background.asset} sizes="100vw" eager class="cs__bg" />
   )}
   <div class="cs__veil" aria-hidden="true"></div>
 
@@ -34,23 +38,21 @@ const word = (w: string) => Array.from(w);
       <p class="cs__chip cs__chip--1" aria-hidden="true">
         Gurugram
       </p>
-      {project && (
-        <p class="cs__chip cs__chip--2" aria-hidden="true">
-          {project.location.sector}
-        </p>
-      )}
+      <p class="cs__chip cs__chip--2" aria-hidden="true">
+        Official website
+      </p>
       <p class="cs__chip cs__chip--3" aria-hidden="true">
-        New launches
+        Real estate
       </p>
 
       <div class="cs__content">
         <p class="cs__eyebrow">
           <span class="cs__rule" aria-hidden="true"></span>
-          {brand}
+          {company}
           <span class="cs__rule" aria-hidden="true"></span>
         </p>
         <h1 id="cs-title" class="cs__title">
-          <span class="visually-hidden">New homes in Gurugram: </span>
+          <span class="visually-hidden">{company} official website: </span>
           <span class="cs__word" aria-hidden="true">
             {word("Coming").map((ch, i) => (
               <span class="cs__ch" style={`--i:${i}`}>
@@ -68,33 +70,43 @@ const word = (w: string) => Array.from(w);
           <span class="visually-hidden">Coming soon</span>
         </h1>
         <p class="cs__lead">
-          Curated new launches in Gurugram
-          {project && <span>, starting with {project.name}</span>}.
+          The official website of {company} is on its way. Leave your details and we will tell you
+          the day it launches.
         </p>
         <div class="cs__ctas">
-          {project && (
-            <a class="btn cs__primary" href={`/${project.slug}/`}>
-              Explore {project.name}
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M5 12h14M13 6l6 6-6 6"></path>
-              </svg>
+          <a class="btn cs__primary" href="#contact">
+            Get notified
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"></path>
+            </svg>
+          </a>
+          {phone && (
+            <a class="btn cs__secondary" href={phone.href} data-track="call_click">
+              Call {phone.display}
             </a>
           )}
-          <a class="btn cs__secondary" href="#contact">
-            Get launch updates
-          </a>
         </div>
+        {featured && (
+          <a class="cs__featured" href={featured.href}>
+            <span class="cs__featured-dot" aria-hidden="true"></span>
+            <span class="cs__featured-tag">Now live</span>
+            <span>{featured.label}</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"></path>
+            </svg>
+          </a>
+        )}
       </div>
     </div>
   </div>
 
-  <a class="cs__scroll" href="#projects">
-    <span class="visually-hidden">Scroll to projects</span>
+  <a class="cs__scroll" href="#contact">
+    <span class="visually-hidden">Scroll to contact</span>
     <span class="cs__mouse" aria-hidden="true">
       <span></span>
     </span>
   </a>
-  {image?.caption && <p class="cs__caption">{image.caption}</p>}
+  {background?.asset.caption && <p class="cs__caption">{background.asset.caption}</p>}
 </section>
 
 <script>
@@ -109,7 +121,7 @@ const word = (w: string) => Array.from(w);
     display: grid;
     place-items: center;
     min-height: max(640px, 100svh);
-    padding: calc(4.25rem + var(--space-6)) var(--gutter) var(--space-8);
+    padding: calc(4.25rem + var(--space-6)) var(--gutter) calc(var(--space-8) + 3rem);
     overflow: hidden;
     background: var(--night);
     color: var(--bone);
@@ -241,6 +253,61 @@ const word = (w: string) => Array.from(w);
     color: var(--bone);
     border-color: rgb(244 241 234 / 0.5);
     backdrop-filter: blur(6px);
+  }
+  .cs__featured {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--tap-min);
+    margin-top: var(--space-2);
+    padding: 0.45rem 0.7rem 0.45rem 0.9rem;
+    border: 1px solid rgb(228 207 168 / 0.45);
+    border-radius: 999px;
+    background: rgb(18 17 15 / 0.45);
+    backdrop-filter: blur(8px);
+    color: var(--bone);
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      border-color var(--dur) var(--ease),
+      background var(--dur) var(--ease);
+  }
+  .cs__featured:hover {
+    border-color: #e4cfa8;
+    background: rgb(18 17 15 / 0.7);
+  }
+  .cs__featured-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #3ddc84;
+    box-shadow: 0 0 0 4px rgb(61 220 132 / 0.2);
+  }
+  .cs__featured-tag {
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    background: #e4cfa8;
+    color: var(--ink);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .cs__featured svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    transition: transform var(--dur) var(--ease);
+  }
+  .cs__featured:hover svg {
+    transform: translateX(3px);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cs__featured {
+      animation: cs-rise 900ms var(--ease) 1200ms both;
+    }
   }
   .cs__secondary:hover {
     background: var(--bone);

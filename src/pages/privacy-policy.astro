@@ -2,11 +2,12 @@
 /** Privacy policy written to the Digital Personal Data Protection Act, 2023 standard. */
 import LegalLayout from "~/layouts/LegalLayout.astro";
 import { getSettings } from "~/lib/data";
-import { isPlaceholder } from "~/lib/compliance";
+import { companyName, isPlaceholder } from "~/lib/compliance";
 
 const settings = await getSettings();
 const b = settings.business;
 const brand = b.brand_name;
+const legal = companyName(settings);
 const pending = "to be published before this site goes live";
 const officer = isPlaceholder(b.grievance_officer_name) ? undefined : b.grievance_officer_name;
 const officerEmail = isPlaceholder(b.grievance_officer_email)
@@ -21,6 +22,7 @@ const email = isPlaceholder(b.email) ? undefined : b.email;
   description={`What personal data ${brand} collects when you enquire, why, who sees it, and how to exercise your rights.`}
   path="/privacy-policy/"
   heading="Privacy policy"
+  summary="What we collect when you enquire, why, who sees it, how long we keep it, and how to exercise your rights."
   lastUpdated="2026-10-18"
 >
   <p>
@@ -30,8 +32,9 @@ const email = isPlaceholder(b.email) ? undefined : b.email;
 
   <h2>Who is responsible for your data</h2>
   <p>
-    {brand} is the data fiduciary for data collected on this site. Office address:{" "}
-    {address ?? pending}. Email: {email ? <a href={`mailto:${email}`}>{email}</a> : pending}.
+    {legal} (trading as {brand}) is the data fiduciary for data collected on this site. Office
+    address: {address ?? pending}. Email:{" "}
+    {email ? <a href={`mailto:${email}`}>{email}</a> : pending}.
   </p>
 
   <h2>What we collect</h2>

@@ -1,10 +1,16 @@
 ---
-/** Layout for disclaimer, privacy policy and terms: readable single column. */
+/**
+ * Layout for disclaimer, privacy policy and terms.
+ * Dark header band, sticky table of contents generated from the page's <h2>s,
+ * numbered sections in a reading card, and a contact card at the end.
+ */
 import BaseLayout from "./BaseLayout.astro";
 import Nav from "~/components/Nav.astro";
 import Footer from "~/components/Footer.astro";
 import { getSettings } from "~/lib/data";
 import { formatDate } from "~/lib/format";
+import { brandWithLegalName } from "~/lib/compliance";
+import { contactView } from "~/lib/view";
 import { breadcrumbLd, graph, realEstateAgentLd } from "~/lib/seo";
 
 type Props = {
@@ -12,12 +18,16 @@ type Props = {
   description: string;
   path: string;
   heading: string;
+  /** One or two sentences shown under the heading. */
+  summary: string;
   /** ISO date. */
   lastUpdated: string;
 };
 
-const { title, description, path, heading, lastUpdated } = Astro.props;
+const { title, description, path, heading, summary, lastUpdated } = Astro.props;
 const settings = await getSettings();
+const c = contactView(settings);
+const owner = brandWithLegalName(settings).replace(/,$/, "");
 const jsonLd = graph([
   realEstateAgentLd(settings, Astro.site!),
   breadcrumbLd(
@@ -28,54 +38,301 @@ const jsonLd = graph([
     Astro.site!,
   ),
 ]);
+
+// Number each <h2>, give it an id, and build the table of contents from it.
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/<[^>]+>/g, "")
+    .replace(/&[a-z]+;/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+const toc: Array<{ id: string; label: string }> = [];
+const raw = await Astro.slots.render("default");
+const body = raw.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/g, (_m, attrs: string, inner: string) => {
+  const label = inner.replace(/<[^>]+>/g, "").trim();
+  const id = slugify(label);
+  toc.push({ id, label });
+  const n = String(toc.length).padStart(2, "0");
+  return `<h2${attrs} id="${id}"><span class="legal-num" aria-hidden="true">${n}</span>${inner}</h2>`;
+});
 ---
 
 <BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
-  <Nav settings={settings} />
+  <Nav settings={settings} overHero />
+  <header class="legal-hero">
+    <div class="container legal-hero__inner">
+      <p class="legal-hero__eyebrow">
+        <span class="legal-hero__rule" aria-hidden="true"></span>
+        Legal
+      </p>
+      <h1>{heading}</h1>
+      <p class="legal-hero__summary">{summary}</p>
+      <dl class="legal-hero__meta">
+        <div>
+          <dt>Last updated</dt>
+          <dd>{formatDate(lastUpdated)}</dd>
+        </div>
+        <div>
+          <dt>Applies to</dt>
+          <dd>{owner}</dd>
+        </div>
+      </dl>
+    </div>
+  </header>
+
   <main id="main" class="container legal-main">
-    <article class="legal">
-      <header class="legal__head">
-        <p class="eyebrow">Last updated {formatDate(lastUpdated)}</p>
-        <h1>{heading}</h1>
-      </header>
-      <slot />
-    </article>
+    {toc.length > 1 && (
+      <nav class="legal-toc" aria-label="On this page">
+        <p class="legal-toc__title">On this page</p>
+        <ol role="list">
+          {toc.map((t, i) => (
+            <li>
+              <a href={`#${t.id}`}>
+                <span aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                {t.label}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+
+    <div class="legal-col">
+      <article class="legal-card" set:html={body} />
+
+      <aside class="legal-help" aria-labelledby="legal-help-title">
+        <div>
+          <p id="legal-help-title" class="legal-help__title">
+            Questions about this page?
+          </p>
+          <p>Talk to us directly. We are happy to explain anything here.</p>
+        </div>
+        <div class="legal-help__actions">
+          {c.whatsapp && (
+            <a class="btn" href={c.whatsapp.href} target="_blank" rel="noopener">
+              WhatsApp us<span class="visually-hidden"> (opens in a new tab)</span>
+            </a>
+          )}
+          {c.phone && (
+            <a class="btn btn--ghost" href={c.phone.href}>
+              Call {c.phone.display}
+            </a>
+          )}
+        </div>
+      </aside>
+    </div>
   </main>
   <Footer settings={settings} />
 </BaseLayout>
 
 <style>
+  .legal-hero {
+    padding: calc(4.25rem + var(--space-8)) 0 var(--space-8);
+    background: var(--night);
+    color: var(--bone);
+  }
+  .legal-hero__inner {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .legal-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: #e4cfa8;
+  }
+  .legal-hero__rule {
+    width: 2.5rem;
+    height: 1px;
+    background: currentColor;
+  }
+  .legal-hero h1 {
+    font-size: clamp(2.8rem, 2rem + 3.6vw, 5rem);
+  }
+  .legal-hero__summary {
+    max-width: 56ch;
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: rgb(244 241 234 / 0.85);
+  }
+  .legal-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4) var(--space-7);
+    padding-top: var(--space-5);
+    border-top: 1px solid rgb(244 241 234 / 0.18);
+  }
+  .legal-hero__meta dt {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgb(244 241 234 / 0.6);
+  }
+  .legal-hero__meta dd {
+    color: var(--bone);
+  }
+
   .legal-main {
-    padding-top: calc(4.25rem + var(--space-8));
+    display: grid;
+    gap: var(--space-6) var(--gutter);
+    padding-top: var(--space-7);
     padding-bottom: var(--space-section);
   }
-  .legal {
-    max-width: 46rem;
+  .legal-toc {
+    padding: var(--space-5);
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    background: var(--paper);
   }
-  .legal__head {
+  .legal-toc__title {
+    margin-bottom: var(--space-3);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .legal-toc ol {
     display: grid;
-    gap: var(--space-4);
-    margin-bottom: var(--space-7);
-    padding-bottom: var(--space-6);
-    border-bottom: 1px solid var(--hairline);
+    gap: 2px;
   }
-  .legal h1 {
-    font-size: var(--step-3);
+  .legal-toc a {
+    display: grid;
+    grid-template-columns: 1.8rem 1fr;
+    align-items: baseline;
+    padding: 0.45rem 0.5rem;
+    border-radius: var(--radius);
+    font-size: 0.92rem;
+    text-decoration: none;
+    color: var(--ink-2);
   }
-  .legal :global(h2) {
+  .legal-toc a span {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--accent-ink);
+  }
+  .legal-toc a:hover {
+    background: var(--bone);
+    color: var(--ink);
+  }
+
+  .legal-col {
+    display: grid;
+    gap: var(--space-6);
+    min-width: 0;
+  }
+  .legal-card {
+    padding: clamp(var(--space-5), 4vw, var(--space-8));
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    background: var(--paper);
+    box-shadow: 0 30px 60px -44px rgb(18 17 15 / 0.4);
+  }
+  .legal-card :global(h2) {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
     margin-top: var(--space-7);
     margin-bottom: var(--space-3);
-    font-size: var(--step-2);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--hairline);
+    font-size: clamp(1.7rem, 1.4rem + 1vw, 2.2rem);
+    scroll-margin-top: 6rem;
   }
-  .legal :global(p),
-  .legal :global(ul) {
+  .legal-card :global(h2:first-child) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+  .legal-card :global(.legal-num) {
+    flex: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--accent-ink);
+  }
+  .legal-card :global(p),
+  .legal-card :global(ul) {
+    max-width: 68ch;
     margin-bottom: var(--space-4);
     color: var(--ink-2);
   }
-  .legal :global(ul) {
-    padding-left: 1.25rem;
+  .legal-card :global(ul) {
+    padding-left: 0;
+    list-style: none;
   }
-  .legal :global(li + li) {
+  .legal-card :global(li) {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  .legal-card :global(li::before) {
+    content: "";
+    position: absolute;
+    left: 0.25rem;
+    top: 0.72em;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--accent);
+  }
+  .legal-card :global(li + li) {
     margin-top: var(--space-2);
+  }
+  .legal-card :global(a) {
+    color: var(--ink);
+  }
+
+  .legal-help {
+    display: grid;
+    gap: var(--space-5);
+    align-items: center;
+    padding: var(--space-6);
+    border-radius: 6px;
+    background: var(--night);
+    color: rgb(244 241 234 / 0.85);
+  }
+  .legal-help__title {
+    margin-bottom: var(--space-1);
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 500;
+    color: var(--bone);
+  }
+  .legal-help__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .legal-help .btn {
+    background: var(--bone);
+    color: var(--ink);
+    border-color: var(--bone);
+  }
+  .legal-help .btn--ghost {
+    background: transparent;
+    color: var(--bone);
+    border-color: rgb(244 241 234 / 0.5);
+  }
+  .legal-help :focus-visible {
+    outline-color: var(--bone);
+  }
+
+  @media (min-width: 1024px) {
+    .legal-main {
+      grid-template-columns: 17rem minmax(0, 1fr);
+      align-items: start;
+    }
+    .legal-toc {
+      position: sticky;
+      top: 6rem;
+    }
+    .legal-help {
+      grid-template-columns: 1fr auto;
+    }
   }
 </style>

@@ -1,89 +1,25 @@
 ---
-/** Thank-you page for the hub enquiry form (noindex). */
+/** Thank-you page for the homepage enquiry form (noindex). */
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Nav from "~/components/Nav.astro";
 import Footer from "~/components/Footer.astro";
-import { getProjects, getSettings } from "~/lib/data";
-import { HARERA_URL, isPlaceholder } from "~/lib/compliance";
+import ThankYou from "~/components/ThankYou.astro";
+import { getSettings } from "~/lib/data";
+import { companyName } from "~/lib/compliance";
 
 const settings = await getSettings();
-const projects = await getProjects({ publishedOnly: true });
-const brand = settings.business.brand_name;
-const promise = isPlaceholder(settings.site.callback_promise)
-  ? undefined
-  : settings.site.callback_promise;
+const company = companyName(settings);
 ---
 
 <BaseLayout
-  title={`Thank you | ${brand}`}
+  title={`Thank you | ${company}`}
   description="Your enquiry has been received."
   path="/thank-you/"
   noindex
 >
-  <Nav settings={settings} />
-  <main id="main" class="container thanks">
-    <svg class="thanks__check" viewBox="0 0 48 48" aria-hidden="true">
-      <circle cx="24" cy="24" r="21"></circle>
-      <path d="M15 24.5l6 6 12-13"></path>
-    </svg>
-    <h1>Thank you. We have your details.</h1>
-    <p class="thanks__lead">
-      An advisor from {brand} will call you on the number you shared{promise ? `, ${promise}` : ""}.
-      We share only official details released by developers.
-    </p>
-    <ul class="thanks__links" role="list">
-      {projects.map((p) => (
-        <li>
-          <a class="btn btn--ghost" href={`/${p.slug}/`}>
-            Explore {p.name}
-          </a>
-        </li>
-      ))}
-      <li>
-        <a class="thanks__plain" href={HARERA_URL} rel="noopener" target="_blank">
-          How to check a project on haryanarera.gov.in
-          <span class="visually-hidden"> (opens in a new tab)</span>
-        </a>
-      </li>
-    </ul>
+  <Nav settings={settings} variant="company" />
+  <main id="main">
+    <ThankYou settings={settings} from={company} back={{ href: "/", label: "Back to home" }} />
   </main>
-  <Footer settings={settings} />
+  <Footer settings={settings} variant="company" />
 </BaseLayout>
-
-<style>
-  .thanks {
-    display: grid;
-    justify-items: start;
-    gap: var(--space-5);
-    padding-top: calc(4.25rem + var(--space-8));
-    padding-bottom: var(--space-section);
-  }
-  .thanks h1 {
-    max-width: 16ch;
-    font-size: var(--step-3);
-  }
-  .thanks__check {
-    width: 64px;
-    height: 64px;
-    fill: none;
-    stroke: var(--success);
-    stroke-width: 2;
-  }
-  .thanks__lead {
-    max-width: 48ch;
-    font-size: var(--step-1);
-    line-height: 1.5;
-    color: var(--ink-2);
-  }
-  .thanks__links {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3) var(--space-5);
-  }
-  .thanks__plain {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--tap-min);
-  }
-</style>

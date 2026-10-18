@@ -116,7 +116,9 @@ if (!dataOnly && existsSync(DIST)) {
     else if (LEGAL_PAGES.has(first))
       registerInterestMode = false; // legal text explains these terms
     else registerInterestMode = anyUnregistered; // hub, 404 and other shared pages
-    scanHtml(readFileSync(join(DIST, file), "utf8"), { registerInterestMode }).forEach(
+    // The company's own pages (homepage, its thank-you, 404) may say "official website".
+    const companyPage = !project && !LEGAL_PAGES.has(first);
+    scanHtml(readFileSync(join(DIST, file), "utf8"), { registerInterestMode, companyPage }).forEach(
       add(errors, `dist/${file}`),
     );
     pagesScanned++;

@@ -1,77 +1,65 @@
 ---
-/** Hub: 3D "Coming Soon" hero, published projects, About with an inline enquiry form. */
+/**
+ * Homepage: the official website of the registered company, coming soon.
+ * Company only, no project content. Projects live at their own paths,
+ * e.g. /l-and-t-sector-86-gurgaon/.
+ */
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Nav from "~/components/Nav.astro";
 import ComingSoon from "~/components/ComingSoon.astro";
-import ProjectCard from "~/components/ProjectCard.astro";
 import ContactForm from "~/components/ContactForm.astro";
-import Disclosure from "~/components/Disclosure.astro";
 import Footer from "~/components/Footer.astro";
 import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
-import { ON_REQUEST } from "~/lib/compliance";
+import { ON_REQUEST, companyName } from "~/lib/compliance";
 import { contactView } from "~/lib/view";
+import { graph, realEstateAgentLd } from "~/lib/seo";
 
 const settings = await getSettings();
-const projects = await getProjects({ publishedOnly: true });
-const cards = await Promise.all(
-  projects.map(async (p) => {
-    const { asset } = await getProjectBundle(p.slug);
-    const imageId = p.theme.heroImageId ?? p.seo.ogImageId;
-    return { project: p, image: imageId ? asset(imageId) : undefined };
-  }),
-);
-const featured = cards[0];
+const company = companyName(settings);
 const c = contactView(settings);
-const brand = settings.business.brand_name;
+
+// Mood image only (no project content): reuse a listed interior if one exists.
+const [first] = await getProjects({ publishedOnly: true });
+let background;
+if (first) {
+  const { asset, project } = await getProjectBundle(first.slug);
+  const id = project.theme.heroImageId;
+  if (id) background = { slug: project.slug, asset: asset(id) };
+}
+
+const agent = realEstateAgentLd(settings, Astro.site!);
+const jsonLd = graph([{ ...agent, legalName: company }]);
 ---
 
 <BaseLayout
-  title={`New and upcoming homes in Gurugram | ${brand}`}
-  description="New and upcoming residential projects in Gurugram, tracked by a HARERA-registered agent. Verified facts, RERA status and launch updates."
+  title={`${company} | Official website coming soon`}
+  description={`The official website of ${company}, a real estate company in Gurugram, is coming soon. Leave your details to be told when it launches.`}
   path="/"
+  jsonLd={jsonLd}
 >
-  <Nav settings={settings} overHero />
+  <Nav settings={settings} overHero variant="company" />
   <main id="main">
-    <ComingSoon brand={brand} project={featured?.project} image={featured?.image} />
-
-    <section class="section hub-projects" id="projects" aria-labelledby="projects-title">
-      <div class="container">
-        <div class="hub-head" data-reveal>
-          <p class="eyebrow">Launching soon</p>
-          <h2 id="projects-title">Projects we are tracking</h2>
-          <p class="hub-head__intro">
-            Every fact on these pages links to its source, and pricing appears only after a project
-            is registered with HARERA.
-          </p>
-        </div>
-        {cards.length > 0 ? (
-          <ul class="hub-grid" role="list">
-            {cards.map((card) => (
-              <li>
-                <ProjectCard project={card.project} image={card.image} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p class="card">New projects will be listed here once we have verified details.</p>
-        )}
-      </div>
-    </section>
+    <ComingSoon
+      company={company}
+      background={background}
+      phone={c.phone}
+      featured={first ? { href: `/${first.slug}/`, label: first.name } : undefined}
+    />
 
     <section class="section hub-about" id="contact" aria-labelledby="about-title">
       <div class="container hub-about__grid">
         <div class="hub-about__copy" data-reveal>
           <p class="eyebrow">About us</p>
-          <h2 id="about-title">About {brand}</h2>
+          <h2 id="about-title">{company}</h2>
           <p class="hub-about__lead">
-            We are a real estate agent in Gurugram. We help buyers compare new projects, visit sites
-            and handle paperwork, and we tell you what is confirmed and what is not.
+            A real estate company in Gurugram. Our full website is being built. Until then, we are
+            one call or message away for anything you need.
           </p>
           <ul class="hub-about__points" role="list">
             <li>
               <span class="hub-about__num">01</span>
               <span>
-                <strong>Verified facts only.</strong> Each claim links to its source and date.
+                <strong>Verified facts only.</strong> We share what is confirmed, with its source.
               </span>
             </li>
             <li>
@@ -95,7 +83,7 @@ const brand = settings.business.brand_name;
             </div>
             {c.phone && (
               <div>
-                <dt>Phone</dt>
+                <dt>Phone and WhatsApp</dt>
                 <dd>
                   <a href={c.phone.href}>{c.phone.display}</a>
                 </dd>
@@ -116,7 +104,6 @@ const brand = settings.business.brand_name;
               </div>
             )}
           </dl>
-          <Disclosure settings={settings} />
         </div>
         <div data-reveal>
           <ContactForm settings={settings} />
@@ -124,31 +111,10 @@ const brand = settings.business.brand_name;
       </div>
     </section>
   </main>
-  <Footer settings={settings} />
+  <Footer settings={settings} variant="company" />
 </BaseLayout>
 
 <style>
-  .hub-head {
-    display: grid;
-    gap: var(--space-3);
-    margin-bottom: var(--space-7);
-  }
-  .hub-head__intro {
-    max-width: 52ch;
-    font-size: var(--step-1);
-    line-height: 1.45;
-    color: var(--ink-2);
-  }
-  .hub-grid {
-    display: grid;
-    gap: var(--gutter);
-  }
-  @media (min-width: 1024px) {
-    .hub-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
   .hub-about {
     background: var(--paper);
   }

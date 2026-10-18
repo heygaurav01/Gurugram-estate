@@ -1,10 +1,20 @@
 ---
 /**
- * Footer: co-brand, explore links, contact, RERA block and legal bar.
+ * Footer.
+ *  1. Top bar: co-brand (channel partners) or wordmark, plus primary actions.
+ *  2. Four aligned columns: about, explore, contact, RERA.
+ *  3. Full-width disclosure, then the legal bar.
  * Contact details render only when they are real (TBD values are hidden).
  */
 import type { Asset, Project, SiteSettings } from "~/lib/schemas";
-import { HARERA_URL, ON_REQUEST, isPlaceholder, reraStatusLine } from "~/lib/compliance";
+import {
+  HARERA_URL,
+  ON_REQUEST,
+  brandWithLegalName,
+  companyName,
+  isPlaceholder,
+  reraStatusLine,
+} from "~/lib/compliance";
 import { contactView, RERA_LABEL } from "~/lib/view";
 import Disclosure from "./Disclosure.astro";
 import Wordmark from "./Wordmark.astro";
@@ -16,8 +26,14 @@ type Props = {
   assets?: Asset[] | undefined;
   /** Section links for the Explore column (project pages). */
   links?: Array<{ href: string; label: string }> | undefined;
+  /** "company" shows the registered company (homepage). */
+  variant?: "brand" | "company";
 };
-const { settings, project, assets = [], links = [] } = Astro.props;
+const { settings, project, assets = [], links = [], variant = "brand" } = Astro.props;
+const isCompany = variant === "company";
+const legalLine = isCompany
+  ? companyName(settings)
+  : brandWithLegalName(settings).replace(/,$/, "");
 const c = contactView(settings, project);
 const reraNo = isPlaceholder(settings.business.agent_rera_number)
   ? ON_REQUEST
@@ -29,29 +45,53 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
 
 <footer class="footer">
   <div class="container">
-    <div class="footer__grid">
-      <div class="footer__brand">
-        {coBrand && project && (
-          <div class="footer__cobrand">
-            <PartnerLogo project={project} assets={assets} on="dark" height={60} />
-            <span class="footer__cp">
-              Authorized channel partner
-              <br />
-              of {project.developer.name}
-            </span>
+    <div class="footer__top">
+      {coBrand && project ? (
+        <div class="footer__cobrand">
+          <PartnerLogo project={project} assets={assets} on="dark" height={52} />
+          <span class="footer__divider" aria-hidden="true"></span>
+          <div class="footer__cobrand-text">
+            <Wordmark settings={settings} class="footer__wordmark" />
+            <span class="footer__cp">Authorized channel partner of {project.developer.name}</span>
           </div>
+        </div>
+      ) : (
+        <Wordmark settings={settings} class="footer__wordmark" variant={variant} />
+      )}
+      <div class="footer__top-actions">
+        {project && (
+          <a class="btn footer__btn" href="#contact" data-enquire="footer">
+            Enquire now
+          </a>
         )}
-        <Wordmark settings={settings} class="footer__wordmark" />
+        {c.whatsapp && (
+          <a
+            class="btn footer__btn-ghost"
+            href={c.whatsapp.href}
+            target="_blank"
+            rel="noopener"
+            data-track="whatsapp_click"
+          >
+            WhatsApp<span class="visually-hidden"> (opens in a new tab)</span>
+          </a>
+        )}
+      </div>
+    </div>
+
+    <div class="footer__grid">
+      <div class="footer__col">
+        <h2 class="footer__h">About</h2>
         <p class="footer__about">
-          A Gurugram real estate agent. We help buyers compare new projects, visit sites and handle
-          paperwork, and we tell you what is confirmed and what is not.
+          {isCompany
+            ? "A Gurugram real estate company. Our official website is on its way."
+            : "A Gurugram real estate agent. We help buyers compare new projects, visit sites and handle paperwork, and we say clearly what is confirmed."}
         </p>
       </div>
 
       {links.length > 0 && (
         <nav class="footer__col" aria-label="Explore this page">
           <h2 class="footer__h">Explore</h2>
-          <ul role="list" class="footer__list">
+          <ul role="list" class="footer__list footer__list--two">
             {links.map((l) => (
               <li>
                 <a href={l.href}>{l.label}</a>
@@ -66,77 +106,74 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
         <ul role="list" class="footer__list">
           {c.phone && (
             <li>
+              <span class="footer__k">Phone</span>
               <a href={c.phone.href} data-track="call_click">
                 {c.phone.display}
               </a>
             </li>
           )}
-          {c.whatsapp && (
-            <li>
-              <a href={c.whatsapp.href} target="_blank" rel="noopener" data-track="whatsapp_click">
-                WhatsApp<span class="visually-hidden"> (opens in a new tab)</span>
-              </a>
-            </li>
-          )}
           {c.email && (
             <li>
+              <span class="footer__k">Email</span>
               <a href={`mailto:${c.email}`}>{c.email}</a>
             </li>
           )}
-          {c.address && <li class="footer__address">{c.address}</li>}
+          {c.address && (
+            <li>
+              <span class="footer__k">Office</span>
+              <span>{c.address}</span>
+            </li>
+          )}
           {!hasContact && <li>Contact details on request</li>}
         </ul>
-        {project && (
-          <a class="btn footer__btn" href="#contact" data-enquire="footer">
-            Enquire now
-          </a>
-        )}
       </div>
 
       <div class="footer__col">
         <h2 class="footer__h">RERA</h2>
-        <dl class="footer__rera">
-          <div>
-            <dt>Agent HARERA registration</dt>
-            <dd>{reraNo}</dd>
-          </div>
+        <ul role="list" class="footer__list">
+          <li>
+            <span class="footer__k">Agent HARERA registration</span>
+            <span>{reraNo}</span>
+          </li>
           {project && (
-            <div>
-              <dt>{project.name}</dt>
-              <dd>
+            <li>
+              <span class="footer__k">{project.name}</span>
+              <span>
                 {RERA_LABEL[project.rera.status]}
                 {project.rera.status === "registered" &&
                   project.rera.number &&
                   `, ${project.rera.number}`}
-              </dd>
-            </div>
+              </span>
+            </li>
           )}
-          <div>
-            <dt>Verify any project</dt>
-            <dd>
-              <a href={HARERA_URL} rel="noopener" target="_blank">
-                haryanarera.gov.in<span class="visually-hidden"> (opens in a new tab)</span>
-              </a>
-            </dd>
-          </div>
-        </dl>
+          <li>
+            <span class="footer__k">Verify any project</span>
+            <a href={HARERA_URL} rel="noopener" target="_blank">
+              haryanarera.gov.in<span class="visually-hidden"> (opens in a new tab)</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
 
-    <div class="footer__disclosure">
-      <Disclosure settings={settings} developer={project?.developer} tone="dark" />
-      {project && <p class="footer__status">{reraStatusLine(project)}</p>}
-    </div>
+    {!isCompany && (
+      <div class="footer__disclosure">
+        <Disclosure settings={settings} developer={project?.developer} tone="dark" />
+        {project && <p class="footer__status">{reraStatusLine(project)}</p>}
+      </div>
+    )}
 
     <div class="footer__bar">
       <p>
-        &copy; {year} {settings.business.brand_name}. Images marked "Representative image" do not
-        show the actual project.
+        &copy; {year} {legalLine}.
+        {!isCompany && (
+          <span> Images marked "Representative image" do not show the actual project.</span>
+        )}
       </p>
       <nav aria-label="Legal">
         <ul role="list" class="footer__legal">
           <li>
-            <a href="/">All projects</a>
+            <a href="/">Home</a>
           </li>
           <li>
             <a href="/disclaimer/">Disclaimer</a>
@@ -155,72 +192,54 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
 
 <style>
   .footer {
-    padding-top: var(--space-8);
+    padding-top: var(--space-7);
     background: var(--night);
-    color: rgb(244 241 234 / 0.82);
+    color: rgb(244 241 234 / 0.8);
     font-size: 0.95rem;
   }
-  .footer__grid {
-    display: grid;
-    gap: var(--space-7) var(--gutter);
-    padding-bottom: var(--space-7);
-  }
-  .footer__brand {
-    display: grid;
-    gap: var(--space-4);
-    align-content: start;
+
+  /* 1. Top bar */
+  .footer__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid rgb(244 241 234 / 0.14);
   }
   .footer__cobrand {
     display: flex;
     align-items: center;
     gap: var(--space-4);
-    padding-bottom: var(--space-4);
-    border-bottom: 1px solid rgb(244 241 234 / 0.16);
   }
-  .footer__cp {
-    font-size: 0.72rem;
-    font-weight: 600;
-    line-height: 1.5;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgb(244 241 234 / 0.75);
+  .footer__divider {
+    width: 1px;
+    height: 44px;
+    background: rgb(244 241 234 / 0.25);
+  }
+  .footer__cobrand-text {
+    display: grid;
+    gap: 2px;
   }
   .footer :global(.footer__wordmark) {
+    min-height: 0;
     color: var(--bone);
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
-  .footer__about {
-    max-width: 36ch;
-  }
-  .footer__h {
-    margin-bottom: var(--space-4);
-    font-family: var(--font-body);
-    font-size: 0.75rem;
+  .footer__cp {
+    font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: var(--tracking-eyebrow);
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    /* Lighter brass for the dark background (above 7:1 on --night). */
-    color: #c9a26b;
+    color: #e4cfa8;
   }
-  .footer__list {
-    display: grid;
-    gap: var(--space-1);
-  }
-  .footer__list a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 36px;
-    color: var(--bone);
-    text-decoration: none;
-  }
-  .footer__list a:hover {
-    text-decoration: underline;
-  }
-  .footer__address {
-    max-width: 28ch;
+  .footer__top-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
   }
   .footer__btn {
-    margin-top: var(--space-5);
     background: var(--bone);
     color: var(--ink);
     border-color: var(--bone);
@@ -228,40 +247,97 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
   .footer__btn:hover {
     background: var(--paper);
   }
-  .footer__rera {
+  .footer__btn-ghost {
+    background: transparent;
+    color: var(--bone);
+    border-color: rgb(244 241 234 / 0.45);
+  }
+  .footer__btn-ghost:hover {
+    background: var(--bone);
+    color: var(--ink);
+  }
+
+  /* 2. Columns */
+  .footer__grid {
     display: grid;
+    gap: var(--space-6) var(--gutter);
+    padding-block: var(--space-7);
+  }
+  .footer__col {
+    display: grid;
+    align-content: start;
     gap: var(--space-4);
   }
-  .footer__rera dt {
-    font-size: 0.8rem;
-    color: rgb(244 241 234 / 0.6);
+  .footer__h {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    /* Lighter brass for the dark background (above 7:1 on --night). */
+    color: #c9a26b;
   }
-  .footer__rera dd {
+  .footer__about {
+    max-width: 34ch;
+    line-height: 1.6;
+  }
+  .footer__list {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .footer__list--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-5);
+    row-gap: var(--space-2);
+  }
+  .footer__list li {
+    display: grid;
+    gap: 2px;
+  }
+  .footer__k {
+    font-size: 0.75rem;
+    color: rgb(244 241 234 / 0.55);
+  }
+  .footer__list a,
+  .footer__list span:not(.footer__k) {
     color: var(--bone);
   }
-  .footer__rera a {
-    display: inline-flex;
-    min-height: 32px;
-    align-items: center;
+  .footer__list a {
+    width: fit-content;
+    min-height: 28px;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur-fast) var(--ease);
   }
+  .footer__list a:hover {
+    border-bottom-color: currentColor;
+  }
+
+  /* 3. Disclosure and legal bar */
   .footer__disclosure {
     display: grid;
     gap: var(--space-2);
-    padding-block: var(--space-6);
-    border-top: 1px solid rgb(244 241 234 / 0.16);
+    padding: var(--space-5) var(--space-6);
+    border: 1px solid rgb(244 241 234 / 0.12);
+    border-radius: 6px;
+    background: rgb(244 241 234 / 0.03);
     font-size: 0.85rem;
+  }
+  .footer__disclosure :global(.disclosure) {
+    max-width: none;
   }
   .footer__status {
     max-width: none;
-    color: rgb(244 241 234 / 0.7);
+    color: rgb(244 241 234 / 0.65);
   }
   .footer__bar {
     display: grid;
     gap: var(--space-3);
-    padding-block: var(--space-5) var(--space-6);
-    border-top: 1px solid rgb(244 241 234 / 0.16);
+    margin-top: var(--space-6);
+    padding-block: var(--space-5);
+    border-top: 1px solid rgb(244 241 234 / 0.14);
     font-size: 0.8rem;
-    color: rgb(244 241 234 / 0.65);
+    color: rgb(244 241 234 / 0.6);
   }
   .footer__bar p {
     max-width: none;
@@ -276,18 +352,23 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
     align-items: center;
     min-height: var(--tap-min);
     color: var(--bone);
+    text-decoration: none;
+  }
+  .footer__legal a:hover {
+    text-decoration: underline;
   }
   .footer :focus-visible {
     outline-color: var(--bone);
   }
+
   @media (min-width: 768px) {
     .footer__grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
   @media (min-width: 1024px) {
     .footer__grid {
-      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     }
     .footer__bar {
       grid-template-columns: 1fr auto;

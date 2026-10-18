@@ -1,0 +1,24 @@
+---
+/** Layout for disclaimer, privacy policy and terms. Built out in Phase 2. */
+import BaseLayout from "./BaseLayout.astro";
+
+type Props = {
+  title: string;
+  description: string;
+  path: string;
+  heading: string;
+  lastUpdated: string;
+};
+
+const { title, description, path, heading, lastUpdated } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} path={path}>
+  <main id="main" class="container section">
+    <article class="legal stack">
+      <h1>{heading}</h1>
+      <p class="eyebrow">Last updated {lastUpdated}</p>
+      <slot />
+    </article>
+  </main>
+</BaseLayout>

@@ -1,0 +1,81 @@
+# L&T Sector 86, Gurgaon
+# Populated ONLY with values from section 0 of the master prompt (2026-10-18).
+# Everything else is intentionally empty. Do not fill gaps with plausible text.
+# A fact renders only when it has a real `source` and an ISO `verifiedOn` date.
+
+slug: l-and-t-sector-86-gurgaon
+name: "L&T Sector 86, Gurgaon"
+published: true
+
+developer:
+  name: "L&T Realty"
+  authorizedToUseName: false # true only with written L&T authorization
+  authorizedToUseLogo: false
+  authorizedAssets: false
+
+status: pre-registration
+
+rera:
+  status: not-registered # not-registered | applied | registered
+  verifyUrl: "https://haryanarera.gov.in"
+
+location:
+  sector: "Sector 86"
+  city: "Gurugram"
+  region: "Haryana"
+  connectivity: [] # add only measured, dated distances
+
+highlights:
+  - text: "L&T Realty acquired about 19.97 acres across Sector 81 and Sector 86, Gurugram"
+    source: "TBD (L&T press release or exchange filing URL)"
+    verifiedOn: "TBD"
+
+configurations: [] # "3 and 4 BHK" is an agency claim, not confirmed by L&T
+amenities: []
+
+timeline:
+  - label: "Land acquired by the developer"
+    done: true
+    source: "TBD" # hidden until a source is added
+  - label: "RERA registration"
+    done: false
+  - label: "Official launch"
+    done: false
+  - label: "Possession"
+    done: false
+
+faqs:
+  - q: "Is L&T Sector 86 RERA registered?"
+    a: "{{rera_status}} You can check any project yourself on the Haryana RERA website, haryanarera.gov.in."
+  - q: "Do I need to pay anything to register interest?"
+    a: "No. Registering interest is free and does not reserve a unit."
+  - q: "When will prices and floor plans be available?"
+    a: "After the project is registered with HARERA and the developer releases official details. We will share them with registered contacts first."
+  - q: "Who are you?"
+    a: "{{agent_disclosure}} We help buyers compare projects, arrange site visits and handle paperwork."
+  - q: "How do I verify a project's RERA registration?"
+    a: "Open haryanarera.gov.in and use the project search. Search by project name, developer or registration number. Check that the registration number, developer name and project address match what you were told. If a project is not listed, it is not registered."
+  - q: "Where is Sector 86?"
+    a: "Sector 86 is in Gurugram, Haryana. We will add travel distances here only after we have measured and dated them."
+
+seo:
+  # Configurations are unverified, so the title avoids "3 & 4 BHK".
+  title: "L&T Sector 86 Gurgaon: Status and Launch Updates"
+  description: "Independent HARERA-registered agent tracking L&T Realty's Sector 86 project in New Gurugram. Status, location and launch updates. Register interest free."
+  primaryKeyword: "L&T Sector 86 Gurgaon"
+  secondaryKeywords:
+    - "L&T Realty Gurgaon"
+    - "L&T new launch Gurgaon"
+    - "Sector 86 Gurgaon"
+
+theme:
+  accent: "#8C6A3F"
+
+form:
+  otp: false
+  intents: [hero, pricing, floor-plan, gallery, location, footer, sticky, nav]
+
+sections:
+  plans: false # no authorized plans yet
+  gallery: false
+  developer: false # requires developer.authorizedToUseName

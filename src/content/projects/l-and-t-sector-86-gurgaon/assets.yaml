@@ -1,0 +1,6 @@
+# Asset inventory for L&T Sector 86. Every file in images/ must be listed here.
+# license: owned | authorized | licensed | open   ("unknown" fails the build)
+# Developer renders, plans and logos need fromDeveloper: true AND the matching
+# authorization flag in project.yaml. Renders: caption "Artist's impression".
+# Stand-in photos/illustrations: caption "Representative image".
+assets: []

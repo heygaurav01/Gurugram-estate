@@ -1,0 +1,13 @@
+# Server-side secrets for Cloudflare Pages Functions (wrangler pages dev).
+# Copy to .dev.vars for local work. Set real values in the Cloudflare dashboard.
+# NAMES ONLY. Never commit real values.
+TURNSTILE_SECRET=
+IP_SALT=
+ALLOWED_ORIGINS=
+CRM_PROVIDER=
+CRM_WEBHOOK_URL=
+CRM_WEBHOOK_SECRET=
+CRM_API_KEY=
+NOTIFY_EMAIL=
+META_PIXEL_ID=
+META_CAPI_TOKEN=

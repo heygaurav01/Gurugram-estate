@@ -1,0 +1,105 @@
+# PROJECT TEMPLATE. Copy with: npm run new-project -- <slug>
+# Rules:
+#  - Fill ONLY facts you have verified. Each fact needs `source` (URL or document)
+#    and `verifiedOn` (YYYY-MM-DD). Unverified facts are hidden automatically.
+#  - No prices until rera.status is "registered". The build fails otherwise.
+#  - No em-dashes, no filler ("nestled", "world-class"...), no fake urgency.
+
+slug: your-project-slug # must equal the folder name
+name: "Project Name, Sector NN, Gurgaon"
+# tagline: "One original line, 90 characters max."
+published: false # true lists it on the hub and in the sitemap
+
+developer:
+  name: "Developer Name"
+  authorizedToUseName: false
+  authorizedToUseLogo: false
+  authorizedAssets: false
+  # about: "Short factual paragraph. Shown only if authorizedToUseName is true."
+  # aboutSource: "https://..."
+
+status: pre-registration # pre-registration | registered | launched | under-construction | ready
+
+rera:
+  status: not-registered # not-registered | applied | registered
+  # number: "RC/REP/HARERA/GGM/..."   # required when registered
+  verifyUrl: "https://haryanarera.gov.in"
+  # verifiedOn: "YYYY-MM-DD"
+
+location:
+  sector: "Sector NN"
+  city: "Gurugram"
+  region: "Haryana"
+  # lat: 28.4
+  # lng: 76.9
+  connectivity: []
+  # - place: "Dwarka Expressway"
+  #   distanceKm: 3.2
+  #   driveMinutesOffPeak: 7
+  #   mode: road                      # road | metro | rail | air
+  #   source: "Google Maps measurement"
+  #   verifiedOn: "YYYY-MM-DD"
+
+# land:
+#   areaAcres: 10
+#   source: "https://..."
+#   verifiedOn: "YYYY-MM-DD"
+
+highlights: []
+# - text: "Verified highlight"
+#   source: "https://..."
+#   verifiedOn: "YYYY-MM-DD"
+
+configurations: []
+# - type: "3 BHK"
+#   carpetSqftMin: 1800
+#   carpetSqftMax: 2100
+#   priceFromInr: 30000000          # ONLY when rera.status is registered
+#   source: "https://..."
+#   verifiedOn: "YYYY-MM-DD"
+
+amenities: []
+# - name: "Clubhouse"
+#   imageId: amenity-clubhouse       # must exist in assets.yaml
+#   projectSpecific: false
+#   source: "https://..."
+#   verifiedOn: "YYYY-MM-DD"
+
+timeline:
+  - label: "Land acquired by the developer"
+    done: false
+  - label: "RERA registration"
+    done: false
+  - label: "Official launch"
+    done: false
+  - label: "Possession"
+    done: false
+
+faqs:
+  - q: "Is this project RERA registered?"
+    a: "{{rera_status}} You can check any project yourself on the Haryana RERA website, haryanarera.gov.in."
+  - q: "Do I need to pay anything to register interest?"
+    a: "No. Registering interest is free and does not reserve a unit."
+  - q: "Who are you?"
+    a: "{{agent_disclosure}}"
+
+seo:
+  title: "Project Name Sector NN Gurgaon: Launch Updates" # max 60 chars
+  description: "Independent HARERA-registered agent tracking this project in Gurugram. Status, location and launch updates. Register interest free." # max 155
+  primaryKeyword: "Project Name Sector NN Gurgaon"
+  secondaryKeywords: []
+  # ogImageId: og-image
+
+theme:
+  accent: "#8C6A3F"
+  # heroImageId: hero
+  # heroFocus: "50% 40%"
+
+form:
+  otp: false
+  intents: [hero, pricing, floor-plan, gallery, location, footer, sticky, nav]
+
+sections:
+  plans: false
+  gallery: false
+  developer: false

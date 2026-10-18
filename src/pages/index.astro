@@ -1,0 +1,27 @@
+---
+/** Hub. Phase 1 stub; Phase 2 adds ProjectCard, AboutAgent and Footer. */
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getProjects, getSettings } from "~/lib/data";
+import { agentDisclosure } from "~/lib/compliance";
+
+const settings = await getSettings();
+const projects = await getProjects({ publishedOnly: true });
+---
+
+<BaseLayout
+  title={`New and upcoming homes in Gurugram | ${settings.business.brand_name}`}
+  description="New and upcoming residential projects in Gurugram, tracked by an independent HARERA-registered agent. Verified facts, RERA status and launch updates."
+  path="/"
+>
+  <main id="main" class="container section stack">
+    <h1>New and upcoming homes in Gurugram, curated by {settings.business.brand_name}</h1>
+    <ul role="list" class="stack">
+      {projects.map((p) => (
+        <li>
+          <a href={`/${p.slug}/`}>{p.name}</a>
+        </li>
+      ))}
+    </ul>
+    <p>{agentDisclosure(settings)}</p>
+  </main>
+</BaseLayout>

@@ -1,0 +1,21 @@
+---
+/**
+ * Self-hosted Latin-only variable fonts. Preloads just the two files used
+ * above the fold. Other Fontsource subsets are never referenced, so they
+ * are not shipped.
+ */
+import frauncesUrl from "@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url";
+import manropeUrl from "@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url";
+
+const LATIN =
+  "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+20B9,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD";
+
+const css = `
+@font-face{font-family:"Fraunces Variable";font-style:normal;font-display:swap;font-weight:100 900;src:url(${frauncesUrl}) format("woff2-variations");unicode-range:${LATIN}}
+@font-face{font-family:"Manrope Variable";font-style:normal;font-display:swap;font-weight:200 800;src:url(${manropeUrl}) format("woff2-variations");unicode-range:${LATIN}}
+`;
+---
+
+<link rel="preload" href={frauncesUrl} as="font" type="font/woff2" crossorigin />
+<link rel="preload" href={manropeUrl} as="font" type="font/woff2" crossorigin />
+<style is:global set:html={css}></style>

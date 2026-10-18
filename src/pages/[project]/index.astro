@@ -1,0 +1,32 @@
+---
+/** Project page. Phase 1 stub proving the data pipeline; Phase 2 builds every section. */
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
+import { agentDisclosure, reraStatusLine } from "~/lib/compliance";
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects({ publishedOnly: true });
+  return projects.map((p) => ({ params: { project: p.slug } }));
+}) satisfies GetStaticPaths;
+
+const { project: slug } = Astro.params;
+const settings = await getSettings();
+const { project, theme } = await getProjectBundle(slug);
+---
+
+<BaseLayout
+  title={project.seo.title}
+  description={project.seo.description}
+  path={`/${project.slug}/`}
+  theme={theme}
+>
+  <main id="main" class="container section stack">
+    <p class="eyebrow">
+      {project.location.sector}, {project.location.city}
+    </p>
+    <h1>{project.name}</h1>
+    <p>{reraStatusLine(project)}</p>
+    <p>{agentDisclosure(settings, project.developer)}</p>
+  </main>
+</BaseLayout>

@@ -1,0 +1,54 @@
+/* Design tokens: "Quiet Monument". Mobile first. */
+:root {
+  /* Color */
+  --bone: #f4f1ea; /* keep in sync with BONE in src/lib/compliance.ts */
+  --paper: #fbfaf6;
+  --ink: #151515;
+  --ink-2: #3a3833;
+  --stone: #6b675f;
+  --hairline: #d9d3c7;
+  --night: #12110f;
+  /* Per-project accent is injected as --project-accent; --project-accent-ink is a
+     darkened variant computed at build time to reach 4.5:1 for small text.
+     #8C6A3F on bone is about 4.4:1, so raw accent is for rules, icons and large text only. */
+  --accent: var(--project-accent, #8c6a3f);
+  --accent-ink: var(--project-accent-ink, #7a5c37);
+  --focus: #151515;
+  --error: #a12a1e;
+  --success: #2f5d3a;
+
+  /* Type */
+  --font-display: "Fraunces Variable", Georgia, serif;
+  --font-body: "Manrope Variable", system-ui, sans-serif;
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.6rem, 1.4rem + 1vw, 2.2rem);
+  --step-3: clamp(2.2rem, 1.8rem + 2vw, 3.4rem);
+  --step-4: clamp(2.8rem, 2rem + 4vw, 5.6rem);
+  --leading-body: 1.6;
+  --leading-display: 1.04;
+  --tracking-display: -0.02em;
+  --tracking-eyebrow: 0.14em;
+
+  /* Space and layout */
+  --space-section: clamp(4rem, 3rem + 6vw, 10rem);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --radius: 4px;
+  --container: 1320px;
+  --gutter: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+  --sticky-bar-h: 56px;
+  --tap-min: 44px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 160ms;
+  --dur: 320ms;
+}

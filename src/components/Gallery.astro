@@ -23,7 +23,12 @@ const full = await Promise.all(
 {items.length > 0 && (
   <section class="section" id="gallery" aria-labelledby="gallery-title">
     <div class="container">
-      <SectionHeading id="gallery-title" eyebrow="Gallery" title="Gallery" />
+      <SectionHeading
+        id="gallery-title"
+        eyebrow="Gallery"
+        title="The way these homes could feel"
+        intro="Representative interiors for mood only. They do not show the actual project; official images will replace them once released."
+      />
       <ul class="gallery" role="list" data-gallery>
         {items.map((a, i) => (
           <li data-reveal>
@@ -83,23 +88,46 @@ const full = await Promise.all(
 </script>
 
 <style>
+  /* Editorial layout: the first image is a large feature; the rest support it. */
   .gallery {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-4);
   }
+  .gallery > li {
+    display: flex;
+    flex-direction: column;
+  }
+  .gallery > li:first-child {
+    grid-column: 1 / -1;
+  }
+  @media (max-width: 1023.98px) {
+    /* A trailing image alone in its row spans the full width. */
+    .gallery > li:last-child:nth-child(even) {
+      grid-column: 1 / -1;
+    }
+  }
   .gallery__link {
+    position: relative;
     display: block;
     overflow: hidden;
     border-radius: var(--radius);
+    background: var(--night);
   }
   .gallery__link :global(.gallery__img) {
+    width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
-    transition: transform var(--dur) var(--ease);
+    transition:
+      transform 700ms var(--ease),
+      opacity var(--dur) var(--ease);
+  }
+  .gallery > li:first-child :global(.gallery__img) {
+    aspect-ratio: 16 / 9;
   }
   .gallery__link:hover :global(.gallery__img) {
-    transform: scale(1.02);
+    transform: scale(1.03);
+    opacity: 0.92;
   }
   .gallery__caption {
     margin-top: var(--space-2);
@@ -110,8 +138,21 @@ const full = await Promise.all(
     margin-top: var(--space-6);
   }
   @media (min-width: 1024px) {
+    /* Feature spans two columns; supporting images fill the remaining column at the same height. */
     .gallery {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 2fr 1fr;
+    }
+    .gallery > li:first-child {
+      grid-column: 1;
+    }
+    .gallery > li:not(:first-child) .gallery__link {
+      flex: 1;
+    }
+    .gallery > li:not(:first-child) :global(.gallery__img) {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      aspect-ratio: auto;
     }
   }
   .lightbox {

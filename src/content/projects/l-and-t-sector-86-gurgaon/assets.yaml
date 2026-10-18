@@ -30,6 +30,30 @@ assets:
     source: "White version of the supplied logo, for dark backgrounds"
     usage: [developer]
 
+  # Interiors supplied by the owner on 2026-10-18 (AI-generated conceptual images).
+  # NOT L&T Realty material and NOT this project: always "Representative image".
+  - id: interior-living
+    file: representative-living-room-city-view.jpg
+    alt: "Conceptual living and dining room with floor-to-ceiling windows and a city view at sunset. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    fromDeveloper: false
+    projectSpecific: false
+    license: owned
+    source: "AI-generated image supplied by the site owner, 2026-10-18"
+    usage: [hero, og, card, gallery]
+
+  - id: interior-bedroom
+    file: representative-bedroom-suite.jpg
+    alt: "Conceptual bedroom suite with warm wood floors, a balcony and soft lighting. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    fromDeveloper: false
+    projectSpecific: false
+    license: owned
+    source: "AI-generated image supplied by the site owner, 2026-10-18"
+    usage: [gallery]
+
   - id: skyline-illustration
     file: gurugram-skyline-dusk-illustration.png
     alt: "Flat illustration of residential towers at dusk with lit windows. Not the actual project."
@@ -39,4 +63,4 @@ assets:
     projectSpecific: false
     license: owned
     source: "Generated in-house by scripts/generate-placeholders.mjs (seed 86)"
-    usage: [hero, og, card]
+    usage: []

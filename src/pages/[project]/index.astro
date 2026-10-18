@@ -24,7 +24,9 @@ import StickyBar from "~/components/StickyBar.astro";
 import EnquiryModal from "~/components/EnquiryModal.astro";
 import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
 import { IMAGE_WIDTHS, projectImage } from "~/lib/images";
-import { ctaCopy, verifiedView } from "~/lib/view";
+import { verifiedView } from "~/lib/view";
+import type { FormIntent } from "~/lib/schemas";
+import Pricing from "~/components/Pricing.astro";
 
 export const getStaticPaths = (async () => {
   const projects = await getProjects({ publishedOnly: true });
@@ -48,17 +50,19 @@ const heroPreload = heroSrc
     })
   : undefined;
 
+const hasGallery = project.sections.gallery && assets.some((a) => a.usage.includes("gallery"));
+
+// Nav order requested by the owner. Links with an intent open the enquiry modal;
+// links only appear for sections that actually render.
+type NavLink = { href: string; label: string; intent?: FormIntent };
 const links = [
-  project.overview && { href: "#overview", label: "Overview" },
-  { href: "#homes", label: "Homes" },
-  { href: "#plans", label: "Plans" },
-  v.amenities.length > 0 && { href: "#amenities", label: "Amenities" },
-  { href: "#location", label: "Location" },
-  project.developer.authorizedToUseName &&
-    project.sections.developer &&
-    project.developer.about && { href: "#developer", label: "Developer" },
-  project.faqs.length > 0 && { href: "#faq", label: "FAQ" },
-].filter((l): l is { href: string; label: string } => Boolean(l));
+  { href: "#hero-title", label: "Home" },
+  v.amenities.length > 0 && { href: "#amenities", label: "Amenities", intent: "nav" },
+  hasGallery && { href: "#gallery", label: "Gallery", intent: "gallery" },
+  { href: "#location", label: "Map", intent: "location" },
+  { href: "#plans", label: "Master & Floor Plan", intent: "floor-plan" },
+  { href: "#pricing", label: "Pricing", intent: "pricing" },
+].filter((l): l is NavLink => Boolean(l));
 ---
 
 <BaseLayout
@@ -79,22 +83,17 @@ const links = [
       fetchpriority="high"
     />
   )}
-  <Nav
-    settings={settings}
-    links={links}
-    overHero
-    cta={ctaCopy(project).primary}
-    partner={{ project, assets }}
-  />
+  <Nav settings={settings} links={links} overHero cta="Enquire now" partner={{ project, assets }} />
   <main id="main">
     <Hero project={project} settings={settings} image={heroImage} />
     <KeyFacts project={project} />
     <Overview project={project} />
+    <Gallery project={project} assets={assets} />
     <Highlights project={project} />
     <Configurations project={project} />
+    <Pricing project={project} />
     <Plans project={project} assets={assets} />
     <Amenities project={project} asset={asset} />
-    <Gallery project={project} assets={assets} />
     <Location project={project} asset={asset} />
     <StatusTimeline project={project} />
     <Developer project={project} assets={assets} settings={settings} />

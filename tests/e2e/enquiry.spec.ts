@@ -229,3 +229,41 @@ test.describe("without JavaScript", () => {
     await expect(page.locator('[data-enquire="hero"]').first()).toHaveAttribute("href", "#contact");
   });
 });
+
+test.describe("nav popups", () => {
+  const navCases: Array<[string, RegExp]> = [
+    ["Gallery", /Get project images and updates/],
+    ["Map", /Get location details/],
+    ["Master & Floor Plan", /Get the official floor plans/],
+    ["Pricing", /Get pricing when it is released/],
+    ["Enquire now", /Register your interest/],
+  ];
+  for (const [label, heading] of navCases) {
+    test(`nav "${label}" opens the enquiry modal`, async ({ page, isMobile }) => {
+      if (isMobile) {
+        await page.getByRole("button", { name: "Menu" }).click();
+        await page.locator("#nav-sheet").getByRole("link", { name: label, exact: true }).click();
+      } else {
+        await page.locator(".nav").getByRole("link", { name: label, exact: true }).click();
+      }
+      await expect(page.locator("#enquiry-title")).toHaveText(heading);
+    });
+  }
+});
+
+test.describe("reduced motion", () => {
+  test.use({ reducedMotion: "reduce" });
+  test("revealed content is fully visible without animation", async ({ page }) => {
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+    const hidden = await page.evaluate(
+      () =>
+        Array.from(document.querySelectorAll("[data-reveal]")).filter(
+          (el) => getComputedStyle(el).opacity !== "1",
+        ).length,
+    );
+    expect(hidden).toBe(0);
+    expect(
+      await page.evaluate(() => document.documentElement.classList.contains("reveal-ready")),
+    ).toBe(false);
+  });
+});

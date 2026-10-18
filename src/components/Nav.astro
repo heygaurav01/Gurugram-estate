@@ -3,13 +3,14 @@
  * Sticky nav. Transparent over the hero, solid (frosted) after 80px of scroll.
  * Mobile: menu button opens a full-screen sheet (native <dialog>, focus trapped).
  */
-import type { Asset, Project, SiteSettings } from "~/lib/schemas";
+import type { Asset, FormIntent, Project, SiteSettings } from "~/lib/schemas";
 import Wordmark from "./Wordmark.astro";
 import PartnerLogo from "./PartnerLogo.astro";
 
 type Props = {
   settings: SiteSettings;
-  links?: Array<{ href: string; label: string }>;
+  /** Section links. With an intent, the link opens the enquiry modal (href is the no-JS fallback). */
+  links?: Array<{ href: string; label: string; intent?: FormIntent | undefined }>;
   /** Starts transparent with light text over a dark hero image. */
   overHero?: boolean;
   /** Label for the nav CTA, which opens the enquiry modal. Omit to hide it. */
@@ -59,7 +60,9 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
         <ul role="list">
           {links.map((l) => (
             <li>
-              <a href={l.href}>{l.label}</a>
+              <a href={l.href} data-enquire={l.intent}>
+                {l.label}
+              </a>
             </li>
           ))}
         </ul>
@@ -97,7 +100,7 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
         <ul role="list" class="nav-sheet__links">
           {links.map((l) => (
             <li>
-              <a href={l.href} data-nav-link>
+              <a href={l.href} data-nav-link data-enquire={l.intent}>
                 {l.label}
               </a>
             </li>

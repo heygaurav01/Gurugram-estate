@@ -109,7 +109,12 @@ export function initEnquiry(): void {
   });
   dialog.addEventListener("close", () => {
     document.documentElement.style.overflow = "";
-    trigger?.focus();
+    // A trigger inside the closed mobile menu is hidden; fall back to the menu button.
+    const target =
+      trigger && trigger.getClientRects().length > 0
+        ? trigger
+        : document.querySelector<HTMLElement>("[data-nav-open]");
+    target?.focus();
   });
 
   // Validate on blur after the first interaction with a field.

@@ -1,0 +1,84 @@
+/*
+ * Motion system. Everything here is inside prefers-reduced-motion: no-preference,
+ * so reduced-motion users get the final state with no animation.
+ * Content is visible without JS: scroll reveals only hide elements once
+ * scripts/motion.ts has added .reveal-ready to <html>.
+ * Only opacity and transform animate, so there is no layout shift.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero: image settles from 1.06 to 1 over 1.6s; text lines rise 16px, 60ms apart. */
+  .hero .hero__img {
+    animation: gp-settle 1.6s var(--ease) both;
+  }
+  .hero__content > [data-hero-line] {
+    animation: gp-rise 0.9s var(--ease) both;
+  }
+  .hero__content > [data-hero-line]:nth-child(1) {
+    animation-delay: 200ms;
+  }
+  .hero__content > [data-hero-line]:nth-child(2) {
+    animation-delay: 260ms;
+  }
+  .hero__content > [data-hero-line]:nth-child(3) {
+    animation-delay: 320ms;
+  }
+  .hero__content > [data-hero-line]:nth-child(4) {
+    animation-delay: 380ms;
+  }
+  .hero__content > [data-hero-line]:nth-child(5) {
+    animation-delay: 440ms;
+  }
+
+  /* Section reveals: fade up 20px once at 15% visibility, 500ms. */
+  html.reveal-ready [data-reveal] {
+    transition:
+      opacity 500ms var(--ease),
+      transform 500ms var(--ease);
+  }
+  html.reveal-ready [data-reveal]:not(.is-revealed) {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* Dialogs: gentle entrance for the enquiry modal, menu sheet and lightbox. */
+  dialog[open] {
+    animation: gp-dialog-in 320ms var(--ease);
+  }
+  dialog[open]::backdrop {
+    animation: gp-fade 320ms var(--ease);
+  }
+}
+
+@keyframes gp-settle {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes gp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes gp-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes gp-fade {
+  from {
+    opacity: 0;
+  }
+}

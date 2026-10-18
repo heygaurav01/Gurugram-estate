@@ -45,8 +45,8 @@ const focus = project.theme.heroFocus ?? "50% 50%";
       <a class="btn hero__primary" href="#contact" data-enquire="hero">
         {cta.primary}
       </a>
-      <a class="btn btn--ghost hero__secondary" href="#homes">
-        Homes and sizes
+      <a class="btn btn--ghost hero__secondary" href="#pricing" data-enquire="pricing">
+        {ctaCopy(project).primary === "Register interest" ? "Get pricing first" : "Request pricing"}
       </a>
     </div>
     <div class="hero__meta" data-hero-line>

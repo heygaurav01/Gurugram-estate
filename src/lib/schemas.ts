@@ -121,6 +121,11 @@ export const projectSchema = z
       region: z.string().optional(),
       /** Static map image (asset id, kind: map) shown before the live map loads. */
       mapImageId: z.string().optional(),
+      /**
+       * Place search for the map when exact coordinates are not confirmed,
+       * e.g. "Sector 86, Gurugram, Haryana". Shows the area, not the plot.
+       */
+      mapQuery: z.string().optional(),
       lat: z.number().min(-90).max(90).optional(),
       lng: z.number().min(-180).max(180).optional(),
       connectivity: z

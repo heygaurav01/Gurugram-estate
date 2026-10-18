@@ -6,10 +6,18 @@
 import type { Asset, Project } from "~/lib/schemas";
 import Picture from "./Picture.astro";
 
-type Props = { project: Project; lat: number; lng: number; image?: Asset | undefined };
-const { project, lat, lng, image } = Astro.props;
-const embed = `https://www.google.com/maps?q=${lat},${lng}&z=14&output=embed`;
-const external = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+type Props = {
+  project: Project;
+  /** "lat,lng" for an exact site, or a place query such as "Sector 86, Gurugram, Haryana". */
+  query: string;
+  /** True when the query is an area, not the exact plot; shown to the visitor. */
+  approximate?: boolean;
+  image?: Asset | undefined;
+};
+const { project, query, approximate = false, image } = Astro.props;
+const q = encodeURIComponent(query);
+const embed = `https://www.google.com/maps?q=${q}&z=${approximate ? 14 : 15}&output=embed`;
+const external = `https://www.google.com/maps/search/?api=1&query=${q}`;
 ---
 
 <div
@@ -35,6 +43,7 @@ const external = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
   </div>
   <p class="map__meta">
     {image?.caption && <span>{image.caption}. </span>}
+    {approximate && <span>Shows {query}. The exact site will be marked once confirmed. </span>}
     <a href={external} rel="noopener" target="_blank">
       Open in Google Maps<span class="visually-hidden"> (opens in a new tab)</span>
     </a>
@@ -73,10 +82,17 @@ const external = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
     height: 100%;
     object-fit: cover;
   }
+  /* Neutral grid preview until the live map is requested. */
   .map__blank {
-    background:
-      repeating-linear-gradient(0deg, transparent 0 39px, var(--hairline) 39px 40px),
-      repeating-linear-gradient(90deg, transparent 0 39px, var(--hairline) 39px 40px);
+    background-color: var(--night);
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 47px, rgb(244 241 234 / 0.08) 47px 48px),
+      repeating-linear-gradient(90deg, transparent 0 47px, rgb(244 241 234 / 0.08) 47px 48px);
+  }
+  .map__frame:has(.map__blank) .map__load {
+    background: var(--bone);
+    color: var(--ink);
+    border-color: var(--bone);
   }
   .map__load {
     position: absolute;

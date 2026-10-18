@@ -43,6 +43,8 @@ location:
   sector: "Sector 86"
   city: "Gurugram"
   region: "Haryana"
+  # Area only: L&T Realty has not published the exact site location.
+  mapQuery: "Sector 86, Gurugram, Haryana"
   connectivity: [] # add only measured, dated distances
 
 land:
@@ -103,12 +105,12 @@ seo:
     - "L&T Realty Gurgaon"
     - "L&T new launch Gurgaon"
     - "Sector 86 Gurgaon"
-  ogImageId: skyline-illustration
+  ogImageId: interior-living
 
 theme:
   accent: "#8C6A3F"
-  heroImageId: skyline-illustration
-  heroFocus: "50% 60%"
+  heroImageId: interior-living
+  heroFocus: "50% 55%"
 
 form:
   otp: false

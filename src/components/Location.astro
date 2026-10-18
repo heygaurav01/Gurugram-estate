@@ -13,7 +13,9 @@ const { project, asset } = Astro.props;
 const { location } = project;
 const routes = verifiedView(project).connectivity;
 const { ref } = buildSources(project);
-const hasMap = location.lat !== undefined && location.lng !== undefined;
+const exact = location.lat !== undefined && location.lng !== undefined;
+const mapQuery = exact ? `${location.lat},${location.lng}` : location.mapQuery;
+const hasMap = Boolean(mapQuery);
 const mapImage = location.mapImageId ? asset(location.mapImageId) : undefined;
 const MODE: Record<string, string> = { road: "By road", metro: "Metro", rail: "Rail", air: "Air" };
 const place = [location.sector, location.city, location.region].filter(Boolean).join(", ");
@@ -62,7 +64,7 @@ const place = [location.sector, location.city, location.region].filter(Boolean).
     </div>
     {hasMap && (
       <div data-reveal>
-        <MapFacade project={project} lat={location.lat!} lng={location.lng!} image={mapImage} />
+        <MapFacade project={project} query={mapQuery!} approximate={!exact} image={mapImage} />
       </div>
     )}
   </div>

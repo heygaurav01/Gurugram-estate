@@ -27,8 +27,11 @@ location:
 
 highlights:
   - text: "L&T Realty acquired about 19.97 acres across Sector 81 and Sector 86, Gurugram"
-    source: "TBD (L&T press release or exchange filing URL)"
-    verifiedOn: "TBD"
+    # Secondary source (law-firm deal report). Swap for L&T's own press release or
+    # stock exchange filing when available. Also reported by Outlook Business, 2026-04-27:
+    # https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition
+    source: "https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/"
+    verifiedOn: "2026-10-18"
 
 configurations: [] # "3 and 4 BHK" is an agency claim, not confirmed by L&T
 amenities: []
@@ -36,7 +39,8 @@ amenities: []
 timeline:
   - label: "Land acquired by the developer"
     done: true
-    source: "TBD" # hidden until a source is added
+    date: "2026-04-27"
+    source: "https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition"
   - label: "RERA registration"
     done: false
   - label: "Official launch"

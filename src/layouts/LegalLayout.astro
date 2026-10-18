@@ -5,6 +5,7 @@ import Nav from "~/components/Nav.astro";
 import Footer from "~/components/Footer.astro";
 import { getSettings } from "~/lib/data";
 import { formatDate } from "~/lib/format";
+import { breadcrumbLd, graph, realEstateAgentLd } from "~/lib/seo";
 
 type Props = {
   title: string;
@@ -17,9 +18,19 @@ type Props = {
 
 const { title, description, path, heading, lastUpdated } = Astro.props;
 const settings = await getSettings();
+const jsonLd = graph([
+  realEstateAgentLd(settings, Astro.site!),
+  breadcrumbLd(
+    [
+      { name: "Home", path: "/" },
+      { name: heading, path },
+    ],
+    Astro.site!,
+  ),
+]);
 ---
 
-<BaseLayout title={title} description={description} path={path}>
+<BaseLayout title={title} description={description} path={path} jsonLd={jsonLd}>
   <Nav settings={settings} />
   <main id="main" class="container legal-main">
     <article class="legal">

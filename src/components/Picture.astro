@@ -21,7 +21,9 @@ type Props = {
 const { slug, asset, sizes, eager = false, class: className, style, figure = false } = Astro.props;
 const src = projectImage(slug, asset.file);
 const alt = asset.decorative ? "" : asset.alt;
-const widths = IMAGE_WIDTHS.filter((w) => w <= src.width);
+// Never upscale; images narrower than the smallest step use their own width.
+const fitting = IMAGE_WIDTHS.filter((w) => w <= src.width);
+const widths = fitting.length > 0 ? fitting : [src.width];
 ---
 
 {figure ? (

@@ -1,7 +1,11 @@
 ---
-/** Footer: disclosure, agent RERA, project RERA status, HARERA link, legal links. */
+/**
+ * Footer: co-brand, explore links, contact, RERA block and legal bar.
+ * Contact details render only when they are real (TBD values are hidden).
+ */
 import type { Asset, Project, SiteSettings } from "~/lib/schemas";
 import { HARERA_URL, ON_REQUEST, isPlaceholder, reraStatusLine } from "~/lib/compliance";
+import { contactView, RERA_LABEL } from "~/lib/view";
 import Disclosure from "./Disclosure.astro";
 import Wordmark from "./Wordmark.astro";
 import PartnerLogo from "./PartnerLogo.astro";
@@ -10,136 +14,284 @@ type Props = {
   settings: SiteSettings;
   project?: Project | undefined;
   assets?: Asset[] | undefined;
+  /** Section links for the Explore column (project pages). */
+  links?: Array<{ href: string; label: string }> | undefined;
 };
-const { settings, project, assets = [] } = Astro.props;
+const { settings, project, assets = [], links = [] } = Astro.props;
+const c = contactView(settings, project);
 const reraNo = isPlaceholder(settings.business.agent_rera_number)
   ? ON_REQUEST
   : settings.business.agent_rera_number;
 const year = new Date().getFullYear();
+const coBrand = project?.developer.authorizedChannelPartner === true;
+const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
 ---
 
 <footer class="footer">
-  <div class="container footer__inner">
-    <div class="footer__brand stack">
-      {project?.developer.authorizedChannelPartner && (
-        <div class="footer__cobrand">
-          <PartnerLogo project={project} assets={assets} on="dark" height={56} />
-          <p class="footer__cp">Authorized channel partner of {project.developer.name}</p>
-        </div>
-      )}
-      <Wordmark settings={settings} />
-      <Disclosure settings={settings} developer={project?.developer} tone="dark" />
-    </div>
-    <dl class="footer__rera">
-      <div>
-        <dt>Agent HARERA registration</dt>
-        <dd>{reraNo}</dd>
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        {coBrand && project && (
+          <div class="footer__cobrand">
+            <PartnerLogo project={project} assets={assets} on="dark" height={60} />
+            <span class="footer__cp">
+              Authorized channel partner
+              <br />
+              of {project.developer.name}
+            </span>
+          </div>
+        )}
+        <Wordmark settings={settings} class="footer__wordmark" />
+        <p class="footer__about">
+          A Gurugram real estate agent. We help buyers compare new projects, visit sites and handle
+          paperwork, and we tell you what is confirmed and what is not.
+        </p>
       </div>
-      {project && (
-        <div>
-          <dt>{project.name}</dt>
-          <dd>{reraStatusLine(project)}</dd>
-        </div>
+
+      {links.length > 0 && (
+        <nav class="footer__col" aria-label="Explore this page">
+          <h2 class="footer__h">Explore</h2>
+          <ul role="list" class="footer__list">
+            {links.map((l) => (
+              <li>
+                <a href={l.href}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       )}
-      <div>
-        <dt>Verify any project</dt>
-        <dd>
-          <a href={HARERA_URL} rel="noopener" target="_blank">
-            haryanarera.gov.in<span class="visually-hidden"> (opens in a new tab)</span>
+
+      <div class="footer__col">
+        <h2 class="footer__h">Contact</h2>
+        <ul role="list" class="footer__list">
+          {c.phone && (
+            <li>
+              <a href={c.phone.href} data-track="call_click">
+                {c.phone.display}
+              </a>
+            </li>
+          )}
+          {c.whatsapp && (
+            <li>
+              <a href={c.whatsapp.href} target="_blank" rel="noopener" data-track="whatsapp_click">
+                WhatsApp<span class="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            </li>
+          )}
+          {c.email && (
+            <li>
+              <a href={`mailto:${c.email}`}>{c.email}</a>
+            </li>
+          )}
+          {c.address && <li class="footer__address">{c.address}</li>}
+          {!hasContact && <li>Contact details on request</li>}
+        </ul>
+        {project && (
+          <a class="btn footer__btn" href="#contact" data-enquire="footer">
+            Enquire now
           </a>
-        </dd>
+        )}
       </div>
-    </dl>
-    <nav class="footer__links" aria-label="Legal">
-      <ul role="list">
-        <li>
-          <a href="/">All projects</a>
-        </li>
-        <li>
-          <a href="/disclaimer/">Disclaimer</a>
-        </li>
-        <li>
-          <a href="/privacy-policy/">Privacy policy</a>
-        </li>
-        <li>
-          <a href="/terms/">Terms</a>
-        </li>
-      </ul>
-    </nav>
-    <p class="footer__copy">
-      &copy; {year} {settings.business.brand_name}. Images marked "Representative image" do not show
-      the actual project.
-    </p>
+
+      <div class="footer__col">
+        <h2 class="footer__h">RERA</h2>
+        <dl class="footer__rera">
+          <div>
+            <dt>Agent HARERA registration</dt>
+            <dd>{reraNo}</dd>
+          </div>
+          {project && (
+            <div>
+              <dt>{project.name}</dt>
+              <dd>
+                {RERA_LABEL[project.rera.status]}
+                {project.rera.status === "registered" &&
+                  project.rera.number &&
+                  `, ${project.rera.number}`}
+              </dd>
+            </div>
+          )}
+          <div>
+            <dt>Verify any project</dt>
+            <dd>
+              <a href={HARERA_URL} rel="noopener" target="_blank">
+                haryanarera.gov.in<span class="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="footer__disclosure">
+      <Disclosure settings={settings} developer={project?.developer} tone="dark" />
+      {project && <p class="footer__status">{reraStatusLine(project)}</p>}
+    </div>
+
+    <div class="footer__bar">
+      <p>
+        &copy; {year} {settings.business.brand_name}. Images marked "Representative image" do not
+        show the actual project.
+      </p>
+      <nav aria-label="Legal">
+        <ul role="list" class="footer__legal">
+          <li>
+            <a href="/">All projects</a>
+          </li>
+          <li>
+            <a href="/disclaimer/">Disclaimer</a>
+          </li>
+          <li>
+            <a href="/privacy-policy/">Privacy policy</a>
+          </li>
+          <li>
+            <a href="/terms/">Terms</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </footer>
 
 <style>
   .footer {
-    padding-block: var(--space-8) var(--space-6);
+    padding-top: var(--space-8);
     background: var(--night);
-    color: var(--bone);
+    color: rgb(244 241 234 / 0.82);
+    font-size: 0.95rem;
   }
-  .footer__inner {
+  .footer__grid {
     display: grid;
-    gap: var(--space-7);
+    gap: var(--space-7) var(--gutter);
+    padding-bottom: var(--space-7);
+  }
+  .footer__brand {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
   }
   .footer__cobrand {
     display: flex;
     align-items: center;
     gap: var(--space-4);
-    padding-bottom: var(--space-5);
-    border-bottom: 1px solid rgb(244 241 234 / 0.18);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid rgb(244 241 234 / 0.16);
   }
   .footer__cp {
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    line-height: 1.5;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgb(244 241 234 / 0.8);
+    color: rgb(244 241 234 / 0.75);
+  }
+  .footer :global(.footer__wordmark) {
+    color: var(--bone);
+    font-size: 1.6rem;
+  }
+  .footer__about {
+    max-width: 36ch;
+  }
+  .footer__h {
+    margin-bottom: var(--space-4);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    /* Lighter brass for the dark background (above 7:1 on --night). */
+    color: #c9a26b;
+  }
+  .footer__list {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .footer__list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    color: var(--bone);
+    text-decoration: none;
+  }
+  .footer__list a:hover {
+    text-decoration: underline;
+  }
+  .footer__address {
+    max-width: 28ch;
+  }
+  .footer__btn {
+    margin-top: var(--space-5);
+    background: var(--bone);
+    color: var(--ink);
+    border-color: var(--bone);
+  }
+  .footer__btn:hover {
+    background: var(--paper);
   }
   .footer__rera {
     display: grid;
     gap: var(--space-4);
-    font-size: var(--step--1);
   }
   .footer__rera dt {
-    font-weight: 600;
-    color: rgb(244 241 234 / 0.7);
+    font-size: 0.8rem;
+    color: rgb(244 241 234 / 0.6);
   }
   .footer__rera dd {
     color: var(--bone);
   }
-  .footer__links ul {
+  .footer__rera a {
+    display: inline-flex;
+    min-height: 32px;
+    align-items: center;
+  }
+  .footer__disclosure {
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-6);
+    border-top: 1px solid rgb(244 241 234 / 0.16);
+    font-size: 0.85rem;
+  }
+  .footer__status {
+    max-width: none;
+    color: rgb(244 241 234 / 0.7);
+  }
+  .footer__bar {
+    display: grid;
+    gap: var(--space-3);
+    padding-block: var(--space-5) var(--space-6);
+    border-top: 1px solid rgb(244 241 234 / 0.16);
+    font-size: 0.8rem;
+    color: rgb(244 241 234 / 0.65);
+  }
+  .footer__bar p {
+    max-width: none;
+  }
+  .footer__legal {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2) var(--space-5);
+    gap: var(--space-1) var(--space-5);
   }
-  .footer__links a,
-  .footer__rera a {
+  .footer__legal a {
     display: inline-flex;
     align-items: center;
     min-height: var(--tap-min);
-  }
-  .footer__copy {
-    padding-top: var(--space-5);
-    border-top: 1px solid rgb(244 241 234 / 0.18);
-    font-size: 0.8rem;
-    color: rgb(244 241 234 / 0.7);
-    max-width: none;
+    color: var(--bone);
   }
   .footer :focus-visible {
     outline-color: var(--bone);
   }
+  @media (min-width: 768px) {
+    .footer__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
   @media (min-width: 1024px) {
-    .footer__inner {
-      grid-template-columns: 5fr 4fr 3fr;
-      column-gap: var(--gutter);
+    .footer__grid {
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
     }
-    .footer__links ul {
-      flex-direction: column;
-    }
-    .footer__copy {
-      grid-column: 1 / -1;
+    .footer__bar {
+      grid-template-columns: 1fr auto;
+      align-items: center;
     }
   }
 </style>

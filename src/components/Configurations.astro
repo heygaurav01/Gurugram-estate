@@ -9,73 +9,88 @@ import { formatInr, formatSqftRange } from "~/lib/format";
 import { buildSources, ctaCopy, verifiedView } from "~/lib/view";
 import SectionHeading from "./SectionHeading.astro";
 import SourceRef from "./SourceRef.astro";
+import SectionFigure from "./SectionFigure.astro";
+import type { ProjectBundle } from "~/lib/data";
 
-type Props = { project: Project };
-const { project } = Astro.props;
+type Props = { project: Project; asset: ProjectBundle["asset"] };
+const { project, asset } = Astro.props;
+const image = project.sectionImages.homes ? asset(project.sectionImages.homes) : undefined;
 const rows = verifiedView(project).configurations;
 const { ref } = buildSources(project);
 const priceAllowed = !isRegisterInterestMode(project);
 const cta = ctaCopy(project);
 const hasSuper = rows.some((r) => r.superSqftMin !== undefined || r.superSqftMax !== undefined);
+// The image fills the empty-state layout; a real table gets the full width.
+const showImage = rows.length === 0 && image !== undefined;
 ---
 
 <section class="section" id="homes" aria-labelledby="homes-title">
-  <div class="container">
-    <SectionHeading
-      id="homes-title"
-      eyebrow="Homes"
-      title="Homes and sizes"
-      intro={rows.length > 0 ? "Sizes as published by the developer." : undefined}
-    />
-    {rows.length > 0 ? (
-      <div class="table-wrap" data-reveal>
-        <table class="homes">
-          <caption class="visually-hidden">Home types, sizes and pricing</caption>
-          <thead>
-            <tr>
-              <th scope="col">Type</th>
-              <th scope="col">Carpet area</th>
-              {hasSuper && <th scope="col">Super area</th>}
-              <th scope="col">Price from</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
+  <div class:list={["container", { "grid split-7-5 homes__split": showImage }]}>
+    <div>
+      <SectionHeading
+        id="homes-title"
+        eyebrow="Homes"
+        title="Homes and sizes"
+        intro={rows.length > 0 ? "Sizes as published by the developer." : undefined}
+      />
+      {rows.length > 0 ? (
+        <div class="table-wrap" data-reveal>
+          <table class="homes">
+            <caption class="visually-hidden">Home types, sizes and pricing</caption>
+            <thead>
               <tr>
-                <th scope="row">
-                  {r.type}
-                  <SourceRef n={ref(r.source)} />
-                </th>
-                <td>{formatSqftRange(r.carpetSqftMin, r.carpetSqftMax) ?? "On request"}</td>
-                {hasSuper && (
-                  <td>{formatSqftRange(r.superSqftMin, r.superSqftMax) ?? "On request"}</td>
-                )}
-                <td>
-                  {priceAllowed && r.priceFromInr !== undefined
-                    ? formatInr(r.priceFromInr)
-                    : priceAllowed
-                      ? "On request"
-                      : "Shared after RERA registration"}
-                </td>
+                <th scope="col">Type</th>
+                <th scope="col">Carpet area</th>
+                {hasSuper && <th scope="col">Super area</th>}
+                <th scope="col">Price from</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    ) : (
-      <div class="card empty" data-reveal>
-        <p class="empty__title">Home types and sizes have not been announced.</p>
-        <p>
-          We publish configurations only after the developer releases them. Pricing is shared after
-          RERA registration.
-        </p>
-      </div>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr>
+                  <th scope="row">
+                    {r.type}
+                    <SourceRef n={ref(r.source)} />
+                  </th>
+                  <td>{formatSqftRange(r.carpetSqftMin, r.carpetSqftMax) ?? "On request"}</td>
+                  {hasSuper && (
+                    <td>{formatSqftRange(r.superSqftMin, r.superSqftMax) ?? "On request"}</td>
+                  )}
+                  <td>
+                    {priceAllowed && r.priceFromInr !== undefined
+                      ? formatInr(r.priceFromInr)
+                      : priceAllowed
+                        ? "On request"
+                        : "Shared after RERA registration"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div class="card empty" data-reveal>
+          <p class="empty__title">Home types and sizes have not been announced.</p>
+          <p>
+            We publish configurations only after the developer releases them. Pricing is shared
+            after RERA registration.
+          </p>
+        </div>
+      )}
+      <p class="homes__cta" data-reveal>
+        <a class="btn" href="#contact" data-enquire="pricing">
+          {cta.updates}
+        </a>
+      </p>
+    </div>
+    {showImage && (
+      <SectionFigure
+        project={project}
+        asset={image}
+        ratio="1 / 1"
+        sizes="(min-width: 1024px) 34vw, 100vw"
+      />
     )}
-    <p class="homes__cta" data-reveal>
-      <a class="btn" href="#contact" data-enquire="pricing">
-        {cta.updates}
-      </a>
-    </p>
   </div>
 </section>
 

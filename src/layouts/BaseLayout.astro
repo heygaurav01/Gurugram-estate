@@ -1,9 +1,12 @@
 ---
 /**
- * Root layout. Phase 5 replaces the inline meta tags with Seo.astro and JsonLd.astro.
+ * Root layout: SEO head, fonts, global styles and motion.
  * Pages render their own Nav and Footer so each can configure them.
  */
 import Fonts from "~/components/Fonts.astro";
+import Seo from "~/components/Seo.astro";
+import { getSettings } from "~/lib/data";
+import { graph, realEstateAgentLd } from "~/lib/seo";
 import "~/styles/tokens.css";
 import "~/styles/reset.css";
 import "~/styles/base.css";
@@ -20,10 +23,26 @@ type Props = {
   theme?: { accent: string; accentInk: string } | undefined;
   /** Reserve space for the mobile sticky bar. */
   stickyBar?: boolean;
+  /** Absolute URL of a 1200x630 share image. */
+  ogImage?: string | undefined;
+  ogImageAlt?: string | undefined;
+  /** Page JSON-LD graph. Defaults to the site-wide RealEstateAgent. */
+  jsonLd?: Record<string, unknown> | undefined;
 };
 
-const { title, description, path, noindex = false, theme, stickyBar = false } = Astro.props;
-const canonical = new URL(path, Astro.site).href;
+const {
+  title,
+  description,
+  path,
+  noindex = false,
+  theme,
+  stickyBar = false,
+  ogImage,
+  ogImageAlt,
+  jsonLd,
+} = Astro.props;
+const settings = await getSettings();
+const ld = jsonLd ?? graph([realEstateAgentLd(settings, Astro.site!)]);
 const themeStyle = theme
   ? `--project-accent:${theme.accent};--project-accent-ink:${theme.accentInk}`
   : undefined;
@@ -34,10 +53,16 @@ const themeStyle = theme
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <meta name="robots" content={noindex ? "noindex,nofollow" : "index,follow"} />
+    <Seo
+      title={title}
+      description={description}
+      path={path}
+      noindex={noindex}
+      ogImage={ogImage}
+      ogImageAlt={ogImageAlt}
+      siteName={settings.business.brand_name}
+      jsonLd={ld}
+    />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <Fonts />
     <slot name="head" />

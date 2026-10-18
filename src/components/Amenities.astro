@@ -6,12 +6,39 @@ import { buildSources, verifiedView } from "~/lib/view";
 import SectionHeading from "./SectionHeading.astro";
 import SourceRef from "./SourceRef.astro";
 import Picture from "./Picture.astro";
+import LockedCard from "./LockedCard.astro";
 
 type Props = { project: Project; asset: ProjectBundle["asset"] };
 const { project, asset } = Astro.props;
+const dev = project.developer.authorizedToUseName ? project.developer.name : "The developer";
 const items = verifiedView(project).amenities;
 const { ref } = buildSources(project);
 ---
+
+{items.length === 0 && (
+  <section class="section" id="amenities" aria-labelledby="amenities-title">
+    <div class="container grid split-5-7">
+      <div>
+        <SectionHeading
+          id="amenities-title"
+          eyebrow="Amenities"
+          title="Clubhouse and amenities"
+          intro={`${dev} has not announced the amenity list yet. We will publish the official list here, item by item, once it is released.`}
+        />
+      </div>
+      <LockedCard
+        project={project}
+        asset={project.sectionImages.amenities ? asset(project.sectionImages.amenities) : undefined}
+        eyebrow="Releases at launch"
+        title="The official amenity list"
+        text="Clubhouse, sports and landscape details as confirmed by the developer."
+        cta="Get the amenity details first"
+        intent="amenities"
+        tall
+      />
+    </div>
+  </section>
+)}
 
 {items.length > 0 && (
   <section class="section" id="amenities" aria-labelledby="amenities-title">

@@ -6,9 +6,12 @@
  */
 import type { Project } from "~/lib/schemas";
 import { isRegisterInterestMode } from "~/lib/compliance";
+import type { ProjectBundle } from "~/lib/data";
+import SectionFigure from "./SectionFigure.astro";
 
-type Props = { project: Project };
-const { project } = Astro.props;
+type Props = { project: Project; asset: ProjectBundle["asset"] };
+const { project, asset } = Astro.props;
+const image = project.sectionImages.pricing ? asset(project.sectionImages.pricing) : undefined;
 const ri = isRegisterInterestMode(project);
 const dev = project.developer.authorizedToUseName ? project.developer.name : "The developer";
 ---
@@ -18,6 +21,7 @@ const dev = project.developer.authorizedToUseName ? project.developer.name : "Th
     <div class="pricing__head" data-reveal>
       <p class="eyebrow">Pricing</p>
       <h2 id="pricing-title">{ri ? "Be first to know the price" : "Current pricing"}</h2>
+      <SectionFigure project={project} asset={image} ratio="4 / 3" class="pricing__figure" />
     </div>
     <div class="pricing__card" data-reveal>
       <svg class="pricing__lock" viewBox="0 0 48 48" aria-hidden="true">
@@ -51,7 +55,16 @@ const dev = project.developer.authorizedToUseName ? project.developer.name : "Th
 </section>
 
 <style>
+  .pricing__head {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+  .pricing__head :global(.pricing__figure) {
+    margin-top: var(--space-4);
+  }
   .pricing__card {
+    align-self: start;
     position: relative;
     display: grid;
     gap: var(--space-5);

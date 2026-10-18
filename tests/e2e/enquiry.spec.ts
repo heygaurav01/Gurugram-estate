@@ -213,7 +213,7 @@ test.describe("layout", () => {
     }
     await expect(bar).toBeVisible();
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    const copy = page.locator(".footer__copy");
+    const copy = page.locator(".footer__bar p");
     const copyBox = (await copy.boundingBox())!;
     const barBox = (await bar.boundingBox())!;
     expect(copyBox.y + copyBox.height).toBeLessThanOrEqual(barBox.y + 1);
@@ -232,7 +232,9 @@ test.describe("without JavaScript", () => {
 
 test.describe("nav popups", () => {
   const navCases: Array<[string, RegExp]> = [
+    ["Amenities", /Get the amenity details first/],
     ["Gallery", /Get project images and updates/],
+    ["Virtual Tour", /Get the virtual tour at launch/],
     ["Map", /Get location details/],
     ["Master & Floor Plan", /Get the official floor plans/],
     ["Pricing", /Get pricing when it is released/],

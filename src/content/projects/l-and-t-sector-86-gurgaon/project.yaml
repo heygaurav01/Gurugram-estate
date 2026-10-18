@@ -85,6 +85,8 @@ timeline:
 faqs:
   - q: "Is L&T Sector 86 RERA registered?"
     a: "{{rera_status}} You can check any project yourself on the Haryana RERA website, haryanarera.gov.in."
+  - q: "Who is developing L&T Sector 86, Gurgaon?"
+    a: "L&T Realty, the real estate arm of Larsen and Toubro. In April 2026 it bought International Green Scapes Ltd, which holds about 19.97 acres in Sector 81 and Sector 86, Gurugram."
   - q: "Do I need to pay anything to register interest?"
     a: "No. Registering interest is free and does not reserve a unit."
   - q: "When will prices and floor plans be available?"
@@ -115,6 +117,17 @@ theme:
 form:
   otp: false
   intents: [hero, pricing, floor-plan, gallery, location, footer, sticky, nav]
+
+# Supporting imagery per section (asset ids from assets.yaml).
+sectionImages:
+  overview: detail-city-view
+  homes: detail-bedside
+  pricing: detail-dining
+  faq: detail-balcony
+  masterPlan: detail-sofa
+  floorPlans: interior-bedroom
+  amenities: detail-lounge
+  virtualTour: interior-living
 
 sections:
   plans: true # shows plan assets from the L&T kit once listed in assets.yaml

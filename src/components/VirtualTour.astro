@@ -1,0 +1,158 @@
+---
+/**
+ * Virtual tour band (#virtual-tour). No tour exists before launch, so the
+ * button registers interest; it never pretends to play a video.
+ * When a real tour URL is added (project.virtualTourUrl), the button opens it.
+ */
+import type { Project } from "~/lib/schemas";
+import type { ProjectBundle } from "~/lib/data";
+import Picture from "./Picture.astro";
+
+type Props = { project: Project; asset: ProjectBundle["asset"] };
+const { project, asset } = Astro.props;
+const image = project.sectionImages.virtualTour
+  ? asset(project.sectionImages.virtualTour)
+  : undefined;
+const tour = project.virtualTourUrl;
+---
+
+<section class="tour" id="virtual-tour" aria-labelledby="tour-title">
+  {image && <Picture slug={project.slug} asset={image} sizes="100vw" class="tour__img" />}
+  <div class="tour__veil" aria-hidden="true"></div>
+  <div class="container tour__inner" data-reveal>
+    {tour ? (
+      <a
+        class="tour__play"
+        href={tour}
+        target="_blank"
+        rel="noopener"
+        aria-label="Play the virtual tour (opens in a new tab)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 7l8 5-8 5z"></path>
+        </svg>
+      </a>
+    ) : (
+      <a
+        class="tour__play"
+        href="#contact"
+        data-enquire="virtual-tour"
+        aria-label="Get the virtual tour at launch"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 7l8 5-8 5z"></path>
+        </svg>
+      </a>
+    )}
+    <p class="eyebrow tour__eyebrow">Virtual tour</p>
+    <h2 id="tour-title" class="tour__title">
+      {tour ? "Walk through the homes" : "Walk through the homes, at launch"}
+    </h2>
+    <p class="tour__text">
+      {tour
+        ? "Explore the official virtual tour."
+        : "A virtual walkthrough opens here once the project launches. Register now and we will send you the link first."}
+    </p>
+    {image?.caption && <p class="tour__caption">Background: {image.caption.toLowerCase()}</p>}
+  </div>
+</section>
+
+<style>
+  .tour {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    min-height: clamp(460px, 70vh, 680px);
+    overflow: hidden;
+    background: var(--night);
+    color: var(--bone);
+    text-align: center;
+  }
+  .tour :global(.tour__img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tour__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(18 17 15 / 0.66);
+  }
+  .tour__inner {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-4);
+    padding-block: var(--space-8);
+  }
+  .tour__play {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    margin-bottom: var(--space-3);
+    border: 1px solid rgb(244 241 234 / 0.7);
+    border-radius: 50%;
+    color: var(--bone);
+    transition:
+      background var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+  .tour__play::before {
+    content: "";
+    position: absolute;
+    inset: -12px;
+    border: 1px solid rgb(244 241 234 / 0.25);
+    border-radius: 50%;
+  }
+  .tour__play svg {
+    width: 30px;
+    height: 30px;
+    margin-left: 4px;
+    fill: currentColor;
+  }
+  .tour__play:hover {
+    background: var(--bone);
+    color: var(--ink);
+    transform: scale(1.04);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tour__play::before {
+      animation: tour-ring 2.4s var(--ease) 3;
+    }
+  }
+  @keyframes tour-ring {
+    from {
+      transform: scale(0.9);
+      opacity: 1;
+    }
+    to {
+      transform: scale(1.25);
+      opacity: 0;
+    }
+  }
+  .tour__eyebrow {
+    color: rgb(244 241 234 / 0.8);
+  }
+  .tour__title {
+    max-width: 16ch;
+  }
+  .tour__text {
+    max-width: 44ch;
+    color: rgb(244 241 234 / 0.88);
+    font-size: var(--step-1);
+    line-height: 1.45;
+  }
+  .tour__caption {
+    font-size: 0.75rem;
+    color: rgb(244 241 234 / 0.7);
+  }
+  .tour :focus-visible {
+    outline-color: var(--bone);
+  }
+</style>

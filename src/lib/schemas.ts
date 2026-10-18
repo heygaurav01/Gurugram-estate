@@ -69,6 +69,8 @@ export const formIntents = [
   "footer",
   "sticky",
   "nav",
+  "amenities",
+  "virtual-tour",
 ] as const;
 
 const configurationSchema = z.object({
@@ -87,6 +89,8 @@ export const projectSchema = z
     slug,
     name: z.string().min(2),
     tagline: z.string().max(90).optional(),
+    /** Official virtual tour link from the developer. Empty until launch. */
+    virtualTourUrl: z.url().optional(),
     /** Overview section: original editorial copy built only from verified facts. */
     overview: z
       .object({
@@ -193,6 +197,19 @@ export const projectSchema = z
       otp: z.boolean(),
       intents: z.array(z.enum(formIntents)).min(1),
     }),
+    /** Supporting imagery per section (asset ids). Empty slots simply render no image. */
+    sectionImages: z
+      .object({
+        overview: z.string().optional(),
+        homes: z.string().optional(),
+        pricing: z.string().optional(),
+        faq: z.string().optional(),
+        masterPlan: z.string().optional(),
+        floorPlans: z.string().optional(),
+        amenities: z.string().optional(),
+        virtualTour: z.string().optional(),
+      })
+      .default({}),
     sections: z
       .object({
         plans: z.boolean(),
@@ -257,7 +274,9 @@ export const assetSchema = z.object({
   licenseProof: z.string().optional(),
   source: z.string().min(1),
   usage: z
-    .array(z.enum(["hero", "og", "gallery", "amenity", "plan", "map", "card", "developer"]))
+    .array(
+      z.enum(["hero", "og", "gallery", "amenity", "plan", "map", "card", "developer", "section"]),
+    )
     .default([]),
 });
 

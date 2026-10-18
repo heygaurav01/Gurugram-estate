@@ -64,3 +64,59 @@ assets:
     license: owned
     source: "Generated in-house by scripts/generate-placeholders.mjs (seed 86)"
     usage: []
+
+  # Editorial detail crops of the two owner-supplied interiors (2026-10-18), used to
+  # give each section its own image. Conceptual, never the actual project.
+  - id: detail-city-view
+    file: representative-detail-city-view.jpg
+    alt: "Conceptual living room opening onto a balcony with a city view at sunset. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated living room image"
+    usage: [section, gallery]
+
+  - id: detail-dining
+    file: representative-detail-dining.jpg
+    alt: "Conceptual dining area with a glass globe chandelier and upholstered chairs. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated living room image"
+    usage: [section, gallery]
+
+  - id: detail-lounge
+    file: representative-detail-lounge.jpg
+    alt: "Conceptual lounge corner with a marble wall, shelving and an armchair. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated living room image"
+    usage: [section]
+
+  - id: detail-sofa
+    file: representative-detail-sofa.jpg
+    alt: "Conceptual sectional sofa and marble coffee table in a living room. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated living room image"
+    usage: [section]
+
+  - id: detail-balcony
+    file: representative-detail-balcony.jpg
+    alt: "Conceptual bedroom seating area beside full-height balcony doors. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated bedroom image"
+    usage: [section, gallery]
+
+  - id: detail-bedside
+    file: representative-detail-bedside.jpg
+    alt: "Conceptual bed with patterned cushions and bedside lamps. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated bedroom image"
+    usage: [section]

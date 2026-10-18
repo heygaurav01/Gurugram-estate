@@ -251,6 +251,7 @@ export function checkProjectData(input: ProjectCheckInput): Report {
     { where: "theme.heroImageId", id: p.theme.heroImageId },
     { where: "seo.ogImageId", id: p.seo.ogImageId },
     { where: "location.mapImageId", id: p.location.mapImageId },
+    ...Object.entries(p.sectionImages).map(([k, id]) => ({ where: `sectionImages.${k}`, id })),
     ...p.amenities.map((a, i) => ({ where: `amenities[${i}].imageId`, id: a.imageId })),
   ];
   for (const { where, id } of refs) {

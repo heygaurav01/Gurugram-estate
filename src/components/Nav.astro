@@ -267,7 +267,7 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
   }
   .nav__links ul {
     display: flex;
-    gap: var(--space-5);
+    gap: clamp(var(--space-3), 1.4vw, var(--space-5));
   }
   .nav__links a {
     display: inline-flex;
@@ -315,7 +315,7 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
       display: inline-flex;
     }
   }
-  @media (min-width: 1024px) {
+  @media (min-width: 1280px) {
     .nav__links {
       display: block;
     }

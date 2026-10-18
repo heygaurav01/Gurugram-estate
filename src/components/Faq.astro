@@ -3,15 +3,21 @@
 import type { Project, SiteSettings } from "~/lib/schemas";
 import { resolveTokens } from "~/lib/view";
 import SectionHeading from "./SectionHeading.astro";
+import SectionFigure from "./SectionFigure.astro";
+import type { ProjectBundle } from "~/lib/data";
 
-type Props = { project: Project; settings: SiteSettings };
-const { project, settings } = Astro.props;
+type Props = { project: Project; settings: SiteSettings; asset: ProjectBundle["asset"] };
+const { project, settings, asset } = Astro.props;
+const image = project.sectionImages.faq ? asset(project.sectionImages.faq) : undefined;
 ---
 
 {project.faqs.length > 0 && (
   <section class="section" id="faq" aria-labelledby="faq-title">
     <div class="container grid split-5-7">
-      <SectionHeading id="faq-title" eyebrow="FAQ" title="Questions buyers ask us" />
+      <div class="faq__side">
+        <SectionHeading id="faq-title" eyebrow="FAQ" title="Questions buyers ask us" />
+        <SectionFigure project={project} asset={image} ratio="4 / 5" class="faq__figure" />
+      </div>
       <div class="faq" data-reveal>
         {project.faqs.map((f, i) => (
           <details class="faq__item" data-faq-index={i}>
@@ -25,6 +31,13 @@ const { project, settings } = Astro.props;
 )}
 
 <style>
+  .faq__side {
+    display: grid;
+    align-content: start;
+  }
+  .faq__side :global(.faq__figure) {
+    margin-bottom: var(--space-6);
+  }
   .faq {
     border-top: 1px solid var(--ink);
   }

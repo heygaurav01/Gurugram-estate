@@ -1,0 +1,135 @@
+---
+/**
+ * Locked preview for material that is not released yet (plans, amenities).
+ * The image behind is blurred mood imagery, never a fake plan. The whole card
+ * opens the enquiry modal with the given intent.
+ */
+import type { Asset, FormIntent, Project } from "~/lib/schemas";
+import Picture from "./Picture.astro";
+
+type Props = {
+  project: Project;
+  asset: Asset | undefined;
+  id?: string;
+  eyebrow: string;
+  title: string;
+  text: string;
+  cta: string;
+  intent: FormIntent;
+  /** Taller card for single-card layouts. */
+  tall?: boolean;
+};
+const { project, asset, id, eyebrow, title, text, cta, intent, tall = false } = Astro.props;
+---
+
+<article class:list={["locked", { "locked--tall": tall }]} id={id} data-reveal>
+  {asset && (
+    <Picture
+      slug={project.slug}
+      asset={asset}
+      sizes="(min-width: 1024px) 50vw, 100vw"
+      class="locked__img"
+    />
+  )}
+  <div class="locked__veil" aria-hidden="true"></div>
+  <div class="locked__body">
+    <span class="locked__badge">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="5" y="11" width="14" height="10" rx="1.5"></rect>
+        <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+      </svg>
+      {eyebrow}
+    </span>
+    <h3 class="locked__title">{title}</h3>
+    <p class="locked__text">{text}</p>
+    <a class="btn locked__btn" href="#contact" data-enquire={intent}>
+      {cta}
+    </a>
+  </div>
+</article>
+
+<style>
+  .locked {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    min-height: 360px;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--night);
+    color: var(--bone);
+  }
+  .locked--tall {
+    min-height: 460px;
+  }
+  .locked :global(.locked__img) {
+    position: absolute;
+    inset: -12px;
+    z-index: -2;
+    width: calc(100% + 24px);
+    height: calc(100% + 24px);
+    object-fit: cover;
+    filter: blur(7px) saturate(0.85);
+    transform: scale(1.02);
+    transition: filter 700ms var(--ease);
+  }
+  .locked:hover :global(.locked__img) {
+    filter: blur(4px) saturate(0.95);
+  }
+  .locked__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(18 17 15 / 0.62);
+  }
+  .locked__body {
+    display: grid;
+    gap: var(--space-3);
+    padding: clamp(var(--space-5), 3vw, var(--space-7));
+    max-width: 30rem;
+  }
+  .locked__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: fit-content;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid rgb(244 241 234 / 0.4);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .locked__badge svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+  }
+  .locked__title {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .locked__text {
+    color: rgb(244 241 234 / 0.85);
+  }
+  .locked__btn {
+    width: fit-content;
+    margin-top: var(--space-2);
+    background: var(--bone);
+    color: var(--ink);
+    border-color: var(--bone);
+  }
+  .locked__btn:hover {
+    background: var(--paper);
+  }
+  .locked :focus-visible {
+    outline-color: var(--bone);
+  }
+</style>

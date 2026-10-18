@@ -141,6 +141,10 @@ export function intentHeading(intent: FormIntent, p: Pick<Project, "rera">): str
       return "Get location details";
     case "gallery":
       return "Get project images and updates";
+    case "amenities":
+      return "Get the amenity details first";
+    case "virtual-tour":
+      return "Get the virtual tour at launch";
     default:
       return ri ? "Register your interest" : "Talk to an advisor";
   }

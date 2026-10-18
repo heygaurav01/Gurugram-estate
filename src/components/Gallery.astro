@@ -1,8 +1,9 @@
 ---
 /**
- * Gallery with a keyboard-accessible lightbox (arrows, Esc, focus trapped by
- * the native modal dialog). Rendered only when sections.gallery is on and
- * gallery assets exist. Without JS, thumbnails link to the full images.
+ * Editorial gallery: one large feature tile plus supporting tiles, with a
+ * keyboard-accessible lightbox (arrows, Esc, focus trapped by the native modal
+ * dialog). Rendered only when sections.gallery is on and gallery assets exist.
+ * Without JS, tiles link to the full images.
  */
 import { getImage } from "astro:assets";
 import type { Asset, Project } from "~/lib/schemas";
@@ -14,10 +15,12 @@ type Props = { project: Project; assets: Asset[] };
 const { project, assets } = Astro.props;
 const items = project.sections.gallery ? assets.filter((a) => a.usage.includes("gallery")) : [];
 const full = await Promise.all(
-  items.map((a) =>
-    getImage({ src: projectImage(project.slug, a.file), width: 1920, format: "webp" }),
-  ),
+  items.map((a) => {
+    const src = projectImage(project.slug, a.file);
+    return getImage({ src, width: Math.min(1920, src.width), format: "webp" });
+  }),
 );
+const allRepresentative = items.every((a) => !a.projectSpecific);
 ---
 
 {items.length > 0 && (
@@ -27,11 +30,15 @@ const full = await Promise.all(
         id="gallery-title"
         eyebrow="Gallery"
         title="The way these homes could feel"
-        intro="Representative interiors for mood only. They do not show the actual project; official images will replace them once released."
+        intro={
+          allRepresentative
+            ? "Representative interiors for mood only. They do not show the actual project; official images will replace them once released."
+            : undefined
+        }
       />
       <ul class="gallery" role="list" data-gallery>
         {items.map((a, i) => (
-          <li data-reveal>
+          <li class="gallery__tile" data-reveal>
             <a
               class="gallery__link"
               href={full[i]!.src}
@@ -43,20 +50,22 @@ const full = await Promise.all(
               <Picture
                 slug={project.slug}
                 asset={a}
-                sizes="(min-width: 1024px) 30vw, 50vw"
+                sizes={
+                  i === 0 ? "(min-width: 1024px) 66vw, 100vw" : "(min-width: 1024px) 33vw, 50vw"
+                }
                 class="gallery__img"
               />
+              {a.caption && <span class="gallery__chip">{a.caption}</span>}
               <span class="visually-hidden">
                 Open image {i + 1} of {items.length}
               </span>
             </a>
-            {a.caption && <p class="gallery__caption">{a.caption}</p>}
           </li>
         ))}
       </ul>
       <p class="gallery__cta">
-        <a class="btn btn--ghost" href="#contact" data-enquire="gallery">
-          Get project images and updates
+        <a class="btn" href="#contact" data-enquire="gallery">
+          Get official project images first
         </a>
       </p>
     </div>
@@ -88,73 +97,76 @@ const full = await Promise.all(
 </script>
 
 <style>
-  /* Editorial layout: the first image is a large feature; the rest support it. */
+  /* Fixed row heights keep every tile filled; the first tile is a 2x2 feature. */
   .gallery {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
+    grid-auto-rows: clamp(150px, 42vw, 220px);
+    grid-auto-flow: dense;
+    gap: var(--space-3);
   }
-  .gallery > li {
-    display: flex;
-    flex-direction: column;
+  .gallery__tile:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
   }
-  .gallery > li:first-child {
-    grid-column: 1 / -1;
-  }
-  @media (max-width: 1023.98px) {
-    /* A trailing image alone in its row spans the full width. */
-    .gallery > li:last-child:nth-child(even) {
-      grid-column: 1 / -1;
-    }
+  /* A trailing tile alone in its row spans the full width. */
+  .gallery__tile:last-child:nth-child(even) {
+    grid-column: span 2;
   }
   .gallery__link {
     position: relative;
     display: block;
+    height: 100%;
     overflow: hidden;
     border-radius: var(--radius);
     background: var(--night);
   }
   .gallery__link :global(.gallery__img) {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    height: 100%;
     object-fit: cover;
     transition:
-      transform 700ms var(--ease),
-      opacity var(--dur) var(--ease);
-  }
-  .gallery > li:first-child :global(.gallery__img) {
-    aspect-ratio: 16 / 9;
+      transform 900ms var(--ease),
+      filter var(--dur) var(--ease);
   }
   .gallery__link:hover :global(.gallery__img) {
-    transform: scale(1.03);
-    opacity: 0.92;
+    transform: scale(1.04);
+    filter: brightness(0.92);
   }
-  .gallery__caption {
-    margin-top: var(--space-2);
-    font-size: var(--step--1);
-    color: var(--stone);
+  .gallery__chip {
+    position: absolute;
+    left: var(--space-3);
+    bottom: var(--space-3);
+    padding: 0.2rem 0.55rem;
+    border-radius: 2px;
+    background: rgb(18 17 15 / 0.72);
+    color: var(--bone);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
   }
   .gallery__cta {
     margin-top: var(--space-6);
   }
   @media (min-width: 1024px) {
-    /* Feature spans two columns; supporting images fill the remaining column at the same height. */
     .gallery {
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 260px;
+      gap: var(--space-4);
     }
-    .gallery > li:first-child {
-      grid-column: 1;
+    .gallery__tile:last-child:nth-child(even) {
+      grid-column: auto;
     }
-    .gallery > li:not(:first-child) .gallery__link {
-      flex: 1;
+    /* Five tiles: feature + two beside it + a wide pair below. */
+    .gallery__tile:nth-child(4):nth-last-child(2) {
+      grid-column: span 1;
     }
-    .gallery > li:not(:first-child) :global(.gallery__img) {
-      position: absolute;
-      inset: 0;
-      height: 100%;
-      aspect-ratio: auto;
+    .gallery__tile:nth-child(5):last-child {
+      grid-column: span 2;
     }
   }
+
   .lightbox {
     width: 100%;
     max-width: none;

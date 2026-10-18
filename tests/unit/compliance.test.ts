@@ -67,6 +67,7 @@ const baseProject: Project = {
   theme: { ...realProject.theme, heroImageId: undefined },
   seo: { ...realProject.seo, ogImageId: undefined },
   location: { ...realProject.location, mapImageId: undefined },
+  sectionImages: {},
   // Unauthorized baseline so authorization rules can be tested in both directions.
   developer: {
     ...realProject.developer,

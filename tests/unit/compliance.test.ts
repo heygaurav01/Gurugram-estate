@@ -220,7 +220,9 @@ describe("checkProjectData", () => {
   });
 
   it("warns about unverified facts so they get verified", () => {
-    const r = checkProjectData(input());
+    const r = checkProjectData(
+      withProject((p) => ({ ...p, highlights: [{ text: "Unsourced claim", source: "TBD" }] })),
+    );
     expect(r.warnings.some((w) => w.rule === "unverified")).toBe(true);
   });
 });

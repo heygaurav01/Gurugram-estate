@@ -100,12 +100,6 @@ const word = (w: string) => Array.from(w);
     </div>
   </div>
 
-  <a class="cs__scroll" href="#contact">
-    <span class="visually-hidden">Scroll to contact</span>
-    <span class="cs__mouse" aria-hidden="true">
-      <span></span>
-    </span>
-  </a>
   {background?.asset.caption && <p class="cs__caption">{background.asset.caption}</p>}
 </section>
 
@@ -392,31 +386,6 @@ const word = (w: string) => Array.from(w);
     }
   }
 
-  .cs__scroll {
-    position: absolute;
-    left: 50%;
-    bottom: var(--space-5);
-    transform: translateX(-50%);
-    display: grid;
-    place-items: center;
-    width: var(--tap-min);
-    height: var(--tap-min);
-  }
-  .cs__mouse {
-    display: grid;
-    justify-items: center;
-    width: 22px;
-    height: 34px;
-    padding-top: 6px;
-    border: 1.5px solid rgb(244 241 234 / 0.6);
-    border-radius: 12px;
-  }
-  .cs__mouse span {
-    width: 3px;
-    height: 7px;
-    border-radius: 2px;
-    background: var(--bone);
-  }
   .cs__caption {
     position: absolute;
     right: var(--gutter);
@@ -464,9 +433,6 @@ const word = (w: string) => Array.from(w);
     }
     .cs__chip--3 {
       animation: cs-bob-3 9s ease-in-out infinite alternate;
-    }
-    .cs__mouse span {
-      animation: cs-wheel 1.8s ease-in-out infinite;
     }
     .cs :global(.cs__bg) {
       animation: cs-zoom 2.4s var(--ease) both;
@@ -525,16 +491,6 @@ const word = (w: string) => Array.from(w);
   @keyframes cs-bob-3 {
     to {
       transform: translateZ(100px) translateY(-14px);
-    }
-  }
-  @keyframes cs-wheel {
-    0% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(10px);
-      opacity: 0;
     }
   }
   @keyframes cs-zoom {

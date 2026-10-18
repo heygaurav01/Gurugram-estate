@@ -101,6 +101,10 @@ export const projectSchema = z
       authorizedToUseName: z.boolean(),
       authorizedToUseLogo: z.boolean(),
       authorizedAssets: z.boolean(),
+      /** True only with a written channel partner agreement. Changes the disclosure wording. */
+      authorizedChannelPartner: z.boolean().default(false),
+      /** Where the written authorization is filed, e.g. "CP agreement ref ..., dated ...". */
+      authorizationProof: z.string().optional(),
       about: z.string().optional(),
       aboutSource: z.string().optional(),
     }),
@@ -240,6 +244,8 @@ export const assetSchema = z.object({
   kind: z.enum(["photo", "render", "plan", "logo", "map", "illustration"]),
   /** True when the file came from the developer (renders, plans, logo, marketing kit). */
   fromDeveloper: z.boolean().default(false),
+  /** Logo variant made for dark backgrounds (e.g. a white version). */
+  onDark: z.boolean().default(false),
   /** True when the image shows this actual project or site, not a stand-in. */
   projectSpecific: z.boolean().default(false),
   license: z.enum(assetLicenses),

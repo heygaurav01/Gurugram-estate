@@ -1,0 +1,38 @@
+---
+/**
+ * Developer logo for authorized channel partners. Renders nothing unless
+ * developer.authorizedToUseLogo is true and an authorized logo is listed in assets.yaml.
+ */
+import { Image } from "astro:assets";
+import type { Asset, Project } from "~/lib/schemas";
+import { projectImage } from "~/lib/images";
+
+type Props = {
+  project: Project;
+  assets: Asset[];
+  /** "dark" = on a dark background (uses the onDark variant). */
+  on?: "light" | "dark";
+  /** Rendered height in px; width follows the aspect ratio. */
+  height: number;
+  class?: string;
+};
+const { project, assets, on = "light", height, class: className } = Astro.props;
+const logos = project.developer.authorizedToUseLogo
+  ? assets.filter((a) => a.kind === "logo" && a.fromDeveloper && a.license === "authorized")
+  : [];
+const logo = logos.find((a) => a.onDark === (on === "dark")) ?? logos[0];
+const src = logo ? projectImage(project.slug, logo.file) : undefined;
+const width = src ? Math.round((src.width / src.height) * height) : 0;
+---
+
+{logo && src && (
+  <Image
+    src={src}
+    alt={logo.alt}
+    width={Math.min(src.width, width * 2)}
+    format="png"
+    class:list={["partner-logo", className]}
+    style={`height:${height}px;width:${width}px`}
+    loading="eager"
+  />
+)}

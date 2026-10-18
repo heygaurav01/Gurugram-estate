@@ -59,9 +59,9 @@ export const ON_REQUEST = "On request";
 /** Agent disclosure required on every page. */
 export function agentDisclosure(
   settings: SiteSettings,
-  developer?: Pick<Project["developer"], "name">,
-  authorizedChannelPartner = false,
+  developer?: Pick<Project["developer"], "name" | "authorizedChannelPartner">,
 ): string {
+  const authorizedChannelPartner = developer?.authorizedChannelPartner === true;
   const brand = settings.business.brand_name;
   const reraNo = isPlaceholder(settings.business.agent_rera_number)
     ? ON_REQUEST
@@ -387,6 +387,30 @@ export function checkProjectData(input: ProjectCheckInput): Report {
       `business.whatsapp_e164 "${b.whatsapp_e164}" is not a real Indian mobile number.`,
     );
   }
+  // Any use of the developer's name, logo or material must be backed by written authorization.
+  const d = p.developer;
+  const authorized =
+    d.authorizedChannelPartner ||
+    d.authorizedToUseName ||
+    d.authorizedToUseLogo ||
+    d.authorizedAssets;
+  if (authorized && isPlaceholder(d.authorizationProof)) {
+    blocker(
+      "authorization",
+      "developer.authorizationProof is empty. Record the channel partner agreement (reference and date) before publishing.",
+    );
+  }
+  if (
+    (d.authorizedToUseLogo || d.authorizedAssets) &&
+    !d.authorizedChannelPartner &&
+    !d.authorizedToUseName
+  ) {
+    err(
+      "authorization",
+      "Developer logo or assets are authorized but use of the developer's name is not.",
+    );
+  }
+
   // The privacy policy (DPDP Act) and disclaimer need a reachable controller and grievance contact.
   const contactFields = [
     "email",

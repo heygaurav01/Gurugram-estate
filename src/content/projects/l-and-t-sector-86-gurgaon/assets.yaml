@@ -1,11 +1,35 @@
 # Asset inventory for L&T Sector 86. Every file in images/ must be listed here.
 # license: owned | authorized | licensed | open   ("unknown" fails the build)
-# Developer renders, plans and logos need fromDeveloper: true AND the matching
-# authorization flag in project.yaml. Renders: caption "Artist's impression".
-# Stand-in photos/illustrations: caption "Representative image".
 #
-# The L&T Realty logo is NOT listed: developer.authorizedToUseLogo is false.
+# L&T material (from the channel partner marketing kit):
+#   fromDeveloper: true, license: authorized, licenseProof: the agreement reference.
+#   Renders: kind render, caption "Artist's impression".
+#   Plans: kind plan, usage [plan]. Gallery images: usage [gallery].
+#   Photos not of this project: caption "Representative image".
+# Do not add images copied from lntrealty.com or other websites; use the kit files.
+
 assets:
+  - id: lt-realty-logo
+    file: lt-realty-logo.png
+    alt: "L&T Realty"
+    kind: logo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: channel partner agreement reference"
+    source: "Supplied by the site owner (authorized L&T Realty channel partner), 2026-10-18"
+    usage: [developer]
+
+  - id: lt-realty-logo-white
+    file: lt-realty-logo-white.png
+    alt: "L&T Realty"
+    kind: logo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: channel partner agreement reference"
+    onDark: true
+    source: "White version of the supplied logo, for dark backgrounds"
+    usage: [developer]
+
   - id: skyline-illustration
     file: gurugram-skyline-dusk-illustration.png
     alt: "Flat illustration of residential towers at dusk with lit windows. Not the actual project."

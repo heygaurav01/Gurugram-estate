@@ -30,6 +30,7 @@ const focus = project.theme.heroFocus ?? "50% 50%";
 
   <div class="container hero__content">
     <p class="eyebrow hero__eyebrow" data-hero-line>
+      {project.developer.authorizedToUseName && <span>By {project.developer.name} &middot; </span>}
       {project.location.sector}, {project.location.city}
     </p>
     <h1 id="hero-title" class="hero__title" data-hero-line>

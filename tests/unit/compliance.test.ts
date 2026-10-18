@@ -52,6 +52,7 @@ const asset = (over: Partial<Asset> = {}): Asset => ({
   caption: "Representative image",
   kind: "photo",
   fromDeveloper: false,
+  onDark: false,
   projectSpecific: false,
   license: "licensed",
   licenseProof: "Invoice 42",
@@ -66,6 +67,15 @@ const baseProject: Project = {
   theme: { ...realProject.theme, heroImageId: undefined },
   seo: { ...realProject.seo, ogImageId: undefined },
   location: { ...realProject.location, mapImageId: undefined },
+  // Unauthorized baseline so authorization rules can be tested in both directions.
+  developer: {
+    ...realProject.developer,
+    authorizedChannelPartner: false,
+    authorizedToUseName: false,
+    authorizedToUseLogo: false,
+    authorizedAssets: false,
+  },
+  sections: { ...realProject.sections, developer: false },
 };
 const realAssets = assetsFileSchema.parse(
   readYaml("../../src/content/projects/l-and-t-sector-86-gurgaon/assets.yaml"),
@@ -343,6 +353,42 @@ describe("helpers", () => {
   it("shows On request for a TBD agent RERA number", () => {
     expect(agentDisclosure(realSettings)).toContain("HARERA agent registration no. On request.");
     expect(agentDisclosure(realSettings)).toContain("independent real estate agent");
+  });
+
+  it("names the developer only for authorized channel partners", () => {
+    const cp = agentDisclosure(realSettings, {
+      name: "L&T Realty",
+      authorizedChannelPartner: true,
+    });
+    expect(cp).toContain("an authorized channel partner of L&T Realty");
+    expect(cp).toContain("This is not the developer's official website.");
+    expect(
+      agentDisclosure(realSettings, { name: "L&T Realty", authorizedChannelPartner: false }),
+    ).toContain("independent");
+  });
+
+  it("requires authorization proof before a production launch", () => {
+    const authorizedNoProof = {
+      ...input({ production: true }),
+      project: {
+        ...realProject,
+        developer: { ...realProject.developer, authorizationProof: "TBD" },
+      },
+      assets: realAssets,
+      imageFiles: realAssets.map((a) => a.file),
+    };
+    expect(ruleIds(checkProjectData(authorizedNoProof))).toContain("authorization");
+    const withProof = {
+      ...authorizedNoProof,
+      project: {
+        ...realProject,
+        developer: {
+          ...realProject.developer,
+          authorizationProof: "CP agreement LTR/CP/1, 2026-05-01",
+        },
+      },
+    };
+    expect(ruleIds(checkProjectData(withProof))).not.toContain("authorization");
   });
 
   it("derives an accessible accent ink", () => {

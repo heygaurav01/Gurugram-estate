@@ -54,6 +54,9 @@ const links = [
   { href: "#plans", label: "Plans" },
   v.amenities.length > 0 && { href: "#amenities", label: "Amenities" },
   { href: "#location", label: "Location" },
+  project.developer.authorizedToUseName &&
+    project.sections.developer &&
+    project.developer.about && { href: "#developer", label: "Developer" },
   project.faqs.length > 0 && { href: "#faq", label: "FAQ" },
 ].filter((l): l is { href: string; label: string } => Boolean(l));
 ---
@@ -76,7 +79,13 @@ const links = [
       fetchpriority="high"
     />
   )}
-  <Nav settings={settings} links={links} overHero cta={ctaCopy(project).primary} />
+  <Nav
+    settings={settings}
+    links={links}
+    overHero
+    cta={ctaCopy(project).primary}
+    partner={{ project, assets }}
+  />
   <main id="main">
     <Hero project={project} settings={settings} image={heroImage} />
     <KeyFacts project={project} />
@@ -88,13 +97,13 @@ const links = [
     <Gallery project={project} assets={assets} />
     <Location project={project} asset={asset} />
     <StatusTimeline project={project} />
-    <Developer project={project} assets={assets} />
+    <Developer project={project} assets={assets} settings={settings} />
     <AboutAgent settings={settings} project={project} />
     <Faq project={project} settings={settings} />
     <CtaBand project={project} />
     <Sources project={project} />
   </main>
-  <Footer settings={settings} project={project} />
+  <Footer settings={settings} project={project} assets={assets} />
   <StickyBar settings={settings} project={project} />
   <EnquiryModal project={project} settings={settings} />
 </BaseLayout>

@@ -3,8 +3,9 @@
  * Sticky nav. Transparent over the hero, solid (frosted) after 80px of scroll.
  * Mobile: menu button opens a full-screen sheet (native <dialog>, focus trapped).
  */
-import type { SiteSettings } from "~/lib/schemas";
+import type { Asset, Project, SiteSettings } from "~/lib/schemas";
 import Wordmark from "./Wordmark.astro";
+import PartnerLogo from "./PartnerLogo.astro";
 
 type Props = {
   settings: SiteSettings;
@@ -13,13 +14,46 @@ type Props = {
   overHero?: boolean;
   /** Label for the nav CTA, which opens the enquiry modal. Omit to hide it. */
   cta?: string | undefined;
+  /** Co-brand with the developer's logo (authorized channel partners only). */
+  partner?: { project: Project; assets: Asset[] } | undefined;
 };
-const { settings, links = [], overHero = false, cta } = Astro.props;
+const { settings, links = [], overHero = false, cta, partner } = Astro.props;
+const coBrand = partner?.project.developer.authorizedToUseLogo === true;
 ---
 
 <header class:list={["nav", { "nav--over-hero": overHero }]} data-nav>
   <div class="container nav__inner">
-    <Wordmark settings={settings} />
+    {coBrand && partner ? (
+      <div class="nav__brand">
+        <a
+          href={`/${partner.project.slug}/`}
+          class="nav__partner"
+          aria-label={`${partner.project.name}, home`}
+        >
+          <PartnerLogo
+            project={partner.project}
+            assets={partner.assets}
+            on="dark"
+            height={46}
+            class="nav__logo nav__logo--on-dark"
+          />
+          <PartnerLogo
+            project={partner.project}
+            assets={partner.assets}
+            on="light"
+            height={46}
+            class="nav__logo nav__logo--on-light"
+          />
+        </a>
+        <span class="nav__divider" aria-hidden="true" />
+        <div class="nav__cp">
+          <Wordmark settings={settings} class="nav__wordmark" />
+          <span class="nav__cp-label">Authorized channel partner</span>
+        </div>
+      </div>
+    ) : (
+      <Wordmark settings={settings} />
+    )}
     {links.length > 0 && (
       <nav class="nav__links" aria-label="Page sections">
         <ul role="list">
@@ -150,6 +184,80 @@ const { settings, links = [], overHero = false, cta } = Astro.props;
     justify-content: space-between;
     gap: var(--space-5);
     min-height: 4.25rem;
+  }
+  .nav__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+  .nav__partner {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    min-height: var(--tap-min);
+  }
+  .nav__partner :global(img) {
+    flex: none;
+    max-width: none;
+  }
+  .nav__cp-label {
+    white-space: nowrap;
+  }
+  @media (max-width: 419.98px) {
+    .nav__brand {
+      gap: var(--space-2);
+    }
+    .nav__partner :global(img) {
+      height: 38px !important;
+      width: auto !important;
+    }
+    .nav__cp :global(.nav__wordmark) {
+      max-width: 6.5em;
+      font-size: 0.95rem;
+      line-height: 1.05;
+      white-space: normal;
+    }
+    .nav__cp-label {
+      display: none;
+    }
+  }
+  /* White logo over the dark hero, dark logo once the nav turns solid. */
+  .nav :global(.nav__logo--on-light),
+  .nav--over-hero:not(.is-solid) :global(.nav__logo--on-light) {
+    display: none;
+  }
+  .nav--over-hero:not(.is-solid) :global(.nav__logo--on-dark) {
+    display: block;
+  }
+  .nav:not(.nav--over-hero) :global(.nav__logo--on-dark),
+  .nav.is-solid :global(.nav__logo--on-dark) {
+    display: none;
+  }
+  .nav:not(.nav--over-hero) :global(.nav__logo--on-light),
+  .nav.is-solid :global(.nav__logo--on-light) {
+    display: block;
+  }
+  .nav__divider {
+    width: 1px;
+    height: 2rem;
+    background: currentColor;
+    opacity: 0.35;
+  }
+  .nav__cp {
+    display: grid;
+    line-height: 1.1;
+  }
+  .nav__cp :global(.nav__wordmark) {
+    min-height: 0;
+    font-size: 1.05rem;
+  }
+  .nav__cp-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
   }
   .nav__links {
     display: none;

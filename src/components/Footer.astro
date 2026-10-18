@@ -1,12 +1,17 @@
 ---
 /** Footer: disclosure, agent RERA, project RERA status, HARERA link, legal links. */
-import type { Project, SiteSettings } from "~/lib/schemas";
+import type { Asset, Project, SiteSettings } from "~/lib/schemas";
 import { HARERA_URL, ON_REQUEST, isPlaceholder, reraStatusLine } from "~/lib/compliance";
 import Disclosure from "./Disclosure.astro";
 import Wordmark from "./Wordmark.astro";
+import PartnerLogo from "./PartnerLogo.astro";
 
-type Props = { settings: SiteSettings; project?: Project | undefined };
-const { settings, project } = Astro.props;
+type Props = {
+  settings: SiteSettings;
+  project?: Project | undefined;
+  assets?: Asset[] | undefined;
+};
+const { settings, project, assets = [] } = Astro.props;
 const reraNo = isPlaceholder(settings.business.agent_rera_number)
   ? ON_REQUEST
   : settings.business.agent_rera_number;
@@ -16,6 +21,12 @@ const year = new Date().getFullYear();
 <footer class="footer">
   <div class="container footer__inner">
     <div class="footer__brand stack">
+      {project?.developer.authorizedChannelPartner && (
+        <div class="footer__cobrand">
+          <PartnerLogo project={project} assets={assets} on="dark" height={56} />
+          <p class="footer__cp">Authorized channel partner of {project.developer.name}</p>
+        </div>
+      )}
       <Wordmark settings={settings} />
       <Disclosure settings={settings} developer={project?.developer} tone="dark" />
     </div>
@@ -71,6 +82,20 @@ const year = new Date().getFullYear();
   .footer__inner {
     display: grid;
     gap: var(--space-7);
+  }
+  .footer__cobrand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid rgb(244 241 234 / 0.18);
+  }
+  .footer__cp {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(244 241 234 / 0.8);
   }
   .footer__rera {
     display: grid;

@@ -31,6 +31,9 @@ The master prompt and blueprint are the source of truth. The rules below apply t
 
 ### Branding and assets
 
+- Gurgaon Properties is an authorized L&T Realty channel partner for L&T Sector 86 (owner confirmed 2026-10-18). Co-branding: L&T Realty logo leads in the nav, hero eyebrow names the developer, footer shows "Authorized channel partner of L&T Realty". The site must still never claim to BE L&T Realty or the official website; the disclosure stays on every page.
+- `developer.authorizationProof` must record the agreement reference and date (production build fails without it).
+
 - Developer logos, renders, master plans and floor plans only if `developer.authorizedToUseLogo` / `authorizedAssets` is true AND the file is in `assets.yaml` with `license: authorized` and `fromDeveloper: true`.
 - Every image must be listed in `assets.yaml` with `license` in [owned, authorized, licensed, open]. Build fails on any unlisted image or `license: unknown`.
 - Renders are captioned "Artist's impression". Non-project photos and illustrations are captioned "Representative image".

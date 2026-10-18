@@ -197,6 +197,18 @@ export const projectSchema = z
       otp: z.boolean(),
       intents: z.array(z.enum(formIntents)).min(1),
     }),
+    /** Display details for source URLs used by facts (shown as cards in the Sources section). */
+    sourceInfo: z
+      .array(
+        z.object({
+          url: z.string().min(3),
+          title: z.string().min(3),
+          publisher: z.string().min(2),
+          /** ISO date the source was published. */
+          published: z.string().optional(),
+        }),
+      )
+      .default([]),
     /** Supporting imagery per section (asset ids). Empty slots simply render no image. */
     sectionImages: z
       .object({

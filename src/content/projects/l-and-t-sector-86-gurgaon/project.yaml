@@ -118,6 +118,17 @@ form:
   otp: false
   intents: [hero, pricing, floor-plan, gallery, location, footer, sticky, nav]
 
+# Display details for each source URL (Sources cards).
+sourceInfo:
+  - url: "https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/"
+    title: "CAM advises L&T Realty on INR 1,123 crore acquisition of International Green Scapes"
+    publisher: "SCC Online"
+    published: "2026-05-16"
+  - url: "https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition"
+    title: "L&T Realty Properties expands development portfolio with NCR land acquisition"
+    publisher: "Outlook Business"
+    published: "2026-04-27"
+
 # Supporting imagery per section (asset ids from assets.yaml).
 sectionImages:
   overview: detail-city-view

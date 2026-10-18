@@ -18,17 +18,17 @@
   --success: #2f5d3a;
 
   /* Type */
-  --font-display: "Fraunces Variable", Georgia, serif;
+  --font-display: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
   --font-body: "Manrope Variable", system-ui, sans-serif;
   --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
   --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
   --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --step-2: clamp(1.6rem, 1.4rem + 1vw, 2.2rem);
-  --step-3: clamp(2.2rem, 1.8rem + 2vw, 3.4rem);
-  --step-4: clamp(2.8rem, 2rem + 4vw, 5.6rem);
+  --step-2: clamp(1.75rem, 1.5rem + 1.1vw, 2.45rem);
+  --step-3: clamp(2.4rem, 1.9rem + 2.3vw, 3.9rem);
+  --step-4: clamp(3rem, 2.1rem + 4.4vw, 6.2rem);
   --leading-body: 1.6;
-  --leading-display: 1.04;
-  --tracking-display: -0.02em;
+  --leading-display: 1;
+  --tracking-display: -0.012em;
   --tracking-eyebrow: 0.14em;
 
   /* Space and layout */

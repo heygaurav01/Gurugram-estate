@@ -30,6 +30,7 @@ export function initEnquiry(): void {
   const title = dialog.querySelector<HTMLElement>("[data-enquiry-title]")!;
   const live = dialog.querySelector<HTMLElement>("[data-enquiry-live]")!;
   const failure = dialog.querySelector<HTMLElement>("[data-enquiry-failure]")!;
+  const success = dialog.querySelector<HTMLElement>("[data-enquiry-success]")!;
   const submitLabel = dialog.querySelector<HTMLElement>("[data-submit-label]")!;
   const submitButtons = Array.from(
     form.querySelectorAll<HTMLButtonElement>('button[type="submit"]'),
@@ -75,7 +76,38 @@ export function initEnquiry(): void {
     form.classList.toggle("is-failed", on);
   };
 
+  const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /** Close with the exit animation; instant under reduced motion. */
+  const closeAnimated = (): Promise<void> =>
+    new Promise((resolve) => {
+      if (!dialog.open) return resolve();
+      if (reduceMotion()) {
+        dialog.close();
+        return resolve();
+      }
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        dialog.removeEventListener("animationend", onEnd);
+        dialog.classList.remove("is-closing");
+        dialog.close();
+        resolve();
+      };
+      const onEnd = (e: AnimationEvent) => {
+        if (e.target === dialog) finish();
+      };
+      dialog.addEventListener("animationend", onEnd);
+      dialog.classList.add("is-closing");
+      // Safety net in case the animation is skipped by the browser.
+      window.setTimeout(finish, 450);
+    });
+
   const open = (nextIntent: FormIntent, from: HTMLElement | null) => {
+    form.hidden = false;
+    success.hidden = true;
+    dialog.classList.remove("is-closing");
     trigger = from;
     intent = nextIntent;
     title.textContent = headings[nextIntent] ?? headings.hero ?? title.textContent;
@@ -102,10 +134,17 @@ export function initEnquiry(): void {
     open(i, t);
   });
 
-  dialog.querySelector("[data-enquiry-close]")?.addEventListener("click", () => dialog.close());
+  dialog
+    .querySelector("[data-enquiry-close]")
+    ?.addEventListener("click", () => void closeAnimated());
   // Backdrop click: the click lands on the dialog element itself, outside the panel.
   dialog.addEventListener("click", (e) => {
-    if (e.target === dialog) dialog.close();
+    if (e.target === dialog) void closeAnimated();
+  });
+  // Esc: play the exit animation instead of closing abruptly.
+  dialog.addEventListener("cancel", (e) => {
+    e.preventDefault();
+    void closeAnimated();
   });
   dialog.addEventListener("close", () => {
     document.documentElement.style.overflow = "";
@@ -179,7 +218,16 @@ export function initEnquiry(): void {
     const res = await submitLead(lead);
     if (res.ok) {
       emit("generate_lead", { intent, project: slug, eventId: idempotencyKey });
-      window.location.assign(thanks(res.leadId));
+      const next = thanks(res.leadId);
+      if (!reduceMotion()) {
+        // Confirm in place, close the form with its exit animation, then show the thank-you page.
+        form.hidden = true;
+        success.hidden = false;
+        live.textContent = "Thank you. We have your details.";
+        await new Promise((r) => window.setTimeout(r, 900));
+        await closeAnimated();
+      }
+      window.location.assign(next);
       return; // stay in the submitting state while the browser navigates
     }
     setSubmitting(false);

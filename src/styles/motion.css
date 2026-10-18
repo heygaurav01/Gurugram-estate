@@ -28,6 +28,9 @@
   .hero__content > [data-hero-line]:nth-child(5) {
     animation-delay: 440ms;
   }
+  .hero__meta[data-hero-line] {
+    animation: gp-rise 0.9s var(--ease) 520ms both;
+  }
 
   /* Section reveals: fade up 20px once at 15% visibility, 500ms. */
   html.reveal-ready [data-reveal] {

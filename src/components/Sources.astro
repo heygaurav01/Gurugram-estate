@@ -1,5 +1,5 @@
 ---
-/** Numbered sources for every fact marker on the page. */
+/** Numbered source cards for every fact marker on the page. */
 import type { Project } from "~/lib/schemas";
 import { formatDate } from "~/lib/format";
 import { buildSources, sourceLabel } from "~/lib/view";
@@ -7,30 +7,59 @@ import { buildSources, sourceLabel } from "~/lib/view";
 type Props = { project: Project };
 const { project } = Astro.props;
 const { list } = buildSources(project);
+const info = new Map(project.sourceInfo.map((s) => [s.url, s]));
 ---
 
 {list.length > 0 && (
   <section class="sources" aria-labelledby="sources-title">
     <div class="container">
-      <h2 id="sources-title" class="sources__title">
-        Sources
-      </h2>
-      <ol class="sources__list">
-        {list.map((s) => (
-          <li id={`source-${s.n}`}>
-            {s.isUrl ? (
-              <a href={s.source} rel="noopener" target="_blank">
-                {sourceLabel(s.source)}
-                <span class="visually-hidden"> (opens in a new tab)</span>
-              </a>
-            ) : (
-              <span>{s.source}</span>
-            )}
-            {s.verifiedOn && (
-              <span class="sources__date">, checked {formatDate(s.verifiedOn)}</span>
-            )}
-          </li>
-        ))}
+      <div class="sources__head">
+        <p class="eyebrow">Sources</p>
+        <h2 id="sources-title" class="sources__title">
+          Where these facts come from
+        </h2>
+        <p class="sources__intro">
+          Every numbered marker on this page points to one of these. We recheck them before each
+          update.
+        </p>
+      </div>
+      <ol class="sources__grid" role="list">
+        {list.map((s) => {
+          const meta = info.get(s.source);
+          const label = meta?.publisher ?? (s.isUrl ? sourceLabel(s.source) : "Source");
+          const card = (
+            <>
+              <span class="sources__num" aria-hidden="true">
+                {String(s.n).padStart(2, "0")}
+              </span>
+              <span class="sources__publisher">{label}</span>
+              <span class="sources__headline">{meta?.title ?? s.source}</span>
+              <span class="sources__dates">
+                {meta?.published && <span>Published {formatDate(meta.published)}</span>}
+                {s.verifiedOn && <span>Checked {formatDate(s.verifiedOn)}</span>}
+              </span>
+              {s.isUrl && (
+                <span class="sources__go" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M7 17L17 7M9 7h8v8"></path>
+                  </svg>
+                </span>
+              )}
+            </>
+          );
+          return (
+            <li id={`source-${s.n}`} class="sources__item" data-reveal>
+              {s.isUrl ? (
+                <a class="sources__card" href={s.source} rel="noopener" target="_blank">
+                  {card}
+                  <span class="visually-hidden"> (source {s.n}, opens in a new tab)</span>
+                </a>
+              ) : (
+                <div class="sources__card">{card}</div>
+              )}
+            </li>
+          );
+        })}
       </ol>
     </div>
   </section>
@@ -38,34 +67,109 @@ const { list } = buildSources(project);
 
 <style>
   .sources {
-    padding-block: var(--space-7);
+    padding-block: var(--space-section);
     border-top: 1px solid var(--hairline);
-    font-size: var(--step--1);
-    color: var(--ink-2);
+    background: var(--paper);
+  }
+  .sources__head {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
   }
   .sources__title {
-    margin-bottom: var(--space-3);
-    font-family: var(--font-body);
-    font-size: 0.75rem;
+    font-size: var(--step-2);
+  }
+  .sources__intro {
+    color: var(--ink-2);
+  }
+  .sources__grid {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .sources__card {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-2) var(--space-4);
+    height: 100%;
+    padding: var(--space-5) var(--space-7) var(--space-5) var(--space-5);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    background: var(--bone);
+    color: var(--ink);
+    text-decoration: none;
+    transition:
+      border-color var(--dur) var(--ease),
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+  a.sources__card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -18px rgb(18 17 15 / 0.35);
+  }
+  .sources__num {
+    grid-row: span 3;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--accent-ink);
+  }
+  .sources__publisher {
+    font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     color: var(--stone);
   }
-  .sources__list {
-    display: grid;
-    gap: var(--space-2);
-    padding-left: 1.5rem;
+  .sources__headline {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.2;
   }
-  .sources__list li:target {
-    background: var(--paper);
-    outline: 1px solid var(--accent);
-  }
-  .sources__list a {
-    display: inline-block;
-    min-height: 24px;
-  }
-  .sources__date {
+  .sources__dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    font-size: 0.8rem;
     color: var(--stone);
+  }
+  .sources__go {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--stone);
+    transition:
+      color var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+  .sources__go svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+  }
+  a.sources__card:hover .sources__go {
+    color: var(--accent-ink);
+    transform: translate(2px, -2px);
+  }
+  .sources__item:target .sources__card {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgb(140 106 63 / 0.25);
+  }
+  @media (min-width: 768px) {
+    .sources__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 </style>

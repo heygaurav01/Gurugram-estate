@@ -56,11 +56,6 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
           ) : (
             <PartnerWordmark project={project} size="lg" />
           )}
-          <span class="footer__divider" aria-hidden="true"></span>
-          <div class="footer__cobrand-text">
-            <Wordmark settings={settings} class="footer__wordmark" />
-            <span class="footer__cp">Authorized channel partner of {project.developer.name}</span>
-          </div>
         </div>
       ) : (
         <Wordmark settings={settings} class="footer__wordmark" variant={variant} />
@@ -220,26 +215,13 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
     align-items: center;
     gap: var(--space-4);
   }
-  .footer__divider {
-    width: 1px;
-    height: 44px;
-    background: rgb(244 241 234 / 0.25);
-  }
-  .footer__cobrand-text {
-    display: grid;
-    gap: 2px;
-  }
   .footer :global(.footer__wordmark) {
     min-height: 0;
     color: var(--on-dark);
     font-size: 1.5rem;
   }
-  .footer__cp {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent-soft);
+  .footer__cobrand {
+    color: var(--on-dark);
   }
   .footer__top-actions {
     display: flex;

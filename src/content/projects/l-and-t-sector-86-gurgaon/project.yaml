@@ -112,6 +112,8 @@ seo:
 theme:
   accent: "#8C6A3F"
   heroImageId: interior-living
+  # Hero slideshow, crossfading every 3 s (add kit renders here as they arrive).
+  heroImageIds: [interior-living, interior-bedroom]
   heroFocus: "50% 55%"
 
 form:

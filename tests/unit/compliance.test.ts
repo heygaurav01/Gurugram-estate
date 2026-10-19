@@ -64,7 +64,7 @@ const asset = (over: Partial<Asset> = {}): Asset => ({
 /** The real project minus image references, so asset tests control the asset list. */
 const baseProject: Project = {
   ...realProject,
-  theme: { ...realProject.theme, heroImageId: undefined },
+  theme: { ...realProject.theme, heroImageId: undefined, heroImageIds: undefined },
   seo: { ...realProject.seo, ogImageId: undefined },
   location: { ...realProject.location, mapImageId: undefined },
   sectionImages: {},

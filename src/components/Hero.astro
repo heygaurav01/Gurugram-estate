@@ -12,8 +12,10 @@ import Picture from "./Picture.astro";
 import ReraBadge from "./ReraBadge.astro";
 import Disclosure from "./Disclosure.astro";
 
-type Props = { project: Project; settings: SiteSettings; image?: Asset | undefined };
-const { project, settings, image } = Astro.props;
+type Props = { project: Project; settings: SiteSettings; images?: Asset[] };
+const { project, settings, images = [] } = Astro.props;
+const image = images[0];
+const slideshow = images.length > 1;
 const cta = ctaCopy(project);
 const focus = project.theme.heroFocus ?? "50% 50%";
 
@@ -25,15 +27,40 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
 ---
 
 <section class:list={["hero", { "hero--no-image": !image }]} aria-labelledby="hero-title">
-  {image && (
-    <Picture
-      slug={project.slug}
-      asset={image}
-      sizes="100vw"
-      eager
-      class="hero__img"
-      style={`object-position:${focus}`}
-    />
+  {images.length > 0 && (
+    <div class="hero__slides" data-hero-slides data-interval="3000">
+      {images.map((img, i) => (
+        <div
+          class:list={["hero__slide", { "is-active": i === 0 }]}
+          aria-hidden={i === 0 ? undefined : "true"}
+        >
+          <Picture
+            slug={project.slug}
+            asset={img}
+            sizes="100vw"
+            eager={i === 0}
+            class="hero__img"
+            style={`object-position:${focus}`}
+          />
+        </div>
+      ))}
+    </div>
+  )}
+  {slideshow && (
+    <button
+      type="button"
+      class="hero__slidectl"
+      aria-label="Pause background slideshow"
+      aria-pressed="false"
+      data-hero-pause
+    >
+      <svg class="hero__icon-pause" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9 6v12M15 6v12"></path>
+      </svg>
+      <svg class="hero__icon-play" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9 6.5v11l8.5-5.5z"></path>
+      </svg>
+    </button>
   )}
   <div class="hero__scrim" aria-hidden="true"></div>
 
@@ -83,6 +110,108 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
 
   {image?.caption && <p class="hero__caption">{image.caption}</p>}
 </section>
+
+<script>
+  // Background slideshow: crossfade every 3 s. Pauses when the tab is hidden or
+  // the visitor presses pause; never runs under prefers-reduced-motion.
+  const root = document.querySelector<HTMLElement>("[data-hero-slides]");
+  const slides = root ? Array.from(root.querySelectorAll<HTMLElement>(".hero__slide")) : [];
+  const toggle = document.querySelector<HTMLButtonElement>("[data-hero-pause]");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (root && slides.length > 1) {
+    let index = 0;
+    let paused = reduce;
+    const show = (next: number) => {
+      slides[index]!.classList.remove("is-active");
+      slides[index]!.setAttribute("aria-hidden", "true");
+      index = next % slides.length;
+      slides[index]!.classList.add("is-active");
+      slides[index]!.removeAttribute("aria-hidden");
+    };
+    const setPaused = (value: boolean) => {
+      paused = value;
+      toggle?.setAttribute("aria-pressed", String(value));
+      toggle?.setAttribute(
+        "aria-label",
+        value ? "Play background slideshow" : "Pause background slideshow",
+      );
+    };
+    setPaused(reduce);
+    toggle?.addEventListener("click", () => setPaused(!paused));
+    window.setInterval(
+      () => {
+        if (!paused && !document.hidden) show(index + 1);
+      },
+      Number(root.dataset.interval) || 3000,
+    );
+  }
+</script>
+
+<style>
+  /* Slideshow: slides stack and crossfade; the active one slowly zooms out. */
+  .hero__slides {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .hero__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1200ms var(--ease);
+  }
+  .hero__slide.is-active {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__slide.is-active :global(.hero__img) {
+      animation: hero-kenburns 6s linear both;
+    }
+  }
+  @keyframes hero-kenburns {
+    from {
+      transform: scale(1.08);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  .hero__slidectl {
+    position: absolute;
+    right: var(--gutter);
+    top: calc(4.25rem + var(--space-3) + 2.1rem);
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid rgb(244 241 234 / 0.45);
+    border-radius: 50%;
+    background: rgb(18 17 15 / 0.45);
+    color: var(--on-dark);
+    cursor: pointer;
+  }
+  .hero__slidectl:hover {
+    background: rgb(18 17 15 / 0.7);
+  }
+  .hero__slidectl svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+  .hero__icon-play {
+    display: none;
+    fill: currentColor !important;
+  }
+  .hero__slidectl[aria-pressed="true"] .hero__icon-pause {
+    display: none;
+  }
+  .hero__slidectl[aria-pressed="true"] .hero__icon-play {
+    display: block;
+  }
+</style>
 
 <style>
   .hero {

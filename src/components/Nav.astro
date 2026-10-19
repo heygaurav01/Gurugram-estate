@@ -186,7 +186,8 @@ const hasLogo =
   }
   @supports (backdrop-filter: blur(12px)) {
     .nav.is-solid {
-      background: rgb(244 241 234 / 0.82);
+      /* Translucent page color, so it works for light and dark project themes. */
+      background: color-mix(in srgb, var(--bone) 84%, transparent);
       backdrop-filter: blur(12px);
     }
   }

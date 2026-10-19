@@ -198,6 +198,8 @@ export const projectSchema = z
         /** "dark" switches the page to the noir palette (tokens.css). */
         mode: z.enum(["light", "dark"]).default("light"),
         heroImageId: z.string().optional(),
+        /** Hero slideshow (asset ids, first one loads first). Falls back to heroImageId. */
+        heroImageIds: z.array(z.string()).optional(),
         heroFocus: z
           .string()
           .regex(/^\d{1,3}% \d{1,3}%$/, 'Use "x% y%", e.g. "50% 40%"')

@@ -28,7 +28,7 @@ assets:
     kind: illustration
     license: owned
     source: "Noir grade of an AI-generated interior supplied by the site owner, 2026-10-18"
-    usage: [gallery]
+    usage: [hero, gallery]
 
   - id: noir-city
     file: noir-city-view.jpg

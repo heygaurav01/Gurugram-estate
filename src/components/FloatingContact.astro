@@ -98,14 +98,15 @@ const c = contactView(settings, project);
   .fab__wa-phone {
     fill: #fff;
   }
+  /* Always a dark disc with a light icon, on light and dark themes alike. */
   .fab__btn--call {
-    background: var(--ink);
+    background: var(--on-light);
   }
   .fab__btn--call svg {
     width: 24px;
     height: 24px;
     fill: none;
-    stroke: var(--bone);
+    stroke: var(--on-dark);
     stroke-width: 1.7;
     stroke-linejoin: round;
   }

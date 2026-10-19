@@ -52,7 +52,7 @@ assets:
     projectSpecific: false
     license: owned
     source: "AI-generated image supplied by the site owner, 2026-10-18"
-    usage: [gallery]
+    usage: [hero, gallery]
 
   - id: skyline-illustration
     file: gurugram-skyline-dusk-illustration.png

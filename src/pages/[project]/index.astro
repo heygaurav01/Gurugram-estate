@@ -37,7 +37,10 @@ export const getStaticPaths = (async () => {
 const { project: slug } = Astro.params;
 const settings = await getSettings();
 const { project, assets, asset, theme } = await getProjectBundle(slug);
-const heroImage = project.theme.heroImageId ? asset(project.theme.heroImageId) : undefined;
+const heroIds =
+  project.theme.heroImageIds ?? (project.theme.heroImageId ? [project.theme.heroImageId] : []);
+const heroImages = heroIds.map((id) => asset(id));
+const heroImage = heroImages[0];
 
 // Preload the hero AVIF with the same widths the <Picture> uses.
 const heroSrc = heroImage ? projectImage(slug, heroImage.file) : undefined;
@@ -128,7 +131,7 @@ const footerLinks = [
   )}
   <Nav settings={settings} links={links} overHero cta="Enquire now" partner={{ project, assets }} />
   <main id="main">
-    <Hero project={project} settings={settings} image={heroImage} />
+    <Hero project={project} settings={settings} images={heroImages} />
     <KeyFacts project={project} />
     <Overview project={project} asset={asset} />
     <Gallery project={project} assets={assets} />

@@ -84,9 +84,6 @@ html[data-mode="dark"] .fab__btn--call {
     inset 0 0 0 1px rgb(216 221 227 / 0.35),
     0 10px 24px -8px rgb(0 0 0 / 0.6);
 }
-html[data-mode="dark"] .fab__btn--call svg {
-  stroke: var(--on-dark);
-}
 
 @media (prefers-reduced-motion: no-preference) {
   html[data-mode="dark"] .hero__accent {

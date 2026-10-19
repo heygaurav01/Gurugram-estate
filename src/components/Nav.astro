@@ -48,11 +48,6 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
             class="nav__logo nav__logo--on-light"
           />
         </a>
-        <span class="nav__divider" aria-hidden="true" />
-        <div class="nav__cp">
-          <Wordmark settings={settings} class="nav__wordmark" />
-          <span class="nav__cp-label">Authorized channel partner</span>
-        </div>
       </div>
     ) : (
       <Wordmark settings={settings} variant={variant} />
@@ -206,25 +201,10 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
     flex: none;
     max-width: none;
   }
-  .nav__cp-label {
-    white-space: nowrap;
-  }
   @media (max-width: 419.98px) {
-    .nav__brand {
-      gap: var(--space-2);
-    }
     .nav__partner :global(img) {
-      height: 38px !important;
+      height: 40px !important;
       width: auto !important;
-    }
-    .nav__cp :global(.nav__wordmark) {
-      max-width: 6.5em;
-      font-size: 0.95rem;
-      line-height: 1.05;
-      white-space: normal;
-    }
-    .nav__cp-label {
-      display: none;
     }
   }
   /* White logo over the dark hero, dark logo once the nav turns solid. */
@@ -242,27 +222,6 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
   .nav:not(.nav--over-hero) :global(.nav__logo--on-light),
   .nav.is-solid :global(.nav__logo--on-light) {
     display: block;
-  }
-  .nav__divider {
-    width: 1px;
-    height: 2rem;
-    background: currentColor;
-    opacity: 0.35;
-  }
-  .nav__cp {
-    display: grid;
-    line-height: 1.1;
-  }
-  .nav__cp :global(.nav__wordmark) {
-    min-height: 0;
-    font-size: 1.05rem;
-  }
-  .nav__cp-label {
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    opacity: 0.8;
   }
   .nav__links {
     display: none;

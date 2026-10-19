@@ -19,7 +19,8 @@ const company = companyName(settings);
 const c = contactView(settings);
 
 // Mood image only (no project content): reuse a listed interior if one exists.
-const [first] = await getProjects({ publishedOnly: true });
+const projects = await getProjects({ publishedOnly: true });
+const [first] = projects;
 let background;
 if (first) {
   const { asset, project } = await getProjectBundle(first.slug);
@@ -43,7 +44,7 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
       company={company}
       background={background}
       phone={c.phone}
-      featured={first ? { href: `/${first.slug}/`, label: first.name } : undefined}
+      featured={projects.map((p) => ({ href: `/${p.slug}/`, label: p.name }))}
     />
 
     <section class="section hub-about" id="contact" aria-labelledby="about-title">

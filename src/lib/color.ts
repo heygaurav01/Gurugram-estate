@@ -25,6 +25,17 @@ export function contrastRatio(fg: string, bg: string): number {
   return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 }
 
+/** Mix a color toward white until it reaches the target contrast on bg (dark themes). */
+export function lightenToContrast(fg: string, bg: string, target = 4.5): string {
+  const base = hexToRgb(fg);
+  for (let k = 0; k <= 1; k += 0.02) {
+    const c = base.map((v) => v + (255 - v) * k) as Rgb;
+    const hex = toHex(c);
+    if (contrastRatio(hex, bg) >= target) return hex;
+  }
+  return "#FFFFFF";
+}
+
 /**
  * Darken a color toward black until it reaches the target contrast on bg.
  * Used to derive a small-text-safe variant of a project accent.

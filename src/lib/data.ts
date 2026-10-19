@@ -2,8 +2,8 @@
 import { getCollection, getEntry } from "astro:content";
 import type { Asset, Project, SiteSettings } from "./schemas";
 import { approvedLicenses } from "./schemas";
-import { darkenToContrast } from "./color";
-import { BONE } from "./compliance";
+import { darkenToContrast, lightenToContrast } from "./color";
+import { BONE, DARK_BG } from "./compliance";
 
 export async function getSettings(): Promise<SiteSettings> {
   const entry = await getEntry("site", "settings");
@@ -24,7 +24,12 @@ export type ProjectBundle = {
   assets: Asset[];
   /** Look up an asset by id. Throws (failing the build) if unlisted or unlicensed. */
   asset: (id: string) => Asset;
-  theme: { accent: string; accentInk: string };
+  theme: {
+    accent: string;
+    accentInk: string;
+    accentSoft?: string | undefined;
+    mode: "light" | "dark";
+  };
 };
 
 export async function getProjectBundle(slug: string): Promise<ProjectBundle> {
@@ -45,10 +50,19 @@ export async function getProjectBundle(slug: string): Promise<ProjectBundle> {
   };
 
   const accent = project.theme.accent ?? "#8C6A3F";
+  const mode = project.theme.mode;
   return {
     project,
     assets,
     asset,
-    theme: { accent, accentInk: darkenToContrast(accent, BONE, 4.5) },
+    theme: {
+      accent,
+      accentInk:
+        mode === "dark"
+          ? lightenToContrast(accent, DARK_BG, 4.5)
+          : darkenToContrast(accent, BONE, 4.5),
+      accentSoft: project.theme.accentSoft,
+      mode,
+    },
   };
 }

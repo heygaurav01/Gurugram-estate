@@ -91,7 +91,12 @@ const steps = [
   .ty {
     padding: calc(4.25rem + var(--space-7)) 0 var(--space-section);
     background:
-      radial-gradient(ellipse at 50% 0%, rgb(140 106 63 / 0.12), transparent 60%), var(--bone);
+      radial-gradient(
+        ellipse at 50% 0%,
+        color-mix(in srgb, var(--accent) 12%, transparent),
+        transparent 60%
+      ),
+      var(--bone);
   }
   .ty__inner {
     display: grid;

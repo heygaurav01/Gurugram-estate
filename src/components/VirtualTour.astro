@@ -88,7 +88,7 @@ const dev = project.developer.authorizedToUseName ? project.developer.name : "th
     overflow: hidden;
     border-radius: 6px;
     background: var(--night);
-    color: var(--bone);
+    color: var(--on-dark);
     text-align: center;
   }
   .tour :global(.tour__img) {
@@ -127,7 +127,7 @@ const dev = project.developer.authorizedToUseName ? project.developer.name : "th
     border: 1px solid rgb(244 241 234 / 0.45);
     background: rgb(244 241 234 / 0.12);
     backdrop-filter: blur(6px);
-    color: var(--ink);
+    color: var(--on-light);
     text-decoration: none;
   }
   .tour__disc {
@@ -136,7 +136,7 @@ const dev = project.developer.authorizedToUseName ? project.developer.name : "th
     width: 96px;
     height: 96px;
     border-radius: 50%;
-    background: var(--bone);
+    background: var(--on-dark);
     box-shadow:
       0 12px 30px -8px rgb(0 0 0 / 0.55),
       inset 0 0 0 1px rgb(255 255 255 / 0.6);
@@ -148,7 +148,7 @@ const dev = project.developer.authorizedToUseName ? project.developer.name : "th
     width: 34px;
     height: 34px;
     margin-left: 5px;
-    fill: var(--ink);
+    fill: var(--on-light);
     transition: transform 420ms var(--ease);
   }
   .tour__play:hover .tour__disc {
@@ -159,7 +159,7 @@ const dev = project.developer.authorizedToUseName ? project.developer.name : "th
     transform: translateX(2px);
   }
   .tour__play:focus-visible {
-    outline: 2px solid var(--bone);
+    outline: 2px solid var(--on-dark);
     outline-offset: 6px;
   }
   .tour__ripple {

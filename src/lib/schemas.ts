@@ -114,6 +114,8 @@ export const projectSchema = z
       authorizedChannelPartner: z.boolean().default(false),
       /** Where the written authorization is filed, e.g. "CP agreement ref ..., dated ...". */
       authorizationProof: z.string().optional(),
+      /** Text lockup shown when no logo file is listed yet, e.g. "M3M | BRABUS". */
+      wordmark: z.string().optional(),
       about: z.string().optional(),
       aboutSource: z.string().optional(),
     }),
@@ -191,13 +193,17 @@ export const projectSchema = z
     theme: z
       .object({
         accent: hexColor.optional(),
+        /** Light accent for details on dark bands (default gold #E4CFA8). */
+        accentSoft: hexColor.optional(),
+        /** "dark" switches the page to the noir palette (tokens.css). */
+        mode: z.enum(["light", "dark"]).default("light"),
         heroImageId: z.string().optional(),
         heroFocus: z
           .string()
           .regex(/^\d{1,3}% \d{1,3}%$/, 'Use "x% y%", e.g. "50% 40%"')
           .optional(),
       })
-      .default({}),
+      .default({ mode: "light" }),
     form: z.object({
       otp: z.boolean(),
       intents: z.array(z.enum(formIntents)).min(1),

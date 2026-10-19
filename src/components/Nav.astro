@@ -6,6 +6,7 @@
 import type { Asset, FormIntent, Project, SiteSettings } from "~/lib/schemas";
 import Wordmark from "./Wordmark.astro";
 import PartnerLogo from "./PartnerLogo.astro";
+import PartnerWordmark from "./PartnerWordmark.astro";
 
 type Props = {
   settings: SiteSettings;
@@ -22,6 +23,11 @@ type Props = {
 };
 const { settings, links = [], overHero = false, cta, partner, variant = "brand" } = Astro.props;
 const coBrand = partner?.project.developer.authorizedToUseLogo === true;
+// Until the official logo file is listed, show the authorized text lockup instead.
+const hasLogo =
+  partner?.assets.some(
+    (a) => a.kind === "logo" && a.fromDeveloper && a.license === "authorized",
+  ) === true;
 ---
 
 <header class:list={["nav", { "nav--over-hero": overHero }]} data-nav>
@@ -33,20 +39,26 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
           class="nav__partner"
           aria-label={`${partner.project.name}, home`}
         >
-          <PartnerLogo
-            project={partner.project}
-            assets={partner.assets}
-            on="dark"
-            height={46}
-            class="nav__logo nav__logo--on-dark"
-          />
-          <PartnerLogo
-            project={partner.project}
-            assets={partner.assets}
-            on="light"
-            height={46}
-            class="nav__logo nav__logo--on-light"
-          />
+          {hasLogo ? (
+            <>
+              <PartnerLogo
+                project={partner.project}
+                assets={partner.assets}
+                on="dark"
+                height={46}
+                class="nav__logo nav__logo--on-dark"
+              />
+              <PartnerLogo
+                project={partner.project}
+                assets={partner.assets}
+                on="light"
+                height={46}
+                class="nav__logo nav__logo--on-light"
+              />
+            </>
+          ) : (
+            <PartnerWordmark project={partner.project} />
+          )}
         </a>
       </div>
     ) : (
@@ -162,7 +174,7 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
       border-color var(--dur) var(--ease);
   }
   .nav--over-hero {
-    color: var(--bone);
+    color: var(--on-dark);
     background: transparent;
     border-color: transparent;
   }
@@ -193,6 +205,7 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
   }
   .nav__partner {
     display: inline-flex;
+    text-decoration: none;
     flex: none;
     align-items: center;
     min-height: var(--tap-min);
@@ -253,9 +266,9 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
     font-size: 0.95rem;
   }
   .nav--over-hero:not(.is-solid) .nav__cta {
-    background: var(--bone);
-    color: var(--ink);
-    border-color: var(--bone);
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
   }
   .nav__menu {
     min-height: var(--tap-min);
@@ -268,7 +281,7 @@ const coBrand = partner?.project.developer.authorizedToUseLogo === true;
     font-size: 0.95rem;
   }
   .nav--over-hero:not(.is-solid) :focus-visible {
-    outline-color: var(--bone);
+    outline-color: var(--on-dark);
   }
 
   @media (min-width: 768px) {

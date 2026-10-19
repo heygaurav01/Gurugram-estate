@@ -301,3 +301,41 @@ test.describe("hub", () => {
     expect(posts[0]).toMatchObject({ project_slug: "general", intent: "general", consent: true });
   });
 });
+
+test.describe("second project: M3M Brabus", () => {
+  const M3M = "/m3m-brabus-sector-58-gurgaon/";
+  test("renders in the noir theme with its own data and opens the enquiry modal", async ({
+    page,
+  }) => {
+    await page.goto(M3M);
+    await expect(page.locator("html")).toHaveAttribute("data-mode", "dark");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("M3M Brabus");
+    await expect(page.locator("[data-enquiry]")).toHaveAttribute(
+      "data-slug",
+      "m3m-brabus-sector-58-gurgaon",
+    );
+    await page.locator('[data-enquire="hero"]').first().click();
+    await expect(page.locator("#enquiry-title")).toHaveText(/Register your interest/);
+  });
+
+  test("submits a lead tagged with the M3M project and lands on its thank-you page", async ({
+    page,
+  }) => {
+    const posts = await mockCrm(page, { status: 200, body: { id: "M3M-1" } });
+    await page.goto(M3M);
+    await openFrom(page, "floor-plan");
+    await fillValid(page);
+    await page.clock.fastForward(4000);
+    await page.getByRole("button", { name: "Send" }).click();
+    await page.waitForURL(/\/m3m-brabus-sector-58-gurgaon\/thank-you\/\?ref=M3M-1$/);
+    expect(posts[0]).toMatchObject({
+      project_slug: "m3m-brabus-sector-58-gurgaon",
+      intent: "floor-plan",
+    });
+  });
+
+  test("homepage lists every live project", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator(".cs__featured")).toHaveCount(2);
+  });
+});

@@ -10,6 +10,8 @@ import { contrastRatio } from "./color";
 
 /** Page background token (--bone). Kept in sync with src/styles/tokens.css. */
 export const BONE = "#F4F1EA";
+/** Page background in the noir theme (--bone in html[data-mode="dark"]). */
+export const DARK_BG = "#0C0C0D";
 
 export type Finding = { rule: string; message: string };
 export type Report = { errors: Finding[]; warnings: Finding[] };
@@ -382,8 +384,9 @@ export function checkProjectData(input: ProjectCheckInput): Report {
 
   // Accent must at least work for large display text and rules (3:1 on bone).
   // Small text uses a darkened variant derived by darkenToContrast().
-  if (p.theme.accent && contrastRatio(p.theme.accent, BONE) < 3) {
-    err("accent-contrast", `theme.accent ${p.theme.accent} is below 3:1 on the bone background.`);
+  const pageBg = p.theme.mode === "dark" ? DARK_BG : BONE;
+  if (p.theme.accent && contrastRatio(p.theme.accent, pageBg) < 3) {
+    err("accent-contrast", `theme.accent ${p.theme.accent} is below 3:1 on the page background.`);
   }
   if (p.rera.status === "registered" && isPlaceholder(p.rera.verifiedOn)) {
     warn(

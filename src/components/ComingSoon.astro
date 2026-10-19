@@ -17,9 +17,9 @@ type Props = {
   /** tel: link for the secondary button. */
   phone?: { href: string; display: string } | undefined;
   /** Link to a live project page, shown as a pill under the buttons. */
-  featured?: { href: string; label: string } | undefined;
+  featured?: Array<{ href: string; label: string }>;
 };
-const { company, background, phone, featured } = Astro.props;
+const { company, background, phone, featured = [] } = Astro.props;
 const word = (w: string) => Array.from(w);
 ---
 
@@ -86,15 +86,21 @@ const word = (w: string) => Array.from(w);
             </a>
           )}
         </div>
-        {featured && (
-          <a class="cs__featured" href={featured.href}>
-            <span class="cs__featured-dot" aria-hidden="true"></span>
-            <span class="cs__featured-tag">Now live</span>
-            <span>{featured.label}</span>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h14M13 6l6 6-6 6"></path>
-            </svg>
-          </a>
+        {featured.length > 0 && (
+          <ul class="cs__featured-list" role="list" aria-label="Live project pages">
+            {featured.map((f) => (
+              <li>
+                <a class="cs__featured" href={f.href}>
+                  <span class="cs__featured-dot" aria-hidden="true"></span>
+                  <span class="cs__featured-tag">Now live</span>
+                  <span>{f.label}</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 12h14M13 6l6 6-6 6"></path>
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </div>
@@ -248,12 +254,18 @@ const word = (w: string) => Array.from(w);
     border-color: rgb(244 241 234 / 0.5);
     backdrop-filter: blur(6px);
   }
+  .cs__featured-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
   .cs__featured {
     display: inline-flex;
     align-items: center;
     gap: var(--space-3);
     min-height: var(--tap-min);
-    margin-top: var(--space-2);
     padding: 0.45rem 0.7rem 0.45rem 0.9rem;
     border: 1px solid rgb(228 207 168 / 0.45);
     border-radius: 999px;

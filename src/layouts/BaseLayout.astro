@@ -15,6 +15,7 @@ import "~/styles/base.css";
 import "~/styles/layout.css";
 import "~/styles/components.css";
 import "~/styles/motion.css";
+import "~/styles/noir.css";
 
 type Props = {
   title: string;
@@ -22,7 +23,14 @@ type Props = {
   /** Path such as "/l-and-t-sector-86-gurgaon/". Query strings are never included. */
   path: string;
   noindex?: boolean;
-  theme?: { accent: string; accentInk: string } | undefined;
+  theme?:
+    | {
+        accent: string;
+        accentInk: string;
+        accentSoft?: string | undefined;
+        mode?: "light" | "dark";
+      }
+    | undefined;
   /** Reserve space for the mobile sticky bar. */
   stickyBar?: boolean;
   /** Absolute URL of a 1200x630 share image. */
@@ -49,12 +57,19 @@ const {
 const settings = await getSettings();
 const ld = jsonLd ?? graph([realEstateAgentLd(settings, Astro.site!)]);
 const themeStyle = theme
-  ? `--project-accent:${theme.accent};--project-accent-ink:${theme.accentInk}`
+  ? [
+      `--project-accent:${theme.accent}`,
+      `--project-accent-ink:${theme.accentInk}`,
+      theme.accentSoft && `--project-accent-soft:${theme.accentSoft}`,
+    ]
+      .filter(Boolean)
+      .join(";")
   : undefined;
+const mode = theme?.mode === "dark" ? "dark" : undefined;
 ---
 
 <!doctype html>
-<html lang="en-IN" style={themeStyle}>
+<html lang="en-IN" style={themeStyle} data-mode={mode}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

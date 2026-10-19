@@ -79,7 +79,7 @@ const dev = project.developer.authorizedToUseName ? project.developer.name : "Th
     content: "";
     position: absolute;
     inset: 10px;
-    border: 1px solid rgb(140 106 63 / 0.55);
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
     border-radius: 2px;
     pointer-events: none;
   }
@@ -97,20 +97,20 @@ const dev = project.developer.authorizedToUseName ? project.developer.name : "Th
     font-size: var(--step-2);
     line-height: 1.15;
     letter-spacing: -0.01em;
-    color: var(--bone);
+    color: var(--on-dark);
   }
   .pricing__btn {
     position: relative;
     z-index: 1;
     width: fit-content;
-    background: var(--bone);
-    color: var(--ink);
-    border-color: var(--bone);
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
   }
   .pricing__btn:hover {
-    background: var(--paper);
+    background: var(--on-dark-hover);
   }
   .pricing :focus-visible {
-    outline-color: var(--bone);
+    outline-color: var(--on-dark);
   }
 </style>

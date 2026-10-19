@@ -94,7 +94,7 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     padding-bottom: var(--space-6);
     overflow: hidden;
     background: var(--night);
-    color: var(--bone);
+    color: var(--on-dark);
   }
   .hero :global(.hero__img),
   .hero :global(picture) {
@@ -152,7 +152,7 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
-    color: var(--bone);
+    color: var(--on-dark);
     text-shadow: 0 1px 12px rgb(0 0 0 / 0.55);
   }
   .hero__rule {
@@ -175,13 +175,13 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     display: block;
     font-style: italic;
     font-weight: 400;
-    color: #e4cfa8;
+    color: var(--accent-soft);
   }
   .hero__tagline {
     max-width: 34ch;
     font-size: var(--step-1);
     line-height: 1.45;
-    color: var(--bone);
+    color: var(--on-dark);
     text-shadow: 0 1px 16px rgb(0 0 0 / 0.55);
   }
   .hero__ctas {
@@ -191,9 +191,9 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     margin-top: var(--space-2);
   }
   .hero__primary {
-    background: var(--bone);
-    color: var(--ink);
-    border-color: var(--bone);
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
   }
   .hero__primary svg {
     width: 1.1rem;
@@ -204,22 +204,22 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     transition: transform var(--dur) var(--ease);
   }
   .hero__primary:hover {
-    background: var(--paper);
+    background: var(--on-dark-hover);
   }
   .hero__primary:hover svg {
     transform: translateX(3px);
   }
   .hero__secondary {
-    color: var(--bone);
+    color: var(--on-dark);
     border-color: rgb(244 241 234 / 0.55);
     backdrop-filter: blur(2px);
   }
   .hero__secondary:hover {
-    background: var(--bone);
-    color: var(--ink);
+    background: var(--on-dark);
+    color: var(--on-light);
   }
   .hero :focus-visible {
-    outline-color: var(--bone);
+    outline-color: var(--on-dark);
   }
 
   /* Bottom info strip. */

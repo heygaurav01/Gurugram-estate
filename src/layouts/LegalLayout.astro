@@ -130,7 +130,7 @@ const body = raw.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/g, (_m, attrs: string, inn
   .legal-hero {
     padding: calc(4.25rem + var(--space-8)) 0 var(--space-8);
     background: var(--night);
-    color: var(--bone);
+    color: var(--on-dark);
   }
   .legal-hero__inner {
     display: grid;
@@ -144,7 +144,7 @@ const body = raw.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/g, (_m, attrs: string, inn
     font-weight: 600;
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
-    color: #e4cfa8;
+    color: var(--accent-soft);
   }
   .legal-hero__rule {
     width: 2.5rem;
@@ -175,7 +175,7 @@ const body = raw.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/g, (_m, attrs: string, inn
     color: rgb(244 241 234 / 0.6);
   }
   .legal-hero__meta dd {
-    color: var(--bone);
+    color: var(--on-dark);
   }
 
   .legal-main {
@@ -301,7 +301,7 @@ const body = raw.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/g, (_m, attrs: string, inn
     font-family: var(--font-display);
     font-size: 1.7rem;
     font-weight: 500;
-    color: var(--bone);
+    color: var(--on-dark);
   }
   .legal-help__actions {
     display: flex;
@@ -309,17 +309,17 @@ const body = raw.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/g, (_m, attrs: string, inn
     gap: var(--space-3);
   }
   .legal-help .btn {
-    background: var(--bone);
-    color: var(--ink);
-    border-color: var(--bone);
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
   }
   .legal-help .btn--ghost {
     background: transparent;
-    color: var(--bone);
+    color: var(--on-dark);
     border-color: rgb(244 241 234 / 0.5);
   }
   .legal-help :focus-visible {
-    outline-color: var(--bone);
+    outline-color: var(--on-dark);
   }
 
   @media (min-width: 1024px) {

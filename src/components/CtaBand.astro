@@ -32,7 +32,7 @@ const ri = isRegisterInterestMode(project);
   .band {
     padding-block: var(--space-section);
     background: var(--night);
-    color: var(--bone);
+    color: var(--on-dark);
   }
   .band__inner {
     display: grid;
@@ -49,15 +49,15 @@ const ri = isRegisterInterestMode(project);
   }
   .band__btn {
     width: fit-content;
-    background: var(--bone);
-    color: var(--ink);
-    border-color: var(--bone);
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
   }
   .band__btn:hover {
-    background: var(--paper);
+    background: var(--on-dark-hover);
   }
   .band :focus-visible {
-    outline-color: var(--bone);
+    outline-color: var(--on-dark);
   }
   @media (min-width: 1024px) {
     .band__inner {

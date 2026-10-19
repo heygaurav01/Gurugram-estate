@@ -19,6 +19,7 @@ import { contactView, RERA_LABEL } from "~/lib/view";
 import Disclosure from "./Disclosure.astro";
 import Wordmark from "./Wordmark.astro";
 import PartnerLogo from "./PartnerLogo.astro";
+import PartnerWordmark from "./PartnerWordmark.astro";
 
 type Props = {
   settings: SiteSettings;
@@ -48,7 +49,13 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
     <div class="footer__top">
       {coBrand && project ? (
         <div class="footer__cobrand">
-          <PartnerLogo project={project} assets={assets} on="dark" height={52} />
+          {assets.some(
+            (a) => a.kind === "logo" && a.fromDeveloper && a.license === "authorized",
+          ) ? (
+            <PartnerLogo project={project} assets={assets} on="dark" height={52} />
+          ) : (
+            <PartnerWordmark project={project} size="lg" />
+          )}
           <span class="footer__divider" aria-hidden="true"></span>
           <div class="footer__cobrand-text">
             <Wordmark settings={settings} class="footer__wordmark" />
@@ -224,7 +231,7 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
   }
   .footer :global(.footer__wordmark) {
     min-height: 0;
-    color: var(--bone);
+    color: var(--on-dark);
     font-size: 1.5rem;
   }
   .footer__cp {
@@ -232,7 +239,7 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #e4cfa8;
+    color: var(--accent-soft);
   }
   .footer__top-actions {
     display: flex;
@@ -240,21 +247,21 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
     gap: var(--space-3);
   }
   .footer__btn {
-    background: var(--bone);
-    color: var(--ink);
-    border-color: var(--bone);
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
   }
   .footer__btn:hover {
-    background: var(--paper);
+    background: var(--on-dark-hover);
   }
   .footer__btn-ghost {
     background: transparent;
-    color: var(--bone);
+    color: var(--on-dark);
     border-color: rgb(244 241 234 / 0.45);
   }
   .footer__btn-ghost:hover {
-    background: var(--bone);
-    color: var(--ink);
+    background: var(--on-dark);
+    color: var(--on-light);
   }
 
   /* 2. Columns */
@@ -275,7 +282,7 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
     letter-spacing: var(--tracking-eyebrow);
     text-transform: uppercase;
     /* Lighter brass for the dark background (above 7:1 on --night). */
-    color: #c9a26b;
+    color: var(--accent-soft);
   }
   .footer__about {
     max-width: 34ch;
@@ -300,7 +307,7 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
   }
   .footer__list a,
   .footer__list span:not(.footer__k) {
-    color: var(--bone);
+    color: var(--on-dark);
   }
   .footer__list a {
     width: fit-content;
@@ -351,14 +358,14 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
     display: inline-flex;
     align-items: center;
     min-height: var(--tap-min);
-    color: var(--bone);
+    color: var(--on-dark);
     text-decoration: none;
   }
   .footer__legal a:hover {
     text-decoration: underline;
   }
   .footer :focus-visible {
-    outline-color: var(--bone);
+    outline-color: var(--on-dark);
   }
 
   @media (min-width: 768px) {

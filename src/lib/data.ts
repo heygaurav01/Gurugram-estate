@@ -29,6 +29,7 @@ export type ProjectBundle = {
     accentInk: string;
     accentSoft?: string | undefined;
     mode: "light" | "dark";
+    motif: "none" | "neon";
   };
 };
 
@@ -63,6 +64,7 @@ export async function getProjectBundle(slug: string): Promise<ProjectBundle> {
           : darkenToContrast(accent, BONE, 4.5),
       accentSoft: project.theme.accentSoft,
       mode,
+      motif: project.theme.motif,
     },
   };
 }

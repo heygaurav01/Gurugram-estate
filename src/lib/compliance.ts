@@ -329,11 +329,11 @@ export function checkProjectData(input: ProjectCheckInput): Report {
     if (
       (a.kind === "photo" || a.kind === "illustration") &&
       !a.projectSpecific &&
-      a.caption !== "Representative image"
+      !a.caption?.startsWith("Representative image")
     ) {
       err(
         "caption",
-        `Asset "${a.id}" is not project-specific and must be captioned "Representative image".`,
+        `Asset "${a.id}" is not project-specific and must be captioned "Representative image" (a short qualifier may follow, e.g. "Representative image: BRABUS automotive").`,
       );
     }
   }

@@ -94,6 +94,8 @@ export const projectSchema = z
     slug,
     name: z.string().min(2),
     tagline: z.string().max(90).optional(),
+    /** Gallery intro line, when the default (representative interiors) does not fit. */
+    galleryIntro: z.string().max(200).optional(),
     /** Official virtual tour link from the developer. Empty until launch. */
     virtualTourUrl: z.url().optional(),
     /** Overview section: original editorial copy built only from verified facts. */
@@ -197,6 +199,8 @@ export const projectSchema = z
         accentSoft: hexColor.optional(),
         /** "dark" switches the page to the noir palette (tokens.css). */
         mode: z.enum(["light", "dark"]).default("light"),
+        /** Extra visual motif layered on the theme: "neon" adds automotive light bars and streaks. */
+        motif: z.enum(["none", "neon"]).default("none"),
         heroImageId: z.string().optional(),
         /** Hero slideshow (asset ids, first one loads first). Falls back to heroImageId. */
         heroImageIds: z.array(z.string()).optional(),
@@ -205,7 +209,7 @@ export const projectSchema = z
           .regex(/^\d{1,3}% \d{1,3}%$/, 'Use "x% y%", e.g. "50% 40%"')
           .optional(),
       })
-      .default({ mode: "light" }),
+      .default({ mode: "light", motif: "none" }),
     form: z.object({
       otp: z.boolean(),
       intents: z.array(z.enum(formIntents)).min(1),
@@ -293,6 +297,11 @@ export const assetSchema = z.object({
   fromDeveloper: z.boolean().default(false),
   /** Logo variant made for dark backgrounds (e.g. a white version). */
   onDark: z.boolean().default(false),
+  /** Focal point when cropped to fill (e.g. the hero), as "x% y%". */
+  focus: z
+    .string()
+    .regex(/^\d{1,3}% \d{1,3}%$/, 'Use "x% y%", e.g. "50% 60%"')
+    .optional(),
   /** True when the image shows this actual project or site, not a stand-in. */
   projectSpecific: z.boolean().default(false),
   license: z.enum(assetLicenses),

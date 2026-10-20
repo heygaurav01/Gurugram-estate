@@ -16,6 +16,7 @@ import "~/styles/layout.css";
 import "~/styles/components.css";
 import "~/styles/motion.css";
 import "~/styles/noir.css";
+import "~/styles/neon.css";
 
 type Props = {
   title: string;
@@ -29,6 +30,7 @@ type Props = {
         accentInk: string;
         accentSoft?: string | undefined;
         mode?: "light" | "dark";
+        motif?: "none" | "neon";
       }
     | undefined;
   /** Reserve space for the mobile sticky bar. */
@@ -66,10 +68,11 @@ const themeStyle = theme
       .join(";")
   : undefined;
 const mode = theme?.mode === "dark" ? "dark" : undefined;
+const motif = theme?.motif === "neon" ? "neon" : undefined;
 ---
 
 <!doctype html>
-<html lang="en-IN" style={themeStyle} data-mode={mode}>
+<html lang="en-IN" style={themeStyle} data-mode={mode} data-motif={motif}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

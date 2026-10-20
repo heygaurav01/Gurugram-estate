@@ -1,0 +1,195 @@
+/*
+ * Neon motif (theme.motif: neon): automotive studio lighting for branded projects
+ * such as M3M Brabus. Glowing light bars that ignite with a flicker, a floor glow
+ * line, a light trail sweeping across the CTA band and red glow on interactions.
+ * All motion is off under prefers-reduced-motion; the bars then simply glow.
+ */
+
+/* Hero light bars: thin vertical tubes with a soft glow. */
+html[data-motif="neon"] .hero__neon {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+html[data-motif="neon"] .hero__bar {
+  position: absolute;
+  width: 3px;
+  border-radius: 3px;
+  background: #ffd9d6;
+  box-shadow:
+    0 0 6px 1px var(--accent),
+    0 0 18px 3px color-mix(in srgb, var(--accent) 70%, transparent),
+    0 0 46px 8px color-mix(in srgb, var(--accent) 35%, transparent);
+  opacity: 0.85;
+}
+/* Floor glow: a red light line along the bottom of the hero. */
+html[data-motif="neon"] .hero__floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent) 20%,
+    #ffd9d6 50%,
+    var(--accent) 80%,
+    transparent
+  );
+  box-shadow: 0 0 24px 4px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+/* Small screens: fewer, dimmer bars so text stays clear. */
+@media (max-width: 767.98px) {
+  html[data-motif="neon"] .hero__bar:nth-child(odd) {
+    display: none;
+  }
+  html[data-motif="neon"] .hero__bar {
+    opacity: 0.5;
+  }
+}
+
+/* The info strip rule glows like a light tube. */
+html[data-motif="neon"] .hero__meta {
+  border-top-color: color-mix(in srgb, var(--accent) 70%, transparent);
+  box-shadow: 0 -1px 16px -6px var(--accent);
+}
+
+/* Glow on primary actions and on locked cards. */
+html[data-motif="neon"] .hero__primary:hover,
+html[data-motif="neon"] .pricing__btn:hover,
+html[data-motif="neon"] .locked__btn:hover,
+html[data-motif="neon"] .band__btn:hover {
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 24px -2px var(--accent);
+}
+html[data-motif="neon"] .locked:hover,
+html[data-motif="neon"] .pricing__card:hover,
+html[data-motif="neon"] .tour:hover {
+  outline-color: var(--accent);
+  box-shadow: 0 0 40px -12px var(--accent);
+}
+
+/* Tour play button: red ripple rings. */
+html[data-motif="neon"] .tour__ripple {
+  border-color: var(--accent);
+}
+
+/* CTA band: a light trail runs across, like a car passing at night. */
+html[data-motif="neon"] .band {
+  position: relative;
+  overflow: hidden;
+}
+html[data-motif="neon"] .band::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), #ffd9d6, transparent);
+  box-shadow: 0 0 18px 2px var(--accent);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Bars ignite one by one with a neon-tube flicker, then breathe slowly. */
+  html[data-motif="neon"] .hero__bar {
+    opacity: 0;
+    animation:
+      neon-ignite 1.4s steps(1, end) calc(400ms + var(--d)) forwards,
+      neon-breathe 5s ease-in-out calc(1.8s + var(--d)) infinite alternate;
+  }
+  @media (max-width: 767.98px) {
+    html[data-motif="neon"] .hero__bar {
+      animation: neon-ignite-dim 1.4s steps(1, end) calc(400ms + var(--d)) forwards;
+    }
+  }
+  html[data-motif="neon"] .hero__floor {
+    transform-origin: 50% 50%;
+    animation: neon-floor 1.6s var(--ease) 300ms both;
+  }
+  /* Light trail: a short streak sweeps across the band, three passes. */
+  html[data-motif="neon"] .band::before {
+    left: -40%;
+    right: auto;
+    width: 40%;
+    opacity: 0;
+    animation: neon-trail 2.6s cubic-bezier(0.5, 0, 0.2, 1) 0.6s 3;
+  }
+}
+@keyframes neon-ignite {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  16% {
+    opacity: 0.1;
+  }
+  24% {
+    opacity: 0.9;
+  }
+  30% {
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.85;
+  }
+}
+@keyframes neon-ignite-dim {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.5;
+  }
+  18% {
+    opacity: 0.05;
+  }
+  30% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+@keyframes neon-breathe {
+  from {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 0.6;
+  }
+}
+@keyframes neon-floor {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+@keyframes neon-trail {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(350%);
+    opacity: 0;
+  }
+}

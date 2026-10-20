@@ -31,9 +31,10 @@ const allRepresentative = items.every((a) => !a.projectSpecific);
         eyebrow="Gallery"
         title="The way these homes could feel"
         intro={
-          allRepresentative
+          project.galleryIntro ??
+          (allRepresentative
             ? "Representative interiors for mood only. They do not show the actual project; official images will replace them once released."
-            : undefined
+            : undefined)
         }
       />
       <ul class="gallery" role="list" data-gallery>

@@ -16,6 +16,24 @@ type Props = { project: Project; settings: SiteSettings; images?: Asset[] };
 const { project, settings, images = [] } = Astro.props;
 const image = images[0];
 const slideshow = images.length > 1;
+
+// Neon motif: vertical light bars (as in BRABUS studio lighting), mostly on the
+// right so they frame the image without crossing the headline.
+const neon = project.theme.motif === "neon";
+const bars = [
+  [52, 14, 18, 0],
+  [57, 30, 26, 140],
+  [61, 8, 22, 300],
+  [65, 22, 34, 80],
+  [69, 12, 20, 420],
+  [73, 34, 24, 220],
+  [77, 6, 30, 520],
+  [81, 26, 18, 160],
+  [85, 14, 36, 360],
+  [89, 32, 22, 60],
+  [93, 10, 28, 480],
+  [97, 24, 20, 260],
+].map(([left, top, height, delay]) => ({ left, top, height, delay }));
 const cta = ctaCopy(project);
 const focus = project.theme.heroFocus ?? "50% 50%";
 
@@ -40,29 +58,24 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
             sizes="100vw"
             eager={i === 0}
             class="hero__img"
-            style={`object-position:${focus}`}
+            style={`object-position:${img.focus ?? focus}`}
           />
         </div>
       ))}
     </div>
   )}
-  {slideshow && (
-    <button
-      type="button"
-      class="hero__slidectl"
-      aria-label="Pause background slideshow"
-      aria-pressed="false"
-      data-hero-pause
-    >
-      <svg class="hero__icon-pause" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M9 6v12M15 6v12"></path>
-      </svg>
-      <svg class="hero__icon-play" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M9 6.5v11l8.5-5.5z"></path>
-      </svg>
-    </button>
-  )}
   <div class="hero__scrim" aria-hidden="true"></div>
+  {neon && (
+    <div class="hero__neon" aria-hidden="true">
+      {bars.map((b) => (
+        <span
+          class="hero__bar"
+          style={`left:${b.left}%;top:${b.top}%;height:${b.height}%;--d:${b.delay}ms`}
+        />
+      ))}
+      <span class="hero__floor" />
+    </div>
+  )}
 
   <div class="container hero__inner">
     <div class="hero__content">
@@ -108,7 +121,27 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     </div>
   </div>
 
-  {image?.caption && <p class="hero__caption">{image.caption}</p>}
+  {(image?.caption || slideshow) && (
+    <div class="hero__corner">
+      {slideshow && (
+        <button
+          type="button"
+          class="hero__slidectl"
+          aria-label="Pause background slideshow"
+          aria-pressed="false"
+          data-hero-pause
+        >
+          <svg class="hero__icon-pause" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 6v12M15 6v12"></path>
+          </svg>
+          <svg class="hero__icon-play" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 6.5v11l8.5-5.5z"></path>
+          </svg>
+        </button>
+      )}
+      {image?.caption && <p class="hero__caption">{image.caption}</p>}
+    </div>
+  )}
 </section>
 
 <script>
@@ -176,10 +209,19 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
       transform: scale(1);
     }
   }
-  .hero__slidectl {
+  .hero__corner {
     position: absolute;
     right: var(--gutter);
-    top: calc(4.25rem + var(--space-3) + 2.1rem);
+    top: calc(4.25rem + var(--space-3));
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .hero__corner .hero__caption {
+    position: static;
+  }
+  .hero__slidectl {
+    flex: none;
     display: grid;
     place-items: center;
     width: 32px;

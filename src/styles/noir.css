@@ -23,14 +23,14 @@ html[data-mode="dark"] .cf {
 html[data-mode="dark"] .locked,
 html[data-mode="dark"] .pricing__card,
 html[data-mode="dark"] .tour {
-  outline: 1px solid rgb(216 221 227 / 0.12);
+  outline: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
   outline-offset: -1px;
   transition: outline-color 500ms var(--ease);
 }
 html[data-mode="dark"] .locked:hover,
 html[data-mode="dark"] .pricing__card:hover,
 html[data-mode="dark"] .tour:hover {
-  outline-color: rgb(216 221 227 / 0.4);
+  outline-color: color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 /* Section dividers fade out at the edges, like a polished metal rule. */
@@ -39,8 +39,8 @@ html[data-mode="dark"] .section + .section {
   background-image: linear-gradient(
     90deg,
     transparent,
-    rgb(216 221 227 / 0.22) 30%,
-    rgb(216 221 227 / 0.22) 70%,
+    color-mix(in srgb, var(--accent) 32%, transparent) 30%,
+    color-mix(in srgb, var(--accent) 32%, transparent) 70%,
     transparent
   );
   background-size: 100% 1px;

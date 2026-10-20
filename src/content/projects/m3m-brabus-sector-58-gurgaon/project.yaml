@@ -12,6 +12,7 @@ slug: m3m-brabus-sector-58-gurgaon
 name: "M3M Brabus, Sector 58, Gurgaon"
 tagline: "BRABUS-branded residences by M3M on Golf Course Extension Road."
 published: true
+galleryIntro: "BRABUS automotive photography and conceptual interiors, for mood only. None show the actual project; official M3M images will replace them once released."
 
 overview:
   title: "A BRABUS residence, before the details"
@@ -85,14 +86,16 @@ seo:
     - "Golf Course Extension Road new launch"
   ogImageId: noir-living
 
-# Noir theme: dark surfaces, platinum accents (BRABUS black and chrome).
+# Noir theme: dark surfaces with BRABUS red.
 theme:
   mode: dark
-  accent: "#B8BEC6"
-  accentSoft: "#D9DDE3"
-  heroImageId: noir-living
+  # BRABUS signature red on black, with automotive neon lighting.
+  motif: neon
+  accent: "#E3262C"
+  accentSoft: "#FF6F68"
+  heroImageId: brabus-light-bars
   # Hero slideshow, crossfading every 3 s (add kit renders here as they arrive).
-  heroImageIds: [noir-living, noir-bedroom]
+  heroImageIds: [brabus-light-bars, brabus-studio-neon, brabus-bodo, brabus-g800, noir-living]
   heroFocus: "50% 55%"
 
 form:

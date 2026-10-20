@@ -12,6 +12,56 @@
 # m3mproperties.com are run by other channel partners).
 
 assets:
+  # BRABUS automotive photography, supplied in the owner's M3M/BRABUS channel
+  # partner kit (owner confirmed 2026-10-20). Brand imagery, not the project.
+  - id: brabus-light-bars
+    file: brabus-g-class-red-light-bars.jpg
+    alt: "Black BRABUS G-Class at dusk, lit by red light tubes on the ground. BRABUS automotive imagery, not the residential project."
+    caption: "Representative image: BRABUS automotive"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M/BRABUS channel partner kit reference"
+    source: "BRABUS GmbH, supplied in the M3M/BRABUS channel partner kit (owner, 2026-10-20)"
+    focus: "50% 68%"
+    usage: [hero, gallery]
+
+  - id: brabus-studio-neon
+    file: brabus-g-class-studio-red-neon.jpg
+    alt: "Silver BRABUS G-Class in a studio with vertical red neon lights and a wet reflective floor. BRABUS automotive imagery, not the residential project."
+    caption: "Representative image: BRABUS automotive"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M/BRABUS channel partner kit reference"
+    source: "BRABUS GmbH, supplied in the M3M/BRABUS channel partner kit (owner, 2026-10-20)"
+    focus: "55% 55%"
+    usage: [hero, gallery]
+
+  - id: brabus-bodo
+    file: brabus-bodo-monaco.jpg
+    alt: "Black BRABUS coupe on a terrace above the Monaco coast at sunset. BRABUS automotive imagery, not the residential project."
+    caption: "Representative image: BRABUS automotive"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M/BRABUS channel partner kit reference"
+    source: "BRABUS GmbH (brabus.com, photo Steffen Miethke), supplied in the M3M/BRABUS kit (owner, 2026-10-20)"
+    focus: "70% 70%"
+    usage: [hero, gallery]
+
+  - id: brabus-g800
+    file: brabus-g800-superblack-studio.jpg
+    alt: "BRABUS 800 G-Class in superblack, photographed in a light studio. BRABUS automotive imagery, not the residential project."
+    caption: "Representative image: BRABUS automotive"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M/BRABUS channel partner kit reference"
+    source: "BRABUS GmbH (brabus.com), supplied in the M3M/BRABUS channel partner kit (owner, 2026-10-20)"
+    focus: "40% 60%"
+    usage: [hero, gallery]
+
   - id: noir-living
     file: noir-living-room.jpg
     alt: "Conceptual living and dining room with full-height glazing and a city view, in a cool monochrome grade. Not the actual project."

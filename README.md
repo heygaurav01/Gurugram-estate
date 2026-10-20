@@ -1,4 +1,4 @@
-# Gurgaon Properties: project landing pages
+# Gurugram Estate Pvt Ltd: project landing pages
 
 Static Astro site that generates compliant landing pages for residential projects in
 Gurugram from YAML data files. One folder per project, no code changes per project.

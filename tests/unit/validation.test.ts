@@ -74,8 +74,8 @@ describe("validateLead", () => {
   });
 
   it("uses the exact consent wording", () => {
-    expect(consentText("Gurgaon Properties")).toBe(
-      "By sending this form, you agree to be contacted by Gurgaon Properties by call, SMS, WhatsApp or email about this enquiry, and you confirm you have read the Privacy Policy.",
+    expect(consentText("Gurugram Estate Pvt Ltd")).toBe(
+      "By sending this form, you agree to be contacted by Gurugram Estate Pvt Ltd by call, SMS, WhatsApp or email about this enquiry, and you confirm you have read the Privacy Policy.",
     );
   });
 });

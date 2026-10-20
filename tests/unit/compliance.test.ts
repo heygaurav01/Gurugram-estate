@@ -417,3 +417,12 @@ describe("helpers", () => {
     expect(contrastRatio("#7A5C37", "#F4F1EA")).toBeGreaterThanOrEqual(4.5);
   });
 });
+
+describe("sameCompany", () => {
+  it("treats Pvt Ltd and Private Limited as the same company", async () => {
+    const { sameCompany } = await import("../../src/lib/compliance");
+    expect(sameCompany("Gurugram Estate Pvt Ltd", "Gurugram Estate Private Limited")).toBe(true);
+    expect(sameCompany("Gurugram Estate Pvt. Ltd.", "gurugram estate private limited")).toBe(true);
+    expect(sameCompany("Gurgaon Properties", "Gurugram Estate Private Limited")).toBe(false);
+  });
+});

@@ -75,10 +75,27 @@ export function agentDisclosure(
   return `${brand} is ${role}, HARERA agent registration no. ${reraNo}. This is not the developer's official website.`;
 }
 
-/** "Gurgaon Properties, a brand of Gurugram Real Estate Pvt Ltd," or just the brand. */
+/** Compares company names ignoring "Pvt Ltd" vs "Private Limited", case and dots. */
+export function sameCompany(a: string, b: string): boolean {
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/\./g, "")
+      .replace(/\bpvt\b/g, "private")
+      .replace(/\bltd\b/g, "limited")
+      .replace(/\s+/g, " ")
+      .trim();
+  return norm(a) === norm(b);
+}
+
+/**
+ * "Brand, a brand of Legal Name," when the trading name differs from the company,
+ * otherwise just the name ("Gurugram Estate Pvt Ltd" is the same company as
+ * "Gurugram Estate Private Limited").
+ */
 export function brandWithLegalName(settings: SiteSettings): string {
   const { brand_name, legal_name } = settings.business;
-  return legal_name && !isPlaceholder(legal_name) && legal_name !== brand_name
+  return legal_name && !isPlaceholder(legal_name) && sameCompany(legal_name, brand_name) === false
     ? `${brand_name}, a brand of ${legal_name},`
     : brand_name;
 }

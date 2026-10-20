@@ -8,14 +8,23 @@
 import type { Asset, Project, SiteSettings } from "~/lib/schemas";
 import { reraStatusLine } from "~/lib/compliance";
 import { ctaCopy } from "~/lib/view";
-import Picture from "./Picture.astro";
+import HeroSlides from "./HeroSlides.astro";
 import ReraBadge from "./ReraBadge.astro";
 import Disclosure from "./Disclosure.astro";
 
 type Props = { project: Project; settings: SiteSettings; images?: Asset[] };
 const { project, settings, images = [] } = Astro.props;
 const image = images[0];
-const slideshow = images.length > 1;
+// "arch": split layout, text on the left and the slideshow inside an arched frame.
+const arch = project.theme.heroLayout === "arch";
+// Aurum motif: drifting gold dust (positions and timings fixed, so builds are stable).
+const aurum = project.theme.motif === "aurum";
+const dust = Array.from({ length: 18 }, (_, i) => ({
+  left: (i * 37 + 11) % 100,
+  size: 2 + (i % 3),
+  dur: 9 + ((i * 7) % 8),
+  delay: -((i * 13) % 17),
+}));
 
 // Neon motif: vertical light bars (as in BRABUS studio lighting), mostly on the
 // right so they frame the image without crossing the headline.
@@ -35,7 +44,6 @@ const bars = [
   [97, 24, 20, 260],
 ].map(([left, top, height, delay]) => ({ left, top, height, delay }));
 const cta = ctaCopy(project);
-const focus = project.theme.heroFocus ?? "50% 50%";
 
 // "L&T Sector 86, Gurgaon" -> "L&T Sector 86," + italic "Gurgaon" on its own line.
 // The H1 text content is unchanged for search engines and screen readers.
@@ -44,27 +52,19 @@ const titleMain = comma > 0 ? project.name.slice(0, comma + 1) : project.name;
 const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
 ---
 
-<section class:list={["hero", { "hero--no-image": !image }]} aria-labelledby="hero-title">
-  {images.length > 0 && (
-    <div class="hero__slides" data-hero-slides data-interval="3000">
-      {images.map((img, i) => (
-        <div
-          class:list={["hero__slide", { "is-active": i === 0 }]}
-          aria-hidden={i === 0 ? undefined : "true"}
-        >
-          <Picture
-            slug={project.slug}
-            asset={img}
-            sizes="100vw"
-            eager={i === 0}
-            class="hero__img"
-            style={`object-position:${img.focus ?? focus}`}
-          />
-        </div>
+<section
+  class:list={["hero", { "hero--no-image": !image, "hero--arch": arch }]}
+  aria-labelledby="hero-title"
+>
+  {!arch && <HeroSlides project={project} images={images} sizes="100vw" />}
+  <div class="hero__scrim" aria-hidden="true"></div>
+  {aurum && (
+    <div class="hero__dust" aria-hidden="true">
+      {dust.map((d) => (
+        <span style={`left:${d.left}%;--s:${d.size}px;--t:${d.dur}s;animation-delay:${d.delay}s`} />
       ))}
     </div>
   )}
-  <div class="hero__scrim" aria-hidden="true"></div>
   {neon && (
     <div class="hero__neon" aria-hidden="true">
       {bars.map((b) => (
@@ -114,34 +114,21 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
       </div>
     </div>
 
+    {arch && image && (
+      <div class="hero__arch" data-hero-line>
+        <span class="hero__halo" aria-hidden="true"></span>
+        <div class="hero__archframe">
+          <HeroSlides project={project} images={images} sizes="(min-width: 1024px) 40vw, 64vw" />
+        </div>
+      </div>
+    )}
+
     <div class="hero__meta" data-hero-line>
       <ReraBadge project={project} tone="dark" detail={false} />
       <p class="hero__status">{reraStatusLine(project)}</p>
       <Disclosure settings={settings} developer={project.developer} tone="dark" />
     </div>
   </div>
-
-  {(image?.caption || slideshow) && (
-    <div class="hero__corner">
-      {slideshow && (
-        <button
-          type="button"
-          class="hero__slidectl"
-          aria-label="Pause background slideshow"
-          aria-pressed="false"
-          data-hero-pause
-        >
-          <svg class="hero__icon-pause" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 6v12M15 6v12"></path>
-          </svg>
-          <svg class="hero__icon-play" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 6.5v11l8.5-5.5z"></path>
-          </svg>
-        </button>
-      )}
-      {image?.caption && <p class="hero__caption">{image.caption}</p>}
-    </div>
-  )}
 </section>
 
 <script>
@@ -150,6 +137,7 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
   const root = document.querySelector<HTMLElement>("[data-hero-slides]");
   const slides = root ? Array.from(root.querySelectorAll<HTMLElement>(".hero__slide")) : [];
   const toggle = document.querySelector<HTMLButtonElement>("[data-hero-pause]");
+  const caption = document.querySelector<HTMLElement>("[data-hero-caption]");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (root && slides.length > 1) {
     let index = 0;
@@ -160,6 +148,8 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
       index = next % slides.length;
       slides[index]!.classList.add("is-active");
       slides[index]!.removeAttribute("aria-hidden");
+      const text = slides[index]!.dataset.caption;
+      if (caption && text) caption.textContent = text;
     };
     const setPaused = (value: boolean) => {
       paused = value;
@@ -179,81 +169,6 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     );
   }
 </script>
-
-<style>
-  /* Slideshow: slides stack and crossfade; the active one slowly zooms out. */
-  .hero__slides {
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-  }
-  .hero__slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 1200ms var(--ease);
-  }
-  .hero__slide.is-active {
-    opacity: 1;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .hero__slide.is-active :global(.hero__img) {
-      animation: hero-kenburns 6s linear both;
-    }
-  }
-  @keyframes hero-kenburns {
-    from {
-      transform: scale(1.08);
-    }
-    to {
-      transform: scale(1);
-    }
-  }
-  .hero__corner {
-    position: absolute;
-    right: var(--gutter);
-    top: calc(4.25rem + var(--space-3));
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-  .hero__corner .hero__caption {
-    position: static;
-  }
-  .hero__slidectl {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border: 1px solid rgb(244 241 234 / 0.45);
-    border-radius: 50%;
-    background: rgb(18 17 15 / 0.45);
-    color: var(--on-dark);
-    cursor: pointer;
-  }
-  .hero__slidectl:hover {
-    background: rgb(18 17 15 / 0.7);
-  }
-  .hero__slidectl svg {
-    width: 14px;
-    height: 14px;
-    stroke: currentColor;
-    stroke-width: 2;
-    fill: none;
-  }
-  .hero__icon-play {
-    display: none;
-    fill: currentColor !important;
-  }
-  .hero__slidectl[aria-pressed="true"] .hero__icon-pause {
-    display: none;
-  }
-  .hero__slidectl[aria-pressed="true"] .hero__icon-play {
-    display: block;
-  }
-</style>
 
 <style>
   .hero {
@@ -416,15 +331,149 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     }
   }
 
-  .hero__caption {
+  /* Arch layout: warm dark stage with a soft glow; the image sits in an arched frame. */
+  .hero--arch {
+    background:
+      radial-gradient(
+        60% 70% at 78% 40%,
+        color-mix(in srgb, var(--accent) 22%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        40% 50% at 10% 90%,
+        color-mix(in srgb, var(--accent) 10%, transparent),
+        transparent 70%
+      ),
+      var(--night);
+  }
+  .hero--arch .hero__scrim {
+    display: none;
+  }
+  .hero--arch .hero__inner {
+    align-content: center;
+  }
+  .hero__arch {
+    position: relative;
+    justify-self: center;
+    width: min(64vw, 320px);
+    margin-top: var(--space-4);
+    order: -1;
+  }
+  .hero__archframe {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    border-radius: 999px 999px var(--radius) var(--radius);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent),
+      0 40px 80px -30px rgb(0 0 0 / 0.8);
+  }
+  /* Thin outer frame line, offset from the arch. */
+  .hero__arch::after {
+    content: "";
     position: absolute;
-    right: var(--gutter);
-    top: calc(4.25rem + var(--space-3));
-    padding: 0.15rem 0.5rem;
-    border-radius: 2px;
-    background: rgb(18 17 15 / 0.5);
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
-    color: rgb(244 241 234 / 0.9);
+    inset: -12px;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: 999px 999px 6px 6px;
+    pointer-events: none;
+  }
+  .hero__halo {
+    position: absolute;
+    inset: -18%;
+    z-index: -1;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      color-mix(in srgb, var(--accent) 45%, transparent),
+      transparent 30%,
+      transparent 60%,
+      color-mix(in srgb, var(--accent-soft) 35%, transparent),
+      transparent
+    );
+    filter: blur(28px);
+    opacity: 0.7;
+  }
+  .hero--arch .hero__archframe :global(.hero__corner) {
+    top: auto;
+    right: 50%;
+    bottom: var(--space-3);
+    transform: translateX(50%);
+    width: max-content;
+    max-width: calc(100% - 2rem);
+  }
+  .hero--arch .hero__archframe :global(.hero__caption) {
+    font-size: 0.66rem;
+  }
+  @media (min-width: 1024px) {
+    .hero--arch .hero__inner {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      column-gap: clamp(var(--space-7), 5vw, 6rem);
+    }
+    .hero--arch .hero__content {
+      align-self: center;
+    }
+    .hero__arch {
+      order: 0;
+      width: min(100%, 440px);
+      justify-self: end;
+      margin-right: 12px;
+      margin-top: 0;
+    }
+    .hero--arch .hero__meta {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Gold dust: tiny particles drifting upward (static under reduced motion). */
+  .hero__dust {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .hero__dust span {
+    position: absolute;
+    bottom: -10px;
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: var(--accent-soft);
+    box-shadow: 0 0 8px 1px color-mix(in srgb, var(--accent) 80%, transparent);
+    opacity: 0.5;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__dust span {
+      bottom: auto;
+      top: calc(var(--t) * 5%);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__dust span {
+      animation: hero-dust var(--t) linear infinite;
+    }
+    .hero__halo {
+      animation: hero-halo 18s linear infinite;
+    }
+  }
+  @keyframes hero-dust {
+    0% {
+      transform: translate(0, 0);
+      opacity: 0;
+    }
+    15% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translate(30px, -105svh);
+      opacity: 0;
+    }
+  }
+  @keyframes hero-halo {
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>

@@ -17,6 +17,8 @@ mkdirSync(out, { recursive: true });
 const pages = [
   ["hub", "/"],
   ["project", "/l-and-t-sector-86-gurgaon/"],
+  ["m3m", "/m3m-brabus-sector-58-gurgaon/"],
+  ["prestige", "/prestige-sector-92-gurgaon/"],
   ["thank-you", "/l-and-t-sector-86-gurgaon/thank-you/"],
   ["disclaimer", "/disclaimer/"],
   ["privacy-policy", "/privacy-policy/"],

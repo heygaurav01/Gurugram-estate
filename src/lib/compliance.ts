@@ -323,7 +323,11 @@ export function checkProjectData(input: ProjectCheckInput): Report {
         warn("license-proof", `Asset "${a.id}" has no licenseProof on file.`);
     }
     // Caption rules.
-    if (a.kind === "render" && a.caption !== "Artist's impression") {
+    // A render of a different project must say so: "Representative image: artist's
+    // impression of another ... project" (never a bare "Artist's impression").
+    const otherProjectRender =
+      !a.projectSpecific && /^Representative image: artist's impression of /.test(a.caption ?? "");
+    if (a.kind === "render" && a.caption !== "Artist's impression" && !otherProjectRender) {
       err("caption", `Asset "${a.id}" is a render and must be captioned "Artist's impression".`);
     }
     if (

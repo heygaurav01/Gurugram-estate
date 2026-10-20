@@ -29,7 +29,7 @@ export type ProjectBundle = {
     accentInk: string;
     accentSoft?: string | undefined;
     mode: "light" | "dark";
-    motif: "none" | "neon";
+    motif: "none" | "neon" | "aurum";
   };
 };
 

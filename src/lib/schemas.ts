@@ -161,7 +161,16 @@ export const projectSchema = z
         ...sourced,
       })
       .optional(),
-    highlights: z.array(z.object({ text: z.string().min(1), ...sourced })).default([]),
+    highlights: z
+      .array(
+        z.object({
+          text: z.string().min(1),
+          /** Optional short label (max 40 chars) for the aurum marquee; shares the source. */
+          short: z.string().max(40).optional(),
+          ...sourced,
+        }),
+      )
+      .default([]),
     configurations: z.array(configurationSchema).default([]),
     amenities: z
       .array(
@@ -199,8 +208,14 @@ export const projectSchema = z
         accentSoft: hexColor.optional(),
         /** "dark" switches the page to the noir palette (tokens.css). */
         mode: z.enum(["light", "dark"]).default("light"),
-        /** Extra visual motif layered on the theme: "neon" adds automotive light bars and streaks. */
-        motif: z.enum(["none", "neon"]).default("none"),
+        /**
+         * Extra visual motif layered on the theme: "neon" adds automotive light bars and
+         * streaks; "aurum" adds gold foil cards, gold dust, a highlights marquee and
+         * curtain reveals (warm black and champagne gold, styles/aurum.css).
+         */
+        motif: z.enum(["none", "neon", "aurum"]).default("none"),
+        /** Hero layout: "full" (full-bleed image) or "arch" (split, image in an arched frame). */
+        heroLayout: z.enum(["full", "arch"]).default("full"),
         heroImageId: z.string().optional(),
         /** Hero slideshow (asset ids, first one loads first). Falls back to heroImageId. */
         heroImageIds: z.array(z.string()).optional(),
@@ -209,7 +224,7 @@ export const projectSchema = z
           .regex(/^\d{1,3}% \d{1,3}%$/, 'Use "x% y%", e.g. "50% 40%"')
           .optional(),
       })
-      .default({ mode: "light", motif: "none" }),
+      .default({ mode: "light", motif: "none", heroLayout: "full" }),
     form: z.object({
       otp: z.boolean(),
       intents: z.array(z.enum(formIntents)).min(1),

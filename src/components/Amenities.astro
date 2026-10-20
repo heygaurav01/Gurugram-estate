@@ -1,6 +1,6 @@
 ---
 /** Amenities grid (#amenities). Hidden when no amenity is verified. */
-import type { Project } from "~/lib/schemas";
+import type { Asset, Project } from "~/lib/schemas";
 import type { ProjectBundle } from "~/lib/data";
 import { buildSources, verifiedView } from "~/lib/view";
 import SectionHeading from "./SectionHeading.astro";
@@ -8,8 +8,13 @@ import SourceRef from "./SourceRef.astro";
 import Picture from "./Picture.astro";
 import LockedCard from "./LockedCard.astro";
 
-type Props = { project: Project; asset: ProjectBundle["asset"] };
-const { project, asset } = Astro.props;
+type Props = {
+  project: Project;
+  asset: ProjectBundle["asset"];
+  /** Representative facility photos (usage: amenity) shown while the list is unannounced. */
+  moodImages?: Asset[];
+};
+const { project, asset, moodImages = [] } = Astro.props;
 const dev = project.developer.authorizedToUseName ? project.developer.name : "The developer";
 const items = verifiedView(project).amenities;
 const { ref } = buildSources(project);
@@ -37,6 +42,28 @@ const { ref } = buildSources(project);
         tall
       />
     </div>
+    {moodImages.length > 0 && (
+      <div class="container">
+        <p class="amenities__moodnote">
+          Representative images of sports and leisure facilities. They do not show this project or
+          its confirmed amenities.
+        </p>
+        <ul class="amenities__mood" role="list">
+          {moodImages.map((img) => (
+            <li class="amenities__tile" data-reveal>
+              <Picture
+                slug={project.slug}
+                asset={img}
+                sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 70vw"
+                class="amenities__tileimg"
+                style={`object-position:${img.focus ?? "50% 50%"}`}
+              />
+              <span class="amenities__tilecap">{img.caption ?? "Representative image"}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
   </section>
 )}
 
@@ -71,6 +98,60 @@ const { ref } = buildSources(project);
 )}
 
 <style>
+  .amenities__moodnote {
+    margin-top: var(--space-7);
+    font-size: var(--step--1);
+    color: var(--stone);
+  }
+  .amenities__mood {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(62%, 1fr);
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: var(--space-2);
+  }
+  .amenities__tile {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    scroll-snap-align: start;
+  }
+  .amenities__tile :global(.amenities__tileimg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    transition: transform 900ms var(--ease);
+  }
+  .amenities__tile:hover :global(.amenities__tileimg) {
+    transform: scale(1.06);
+  }
+  .amenities__tilecap {
+    position: absolute;
+    left: var(--space-2);
+    bottom: var(--space-2);
+    padding: 0.1rem 0.45rem;
+    border-radius: 2px;
+    background: rgb(18 17 15 / 0.6);
+    font-size: 0.7rem;
+    color: var(--on-dark);
+  }
+  @media (min-width: 640px) {
+    .amenities__mood {
+      grid-auto-columns: minmax(30%, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .amenities__mood {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+      overflow: visible;
+    }
+  }
   .amenities {
     display: grid;
     gap: var(--space-6) var(--gutter);

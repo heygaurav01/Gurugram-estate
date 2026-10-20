@@ -28,6 +28,7 @@ import type { FormIntent } from "~/lib/schemas";
 import Pricing from "~/components/Pricing.astro";
 import { apartmentComplexLd, breadcrumbLd, faqLd, graph, realEstateAgentLd } from "~/lib/seo";
 import VirtualTour from "~/components/VirtualTour.astro";
+import Marquee from "~/components/Marquee.astro";
 
 export const getStaticPaths = (async () => {
   const projects = await getProjects({ publishedOnly: true });
@@ -42,6 +43,7 @@ const heroIds =
 const heroImages = heroIds.map((id) => asset(id));
 const heroImage = heroImages[0];
 
+const heroSizes = project.theme.heroLayout === "arch" ? "(min-width: 1024px) 40vw, 64vw" : "100vw";
 // Preload the hero AVIF with the same widths the <Picture> uses.
 const heroSrc = heroImage ? projectImage(slug, heroImage.file) : undefined;
 const heroPreload = heroSrc
@@ -49,7 +51,7 @@ const heroPreload = heroSrc
       src: heroSrc,
       format: "avif",
       widths: IMAGE_WIDTHS.filter((w) => w <= heroSrc.width),
-      sizes: "100vw",
+      sizes: heroSizes,
     })
   : undefined;
 
@@ -125,13 +127,14 @@ const footerLinks = [
       as="image"
       type="image/avif"
       imagesrcset={heroPreload.srcSet.attribute}
-      imagesizes="100vw"
+      imagesizes={heroSizes}
       fetchpriority="high"
     />
   )}
   <Nav settings={settings} links={links} overHero cta="Enquire now" partner={{ project, assets }} />
   <main id="main">
     <Hero project={project} settings={settings} images={heroImages} />
+    {project.theme.motif === "aurum" && <Marquee project={project} />}
     <KeyFacts project={project} />
     <Overview project={project} asset={asset} />
     <Gallery project={project} assets={assets} />
@@ -139,7 +142,11 @@ const footerLinks = [
     <Configurations project={project} asset={asset} />
     <Pricing project={project} asset={asset} />
     <Plans project={project} assets={assets} asset={asset} />
-    <Amenities project={project} asset={asset} />
+    <Amenities
+      project={project}
+      asset={asset}
+      moodImages={assets.filter((a) => a.usage.includes("amenity"))}
+    />
     <VirtualTour project={project} asset={asset} />
     <Location project={project} asset={asset} />
     <StatusTimeline project={project} />

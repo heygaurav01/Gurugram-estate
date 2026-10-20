@@ -17,6 +17,7 @@ import "~/styles/components.css";
 import "~/styles/motion.css";
 import "~/styles/noir.css";
 import "~/styles/neon.css";
+import "~/styles/aurum.css";
 
 type Props = {
   title: string;
@@ -30,7 +31,7 @@ type Props = {
         accentInk: string;
         accentSoft?: string | undefined;
         mode?: "light" | "dark";
-        motif?: "none" | "neon";
+        motif?: "none" | "neon" | "aurum";
       }
     | undefined;
   /** Reserve space for the mobile sticky bar. */
@@ -68,7 +69,7 @@ const themeStyle = theme
       .join(";")
   : undefined;
 const mode = theme?.mode === "dark" ? "dark" : undefined;
-const motif = theme?.motif === "neon" ? "neon" : undefined;
+const motif = theme?.motif && theme.motif !== "none" ? theme.motif : undefined;
 ---
 
 <!doctype html>

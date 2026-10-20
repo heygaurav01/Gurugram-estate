@@ -21,7 +21,7 @@ const show =
         <PartnerLogo
           project={project}
           assets={assets}
-          on="light"
+          on={project.theme.mode === "dark" ? "dark" : "light"}
           height={120}
           class="developer__logo"
         />

@@ -1,0 +1,108 @@
+---
+/**
+ * Highlights marquee (aurum motif): verified highlight labels (`short`) scrolling
+ * in a gold ribbon under the hero. Renders nothing without labelled, verified
+ * highlights. Under reduced motion the ribbon is static and wraps.
+ */
+import type { Project } from "~/lib/schemas";
+import { verifiedView } from "~/lib/view";
+
+type Props = { project: Project };
+const { project } = Astro.props;
+const labels = verifiedView(project)
+  .highlights.map((h) => h.short)
+  .filter((s): s is string => Boolean(s));
+const items =
+  labels.length > 0 ? [`${project.location.sector}, ${project.location.city}`, ...labels] : [];
+// Each half holds the list twice so it is always wider than the widest screen.
+const loop = [...items, ...items];
+---
+
+{items.length > 0 && (
+  <div class="marquee" role="region" aria-label="Highlights">
+    <div class="marquee__track">
+      <ul class="marquee__list" role="list">
+        {loop.map((t, i) => (
+          <li aria-hidden={i >= items.length ? "true" : undefined}>
+            <span class="marquee__gem" aria-hidden="true"></span>
+            {t}
+          </li>
+        ))}
+      </ul>
+      {/* Duplicate for a seamless loop; hidden from assistive tech. */}
+      <ul class="marquee__list marquee__list--dup" role="list" aria-hidden="true">
+        {loop.map((t) => (
+          <li>
+            <span class="marquee__gem"></span>
+            {t}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+)}
+
+<style>
+  .marquee {
+    overflow: hidden;
+    border-block: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    background:
+      linear-gradient(90deg, var(--bone), transparent 12%, transparent 88%, var(--bone)),
+      color-mix(in srgb, var(--accent) 7%, var(--bone));
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+  }
+  .marquee__list {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: clamp(2rem, 4vw, 4rem);
+    padding: var(--space-4) clamp(1rem, 2vw, 2rem);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-style: italic;
+    white-space: nowrap;
+    color: var(--accent-soft);
+  }
+  .marquee__list li {
+    display: flex;
+    align-items: center;
+    gap: clamp(2rem, 4vw, 4rem);
+  }
+  .marquee__gem {
+    width: 7px;
+    height: 7px;
+    transform: rotate(45deg);
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      width: auto;
+    }
+    .marquee__list {
+      flex-wrap: wrap;
+      white-space: normal;
+      row-gap: var(--space-2);
+    }
+    .marquee__list--dup,
+    .marquee__list li[aria-hidden] {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .marquee__track {
+      animation: marquee 36s linear infinite;
+    }
+    .marquee:hover .marquee__track {
+      animation-play-state: paused;
+    }
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

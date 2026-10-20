@@ -237,6 +237,13 @@ const hasLogo =
   .nav.is-solid :global(.nav__logo--on-light) {
     display: block;
   }
+  /* Dark-mode pages keep the light logo: the solid nav is dark too. */
+  :global(html[data-mode="dark"]) .nav :global(.nav__logo--on-dark) {
+    display: block;
+  }
+  :global(html[data-mode="dark"]) .nav :global(.nav__logo--on-light) {
+    display: none;
+  }
   .nav__links {
     display: none;
   }

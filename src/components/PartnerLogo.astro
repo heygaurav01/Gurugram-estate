@@ -16,12 +16,14 @@ type Props = {
   height: number;
   class?: string;
 };
-const { project, assets, on = "light", height, class: className } = Astro.props;
+const { project, assets, on = "light", height: baseHeight, class: className } = Astro.props;
 const logos = project.developer.authorizedToUseLogo
   ? assets.filter((a) => a.kind === "logo" && a.fromDeveloper && a.license === "authorized")
   : [];
 const logo = logos.find((a) => a.onDark === (on === "dark")) ?? logos[0];
 const src = logo ? projectImage(project.slug, logo.file) : undefined;
+// Square or stacked logos (eagle over name) get 30% more height so the name stays legible.
+const height = src && src.width / src.height < 1.2 ? Math.round(baseHeight * 1.3) : baseHeight;
 const width = src ? Math.round((src.width / src.height) * height) : 0;
 ---
 

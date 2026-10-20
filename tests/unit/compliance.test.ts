@@ -226,6 +226,24 @@ describe("checkProjectData", () => {
     expect(r.errors.filter((e) => e.rule === "caption")).toHaveLength(2);
   });
 
+  it("accepts a render of another project only when the caption says so", () => {
+    const caption = "Representative image: artist's impression of another Prestige project";
+    const ok = checkProjectData(
+      input({
+        assets: [asset({ id: "r", file: "r.jpg", kind: "render", caption })],
+        imageFiles: ["r.jpg"],
+      }),
+    );
+    expect(ok.errors.filter((e) => e.rule === "caption")).toHaveLength(0);
+    const projectRender = checkProjectData(
+      input({
+        assets: [asset({ id: "r", file: "r.jpg", kind: "render", caption, projectSpecific: true })],
+        imageFiles: ["r.jpg"],
+      }),
+    );
+    expect(projectRender.errors.filter((e) => e.rule === "caption")).toHaveLength(1);
+  });
+
   it("warns (dev) and fails (production) when agent RERA is TBD on a published project", () => {
     const tbd = {
       ...goodSettings,

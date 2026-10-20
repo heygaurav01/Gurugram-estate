@@ -1,0 +1,142 @@
+---
+/**
+ * Hero image slideshow plus its corner controls (pause button and caption).
+ * Used full-bleed behind the hero, or inside the arch frame (heroLayout: arch).
+ * The crossfade script lives in Hero.astro.
+ */
+import type { Asset, Project } from "~/lib/schemas";
+import Picture from "./Picture.astro";
+
+type Props = { project: Project; images: Asset[]; sizes: string };
+const { project, images, sizes } = Astro.props;
+const image = images[0];
+const slideshow = images.length > 1;
+const focus = project.theme.heroFocus ?? "50% 50%";
+---
+
+{images.length > 0 && (
+  <div class="hero__slides" data-hero-slides data-interval="3000">
+    {images.map((img, i) => (
+      <div
+        class:list={["hero__slide", { "is-active": i === 0 }]}
+        aria-hidden={i === 0 ? undefined : "true"}
+        data-caption={img.caption}
+      >
+        <Picture
+          slug={project.slug}
+          asset={img}
+          sizes={sizes}
+          eager={i === 0}
+          class="hero__img"
+          style={`object-position:${img.focus ?? focus}`}
+        />
+      </div>
+    ))}
+  </div>
+)}
+
+{(image?.caption || slideshow) && (
+  <div class="hero__corner">
+    {slideshow && (
+      <button
+        type="button"
+        class="hero__slidectl"
+        aria-label="Pause background slideshow"
+        aria-pressed="false"
+        data-hero-pause
+      >
+        <svg class="hero__icon-pause" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 6v12M15 6v12"></path>
+        </svg>
+        <svg class="hero__icon-play" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 6.5v11l8.5-5.5z"></path>
+        </svg>
+      </button>
+    )}
+    {image?.caption && (
+      <p class="hero__caption" data-hero-caption>
+        {image.caption}
+      </p>
+    )}
+  </div>
+)}
+
+<style>
+  /* Slideshow: slides stack and crossfade; the active one slowly zooms out. */
+  .hero__slides {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .hero__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1200ms var(--ease);
+  }
+  .hero__slide.is-active {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__slide.is-active :global(.hero__img) {
+      animation: hero-kenburns 6s linear both;
+    }
+  }
+  @keyframes hero-kenburns {
+    from {
+      transform: scale(1.08);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  .hero__corner {
+    position: absolute;
+    right: var(--gutter);
+    top: calc(4.25rem + var(--space-3));
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .hero__caption {
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    background: rgb(18 17 15 / 0.5);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: rgb(244 241 234 / 0.9);
+  }
+  .hero__slidectl {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid rgb(244 241 234 / 0.45);
+    border-radius: 50%;
+    background: rgb(18 17 15 / 0.45);
+    color: var(--on-dark);
+    cursor: pointer;
+  }
+  .hero__slidectl:hover {
+    background: rgb(18 17 15 / 0.7);
+  }
+  .hero__slidectl svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+  .hero__icon-play {
+    display: none;
+    fill: currentColor !important;
+  }
+  .hero__slidectl[aria-pressed="true"] .hero__icon-pause {
+    display: none;
+  }
+  .hero__slidectl[aria-pressed="true"] .hero__icon-play {
+    display: block;
+  }
+</style>

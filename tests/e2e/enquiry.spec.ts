@@ -336,6 +336,39 @@ test.describe("second project: M3M Brabus", () => {
 
   test("homepage lists every live project", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator(".cs__featured")).toHaveCount(2);
+    await expect(page.locator(".cs__featured")).toHaveCount(3);
+  });
+});
+
+test.describe("third project: Prestige Sector 92", () => {
+  const PRESTIGE = "/prestige-sector-92-gurgaon/";
+  test("renders the aurum theme with the arch hero, marquee and verified facts", async ({
+    page,
+  }) => {
+    await page.goto(PRESTIGE);
+    await expect(page.locator("html")).toHaveAttribute("data-motif", "aurum");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Prestige Sector 92");
+    await expect(page.locator(".hero__arch")).toBeVisible();
+    await expect(page.getByRole("region", { name: "Highlights" })).toContainText(
+      "Near the Dwarka Expressway",
+    );
+    // Count-up is off under reduced motion: the real value is always in the HTML.
+    await expect(page.locator(".facts")).toContainText("17.212");
+    // No prices before RERA registration.
+    await expect(page.locator("body")).not.toContainText("₹");
+  });
+
+  test("submits a lead tagged with the Prestige project", async ({ page }) => {
+    const posts = await mockCrm(page, { status: 200, body: { id: "PR-1" } });
+    await page.goto(PRESTIGE);
+    await openFrom(page, "amenities");
+    await fillValid(page);
+    await page.clock.fastForward(4000);
+    await page.getByRole("button", { name: "Send" }).click();
+    await page.waitForURL(/\/prestige-sector-92-gurgaon\/thank-you\/\?ref=PR-1$/);
+    expect(posts[0]).toMatchObject({
+      project_slug: "prestige-sector-92-gurgaon",
+      intent: "amenities",
+    });
   });
 });

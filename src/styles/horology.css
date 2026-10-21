@@ -1,0 +1,266 @@
+/*
+ * Horology motif (theme.motif: horology): ivory and midnight sapphire, drawn from
+ * M3M's blue and Franck Muller's watchmaking.
+ *  - tonneau (barrel) shaped hero frame with a live watch dial (WatchDial.astro)
+ *  - guilloche patterns on the dark bands, a slowly turning bezel on the CTA band
+ *  - cushion-cornered "bezel" cards with a double ring
+ *  - a minute-track rule under section headings
+ *  - reveals that swing into place like a balance wheel, count-up numerals
+ * All motion is off under prefers-reduced-motion.
+ */
+
+html[data-motif="horology"] {
+  --bone: #f5f4ef;
+  --paper: #fdfcf9;
+  --ink: #0f1d3a;
+  --ink-2: #33405e;
+  --stone: #5a6480;
+  --hairline: #d9dce4;
+  --night: #0b1530;
+  --focus: #0f1d3a;
+  --guilloche: repeating-radial-gradient(
+    circle at 70% 40%,
+    rgb(199 213 242 / 0.07) 0 1px,
+    transparent 1px 9px
+  );
+}
+
+/* Hero: midnight sapphire with an engine-turned (guilloche) pattern. */
+html[data-motif="horology"] .hero--arch {
+  background:
+    radial-gradient(55% 70% at 75% 42%, rgb(31 79 163 / 0.45), transparent 70%), var(--guilloche),
+    linear-gradient(160deg, #0d1a3a 0%, #0b1530 55%, #070e22 100%);
+}
+html[data-motif="horology"] .hero__archframe {
+  box-shadow:
+    0 0 0 1px rgb(199 213 242 / 0.55),
+    0 0 0 7px rgb(11 21 48 / 0.6),
+    0 0 0 8px rgb(199 213 242 / 0.25),
+    0 50px 90px -30px rgb(0 0 0 / 0.8);
+}
+html[data-motif="horology"] .hero__halo {
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    rgb(80 130 220 / 0.55),
+    transparent 35%,
+    transparent 60%,
+    rgb(199 213 242 / 0.35),
+    transparent
+  );
+}
+html[data-motif="horology"] .hero__rule {
+  background: var(--accent-soft);
+  filter: none;
+}
+
+/* Eyebrows: a small crown-like ring before the label. */
+html[data-motif="horology"] .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65em;
+  color: var(--accent-ink);
+  letter-spacing: 0.24em;
+}
+html[data-motif="horology"] .eyebrow::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 2px var(--bone),
+    inset 0 0 0 4px currentColor;
+}
+
+/* Section headings: a minute track (short ticks, a long one every fifth). */
+html[data-motif="horology"] .section-heading::after {
+  content: "";
+  display: block;
+  width: 8.5rem;
+  height: 9px;
+  margin-top: var(--space-2);
+  background:
+    repeating-linear-gradient(90deg, var(--accent) 0 1.5px, transparent 1.5px 35px) 0 0 / 100% 9px
+      no-repeat,
+    repeating-linear-gradient(90deg, var(--accent) 0 1px, transparent 1px 7px) 0 100% / 100% 4px
+      no-repeat;
+  opacity: 0.8;
+  transform-origin: left;
+}
+
+/* Cards and boxes: cushion corners and a double bezel ring. */
+html[data-motif="horology"] .card,
+html[data-motif="horology"] .sources__card,
+html[data-motif="horology"] .legal-card,
+html[data-motif="horology"] .legal-toc,
+html[data-motif="horology"] .ty__card,
+html[data-motif="horology"] .ty__step,
+html[data-motif="horology"] .cf {
+  border-color: var(--hairline);
+  border-radius: 22px;
+  background: var(--paper);
+  box-shadow:
+    inset 0 0 0 5px var(--paper),
+    inset 0 0 0 6px rgb(31 79 163 / 0.14),
+    0 24px 50px -36px rgb(11 21 48 / 0.45);
+}
+html[data-motif="horology"] .locked,
+html[data-motif="horology"] .pricing__card,
+html[data-motif="horology"] .tour,
+html[data-motif="horology"] .gallery__link,
+html[data-motif="horology"] .map {
+  border-radius: 26px;
+  overflow: hidden;
+  transition:
+    box-shadow 500ms var(--ease),
+    transform 500ms var(--ease);
+}
+html[data-motif="horology"] .locked:hover,
+html[data-motif="horology"] .pricing__card:hover,
+html[data-motif="horology"] .tour:hover {
+  box-shadow:
+    0 0 0 1px rgb(31 79 163 / 0.5),
+    0 0 0 6px rgb(31 79 163 / 0.08),
+    0 34px 70px -34px rgb(11 21 48 / 0.6);
+  transform: translateY(-3px);
+}
+html[data-motif="horology"] :is(.section-figure, .figure) img,
+html[data-motif="horology"] .gallery__img {
+  border-radius: 22px;
+}
+
+/* Numerals in sapphire. */
+html[data-motif="horology"] .facts__value,
+html[data-motif="horology"] .highlights__num,
+html[data-motif="horology"] .sources__num {
+  color: var(--accent-ink);
+}
+
+/* Buttons: sapphire with a polished-steel sheen on hover. */
+html[data-motif="horology"]
+  .btn:not(.btn--ghost, .hero__primary, .hero__secondary, .footer__btn-ghost, .ty__wa) {
+  border-color: transparent;
+  background:
+    linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.28) 50%, transparent 65%) -150% 0 /
+      200% 100% no-repeat,
+    linear-gradient(135deg, #2a5cb8, #1f4fa3 50%, #163a7c);
+  color: #fdfcf9;
+  transition: background-position 700ms var(--ease);
+}
+html[data-motif="horology"]
+  .btn:not(.btn--ghost, .hero__primary, .hero__secondary, .footer__btn-ghost, .ty__wa):hover {
+  background-position:
+    150% 0,
+    0 0;
+}
+
+/* CTA band: midnight sapphire, guilloche and a large turning bezel. */
+html[data-motif="horology"] .band {
+  position: relative;
+  overflow: hidden;
+  background: var(--guilloche), linear-gradient(160deg, #0d1a3a, #0b1530 60%, #070e22);
+}
+html[data-motif="horology"] .band::before {
+  content: "";
+  position: absolute;
+  right: -140px;
+  top: 50%;
+  width: 420px;
+  aspect-ratio: 1;
+  margin-top: -210px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgb(199 213 242 / 0.35) 0 0.6deg, transparent 0.6deg 6deg);
+  -webkit-mask: radial-gradient(circle, transparent 62%, #000 63%, #000 70%, transparent 71%);
+  mask: radial-gradient(circle, transparent 62%, #000 63%, #000 70%, transparent 71%);
+  pointer-events: none;
+}
+html[data-motif="horology"] .band__inner {
+  position: relative;
+}
+
+/* Floating call button: sapphire ring. */
+html[data-motif="horology"] .fab__btn--call {
+  background: #0f1d3a;
+  box-shadow:
+    inset 0 0 0 1px rgb(199 213 242 / 0.55),
+    0 10px 24px -8px rgb(11 21 48 / 0.6);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero frame: winds in with a quarter turn of the bezel. */
+  html[data-motif="horology"] .hero__arch {
+    animation: horo-wind 1.5s cubic-bezier(0.2, 0.9, 0.25, 1.05) 120ms both;
+  }
+  html[data-motif="horology"] .hero__dial {
+    animation: horo-dial 1.2s cubic-bezier(0.34, 1.4, 0.64, 1) 700ms both;
+  }
+  html[data-motif="horology"] .band::before {
+    animation: horo-bezel 90s linear infinite;
+  }
+
+  /* Reveals: swing into place with a slight overshoot, like a balance wheel. */
+  html[data-motif="horology"].reveal-ready [data-reveal] {
+    transform-origin: 0% 100%;
+    transition:
+      opacity 700ms var(--ease),
+      transform 1000ms cubic-bezier(0.34, 1.45, 0.64, 1),
+      filter 700ms var(--ease);
+  }
+  html[data-motif="horology"].reveal-ready [data-reveal]:not(.is-revealed) {
+    opacity: 0;
+    filter: none;
+    transform: translateY(22px) rotate(-1.5deg);
+  }
+  html[data-motif="horology"].reveal-ready [data-reveal]:nth-child(2) {
+    transition-delay: 80ms;
+  }
+  html[data-motif="horology"].reveal-ready [data-reveal]:nth-child(3) {
+    transition-delay: 160ms;
+  }
+  html[data-motif="horology"].reveal-ready [data-reveal]:nth-child(4) {
+    transition-delay: 240ms;
+  }
+  html[data-motif="horology"].reveal-ready .section-heading::after {
+    transition: transform 1400ms steps(12, end) 250ms;
+  }
+  html[data-motif="horology"].reveal-ready .section-heading:not(.is-revealed)::after {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes horo-wind {
+  from {
+    opacity: 0;
+    transform: rotate(-8deg) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes horo-dial {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-90deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes horo-bezel {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Tonneau frame: the caption sits at the top, clear of the watch dial. */
+html[data-motif="horology"] .hero--tonneau .hero__archframe .hero__corner {
+  top: 7% !important;
+  bottom: auto !important;
+  max-width: 76% !important;
+}
+html[data-motif="horology"] .hero__title {
+  font-size: clamp(2.8rem, 1.8rem + 4.2vw, 5.8rem);
+}

@@ -1,0 +1,161 @@
+# Asset inventory for M3M Franck Muller, Sector 43. Every file in images/ must be listed here.
+#
+# Kit images: supplied in the owner's M3M channel partner kit (owner confirmed
+# 2026-10-21). None is confirmed to show the Sector 43 project:
+#   - the twin-tower dusk render is a concept image (agent sites call it that too)
+#   - the Aeternitas images show Franck Muller's tower in Dubai Marina
+# So every one is captioned "Representative image".
+#
+# Not used, on purpose:
+#   - "master-plan-47796-36735.jpg": a large multi-block township, not a two-tower site
+#   - "site-plan-image-99056-73374.jpg": a "Site plan coming soon" placeholder
+#   - "The Dubai Lifestyle" / "Philosophy" text banners: Dubai marketing, misleading here
+#   - prestige-group.in images: Prestige material, not M3M's
+# When M3M releases official Sector 43 renders or plans, add them with
+# fromDeveloper: true, license: authorized, licenseProof: <agreement ref>.
+
+assets:
+  - id: m3m-logo
+    file: m3m-logo.png
+    alt: "M3M logo"
+    kind: logo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M channel partner kit reference"
+    source: "M3M India, supplied in the M3M channel partner kit (owner, 2026-10-21)"
+    usage: [developer]
+
+  - id: m3m-logo-tile
+    file: m3m-logo-light.png
+    alt: "M3M logo"
+    kind: logo
+    fromDeveloper: true
+    onDark: true
+    license: authorized
+    licenseProof: "TBD: M3M channel partner kit reference"
+    source: "The kit logo on a white tile, for dark backgrounds (owner, 2026-10-21)"
+    usage: [developer]
+
+  - id: twin-towers-concept
+    file: twin-towers-concept-dusk.jpg
+    alt: "Concept render of two slim residential towers above a lit podium at dusk. Not confirmed as the final design."
+    caption: "Representative image: concept render, not the final design"
+    kind: illustration
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M channel partner kit reference"
+    source: "Supplied in the M3M channel partner kit (owner, 2026-10-21)"
+    focus: "50% 40%"
+    usage: [hero, og, gallery, card]
+
+  - id: aeternitas-marina
+    file: franck-muller-aeternitas-dubai-marina.jpg
+    alt: "Artist's impression of the Franck Muller Aeternitas tower rising above Dubai Marina. A different project, in Dubai."
+    caption: "Representative image: artist's impression of another Franck Muller project, Dubai"
+    kind: render
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M channel partner kit reference"
+    source: "Franck Muller brand imagery, supplied in the M3M channel partner kit (owner, 2026-10-21)"
+    focus: "30% 50%"
+    usage: [hero, gallery]
+
+  - id: aeternitas-pool
+    file: franck-muller-aeternitas-pool-deck.jpg
+    alt: "Artist's impression of a pool deck with cabanas and stone portals beside a tower. A different project, in Dubai."
+    caption: "Representative image: artist's impression of another Franck Muller project, Dubai"
+    kind: render
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M channel partner kit reference"
+    source: "Franck Muller brand imagery, supplied in the M3M channel partner kit (owner, 2026-10-21)"
+    focus: "50% 60%"
+    usage: [hero, gallery, section]
+
+  - id: aeternitas-tower
+    file: franck-muller-aeternitas-tower.jpg
+    alt: "Artist's impression of a single glass tower with a clock face crown. A different project, in Dubai."
+    caption: "Representative image: artist's impression of another Franck Muller project, Dubai"
+    kind: render
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M channel partner kit reference"
+    source: "Franck Muller brand imagery, supplied in the M3M channel partner kit (owner, 2026-10-21)"
+    focus: "62% 50%"
+    usage: [gallery, section]
+
+  - id: aeternitas-masterpiece
+    file: franck-muller-aeternitas-masterpiece.jpg
+    alt: "Franck Muller Aeternitas brand banner: a clock-crowned tower above the clouds. A different project, in Dubai."
+    caption: "Representative image: artist's impression of another Franck Muller project, Dubai"
+    kind: render
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M channel partner kit reference"
+    source: "Franck Muller brand imagery, supplied in the M3M channel partner kit (owner, 2026-10-21)"
+    usage: [gallery]
+
+  # Cool "sapphire" grade of the owner's AI-generated interiors (also used,
+  # in other grades, on the L&T, M3M Brabus and Prestige pages). Conceptual only.
+  - id: sapphire-living
+    file: sapphire-living.jpg
+    alt: "Conceptual living and dining room with full-height glazing and a city view. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Sapphire grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [hero, gallery, section]
+
+  - id: sapphire-city
+    file: sapphire-city-view.jpg
+    alt: "Conceptual living room opening onto a balcony with a city skyline. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Sapphire grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section, gallery]
+
+  - id: sapphire-dining
+    file: sapphire-dining.jpg
+    alt: "Conceptual dining room with a glass globe chandelier. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Sapphire grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section, gallery]
+
+  - id: sapphire-lounge
+    file: sapphire-lounge.jpg
+    alt: "Conceptual lounge corner with a stone wall and shelving. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Sapphire grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section]
+
+  - id: sapphire-bedside
+    file: sapphire-bedside.jpg
+    alt: "Conceptual bed with cushions and bedside lamps. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Sapphire grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section]
+
+  - id: sapphire-bedroom
+    file: sapphire-bedroom.jpg
+    alt: "Conceptual bedroom suite with a balcony and soft lighting. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Sapphire grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section, gallery]
+
+  - id: sapphire-balcony
+    file: sapphire-balcony.jpg
+    alt: "Conceptual bedroom seating beside full-height balcony doors. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Sapphire grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section]

@@ -336,7 +336,7 @@ test.describe("second project: M3M Brabus", () => {
 
   test("homepage lists every live project", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator(".cs__featured")).toHaveCount(3);
+    await expect(page.locator(".cs__featured")).toHaveCount(4);
   });
 });
 
@@ -369,6 +369,36 @@ test.describe("third project: Prestige Sector 92", () => {
     expect(posts[0]).toMatchObject({
       project_slug: "prestige-sector-92-gurgaon",
       intent: "amenities",
+    });
+  });
+});
+
+test.describe("fourth project: M3M Franck Muller", () => {
+  const FM = "/m3m-franck-muller-sector-43-gurgaon/";
+  test("renders the horology theme with the tonneau hero, dial and locked plans", async ({
+    page,
+  }) => {
+    await page.goto(FM);
+    await expect(page.locator("html")).toHaveAttribute("data-motif", "horology");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("M3M Franck Muller");
+    await expect(page.locator(".hero--tonneau .hero__archframe")).toBeVisible();
+    await expect(page.locator("[data-watch-dial]")).toHaveClass(/is-live/);
+    // Plans stay locked until M3M releases official ones.
+    await expect(page.locator("#plans")).toContainText("Releases at launch");
+    await expect(page.locator("body")).not.toContainText("₹");
+  });
+
+  test("submits a lead tagged with the Franck Muller project", async ({ page }) => {
+    const posts = await mockCrm(page, { status: 200, body: { id: "FM-1" } });
+    await page.goto(FM);
+    await openFrom(page, "virtual-tour");
+    await fillValid(page);
+    await page.clock.fastForward(4000);
+    await page.getByRole("button", { name: "Send" }).click();
+    await page.waitForURL(/\/m3m-franck-muller-sector-43-gurgaon\/thank-you\/\?ref=FM-1$/);
+    expect(posts[0]).toMatchObject({
+      project_slug: "m3m-franck-muller-sector-43-gurgaon",
+      intent: "virtual-tour",
     });
   });
 });

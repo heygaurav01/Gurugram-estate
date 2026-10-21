@@ -27,7 +27,8 @@ export function initMotion(): void {
     else io.observe(el);
   });
   document.documentElement.classList.add("reveal-ready");
-  if (document.documentElement.dataset.motif === "aurum") initCountUp();
+  const motif = document.documentElement.dataset.motif;
+  if (motif === "aurum" || motif === "horology") initCountUp();
 }
 
 /**

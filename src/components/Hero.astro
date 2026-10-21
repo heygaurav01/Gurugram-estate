@@ -11,12 +11,17 @@ import { ctaCopy } from "~/lib/view";
 import HeroSlides from "./HeroSlides.astro";
 import ReraBadge from "./ReraBadge.astro";
 import Disclosure from "./Disclosure.astro";
+import WatchDial from "./WatchDial.astro";
 
 type Props = { project: Project; settings: SiteSettings; images?: Asset[] };
 const { project, settings, images = [] } = Astro.props;
 const image = images[0];
-// "arch": split layout, text on the left and the slideshow inside an arched frame.
-const arch = project.theme.heroLayout === "arch";
+// "arch" / "tonneau": split layout, text on the left and the slideshow inside a
+// shaped frame (an arch, or the barrel shape of a watch case).
+const arch = project.theme.heroLayout !== "full";
+const tonneau = project.theme.heroLayout === "tonneau";
+// Horology motif: a live watch dial overlaps the frame.
+const horology = project.theme.motif === "horology";
 // Aurum motif: drifting gold dust (positions and timings fixed, so builds are stable).
 const aurum = project.theme.motif === "aurum";
 const dust = Array.from({ length: 18 }, (_, i) => ({
@@ -53,7 +58,7 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
 ---
 
 <section
-  class:list={["hero", { "hero--no-image": !image, "hero--arch": arch }]}
+  class:list={["hero", { "hero--no-image": !image, "hero--arch": arch, "hero--tonneau": tonneau }]}
   aria-labelledby="hero-title"
 >
   {!arch && <HeroSlides project={project} images={images} sizes="100vw" />}
@@ -120,6 +125,11 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
         <div class="hero__archframe">
           <HeroSlides project={project} images={images} sizes="(min-width: 1024px) 40vw, 64vw" />
         </div>
+        {horology && (
+          <div class="hero__dial">
+            <WatchDial />
+          </div>
+        )}
       </div>
     )}
 
@@ -474,6 +484,35 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
   @keyframes hero-halo {
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  /* Tonneau frame: the barrel shape of a watch case, wider than the arch. */
+  .hero--tonneau .hero__arch {
+    width: min(78vw, 360px);
+  }
+  .hero--tonneau .hero__archframe {
+    aspect-ratio: 5 / 6;
+    border-radius: 44% / 16%;
+  }
+  .hero--tonneau .hero__arch::after {
+    inset: -14px;
+    border-radius: 44% / 16%;
+  }
+  .hero__dial {
+    position: absolute;
+    left: -18px;
+    bottom: -26px;
+    width: clamp(92px, 26vw, 150px);
+    z-index: 1;
+  }
+  @media (min-width: 1024px) {
+    .hero--tonneau .hero__arch {
+      width: min(100%, 480px);
+    }
+    .hero__dial {
+      left: -64px;
+      bottom: 28px;
     }
   }
 </style>

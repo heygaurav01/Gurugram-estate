@@ -2,7 +2,7 @@
 #
 # Kit images: supplied in the owner's M3M channel partner kit (owner confirmed
 # 2026-10-21). None is confirmed to show the Sector 43 project:
-#   - the twin-tower dusk render is a concept image (agent sites call it that too)
+#   - the twin towers with the golden clock bridge are an owner-supplied concept
 #   - the Aeternitas images show Franck Muller's tower in Dubai Marina
 # So every one is captioned "Representative image".
 #
@@ -36,16 +36,16 @@ assets:
     source: "The kit logo on a white tile, for dark backgrounds (owner, 2026-10-21)"
     usage: [developer]
 
+  # Owner-supplied concept (2026-10-22): twin towers joined by a golden clock bridge.
+  # Replaces the earlier twin-tower dusk render. Conceptual, not M3M's design.
   - id: twin-towers-concept
-    file: twin-towers-concept-dusk.jpg
-    alt: "Concept render of two slim residential towers above a lit podium at dusk. Not confirmed as the final design."
+    file: twin-towers-golden-clock-bridge.jpg
+    alt: "Concept render of twin residential towers joined at the top by a bridge with a golden clock, at sunset. Not the final design."
     caption: "Representative image: concept render, not the final design"
     kind: illustration
-    fromDeveloper: true
-    license: authorized
-    licenseProof: "TBD: M3M channel partner kit reference"
-    source: "Supplied in the M3M channel partner kit (owner, 2026-10-21)"
-    focus: "50% 40%"
+    license: owned
+    source: "Concept image supplied by the site owner, 2026-10-22"
+    focus: "68% 40%"
     usage: [hero, og, gallery, card]
 
   - id: aeternitas-marina

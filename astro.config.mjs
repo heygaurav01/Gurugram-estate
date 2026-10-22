@@ -50,7 +50,9 @@ function leadRelay() {
         primaryUser: env.LEADRAT_PRIMARY_USER,
         projects,
       });
-      console.info(`[lead relay] ${out.status} ${JSON.stringify(out.json)}`);
+      console.info(
+        `[lead relay] ${out.status} ${JSON.stringify(out.json)} assigned to: ${env.LEADRAT_PRIMARY_USER || "(nobody)"}`,
+      );
       send(out.status, out.json);
     } catch (err) {
       console.error("[lead relay] failed:", err);

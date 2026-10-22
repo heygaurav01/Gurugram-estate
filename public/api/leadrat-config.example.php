@@ -9,4 +9,6 @@
 return [
     'api_key' => 'PASTE-LEADRAT-API-KEY-HERE',
     'api_url' => 'https://connect.leadrat.com/api/v1/integration/Website',
+    // Leadrat user (full name) every website lead is assigned to. Empty = unassigned.
+    'primary_user' => 'Gaurav Sharma',
 ];

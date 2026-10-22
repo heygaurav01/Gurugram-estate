@@ -90,8 +90,11 @@ export function istStamp(date = new Date()) {
  * Shape a validated lead for Leadrat's Website integration (an array of leads).
  * The project name goes in "project" so every lead is identified in the CRM.
  * @param {NonNullable<ReturnType<typeof validateLead>["lead"]>} lead
+ * @param {Date} [now]
+ * @param {string} [primaryUser] Leadrat user the lead is assigned to (full name).
+ *   Unassigned leads do not show in "All / My Leads / Team's" in Leadrat.
  */
-export function toLeadratPayload(lead, now = new Date()) {
+export function toLeadratPayload(lead, now = new Date(), primaryUser = "") {
   const { date, time } = istStamp(now);
   const intent =
     INTENT_LABEL[/** @type {keyof typeof INTENT_LABEL} */ (lead.intent)] ?? lead.intent;
@@ -129,6 +132,7 @@ export function toLeadratPayload(lead, now = new Date()) {
       subSource: `Landing page: ${lead.slug}`,
       CampaignName: lead.utm.campaign,
       additionalProperties: extra,
+      ...(primaryUser ? { primaryUser } : {}),
     },
   ];
 }
@@ -137,7 +141,7 @@ export function toLeadratPayload(lead, now = new Date()) {
  * Validate, shape and forward one lead. Returns the HTTP status and JSON body
  * the relay sends back to the browser.
  * @param {Body} body
- * @param {{ apiKey: string, url?: string, projects: Record<string, ProjectInfo>, fetchImpl?: typeof fetch }} opts
+ * @param {{ apiKey: string, url?: string, primaryUser?: string, projects: Record<string, ProjectInfo>, fetchImpl?: typeof fetch }} opts
  */
 export async function relayLead(body, opts) {
   if (!opts.apiKey) return { status: 503, json: { ok: false, error: "not_configured" } };
@@ -147,7 +151,7 @@ export async function relayLead(body, opts) {
   const res = await (opts.fetchImpl ?? fetch)(opts.url || LEADRAT_DEFAULT_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", "API-Key": opts.apiKey },
-    body: JSON.stringify(toLeadratPayload(v.lead)),
+    body: JSON.stringify(toLeadratPayload(v.lead, new Date(), opts.primaryUser ?? "")),
     signal: AbortSignal.timeout(10_000),
   });
   if (res.status < 200 || res.status >= 300) {

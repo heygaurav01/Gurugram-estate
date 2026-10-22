@@ -72,6 +72,16 @@ describe("toLeadratPayload", () => {
   });
 });
 
+describe("assignment", () => {
+  it("adds primaryUser only when one is configured", () => {
+    const lead = validateLead(body, projects).lead!;
+    expect(toLeadratPayload(lead, new Date(), "Gaurav Sharma")[0]).toMatchObject({
+      primaryUser: "Gaurav Sharma",
+    });
+    expect(toLeadratPayload(lead)[0]).not.toHaveProperty("primaryUser");
+  });
+});
+
 describe("relayLead", () => {
   it("sends the key only in the header and reports success", async () => {
     const fetchImpl = vi.fn(async () => new Response("{}", { status: 200 }));

@@ -47,6 +47,7 @@ function leadRelay() {
       const out = await relayLead(JSON.parse(raw || "{}"), {
         apiKey: env.LEADRAT_API_KEY ?? "",
         url: env.LEADRAT_API_URL,
+        primaryUser: env.LEADRAT_PRIMARY_USER,
         projects,
       });
       console.info(`[lead relay] ${out.status} ${JSON.stringify(out.json)}`);

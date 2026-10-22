@@ -45,6 +45,9 @@ foreach ([dirname(__DIR__, 2) . '/leadrat-config.php', dirname(__DIR__, 3) . '/l
 }
 $apiKey = (string)($config['api_key'] ?? getenv('LEADRAT_API_KEY') ?: '');
 $apiUrl = (string)($config['api_url'] ?? 'https://connect.leadrat.com/api/v1/integration/Website');
+// Leadrat user every website lead is assigned to (full name). Unassigned leads
+// do not show in "All / My Leads / Team's" in Leadrat.
+$primaryUser = trim((string)($config['primary_user'] ?? getenv('LEADRAT_PRIMARY_USER') ?: ''));
 if ($apiKey === '') reply(503, ['ok' => false, 'error' => 'not_configured']);
 
 // --- simple rate limit: 6 leads per IP per 10 minutes ---------------------
@@ -127,6 +130,7 @@ $payload = [[
     'CampaignName' => substr($s('utm_campaign'), 0, 150),
     'additionalProperties' => $extra,
 ]];
+if ($primaryUser !== '') $payload[0]['primaryUser'] = $primaryUser;
 
 // --- forward ----------------------------------------------------------------
 $ch = curl_init($apiUrl);

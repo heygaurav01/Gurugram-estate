@@ -28,7 +28,8 @@ export function initMotion(): void {
   });
   document.documentElement.classList.add("reveal-ready");
   const motif = document.documentElement.dataset.motif;
-  if (motif === "aurum" || motif === "horology") initCountUp();
+  if (motif === "aurum" || motif === "horology" || motif === "botanica") initCountUp();
+  if (motif === "botanica") initMagnetic();
 }
 
 /**
@@ -64,4 +65,25 @@ function initCountUp(): void {
     { threshold: 0.6 },
   );
   els.forEach((el) => io.observe(el));
+}
+
+/**
+ * Botanica motif: buttons lean a few pixels toward the pointer and spring back
+ * when it leaves (fine pointers only; never under reduced motion).
+ */
+function initMagnetic(): void {
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  document.querySelectorAll<HTMLElement>(".btn").forEach((btn) => {
+    btn.addEventListener("pointermove", (e) => {
+      const r = btn.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width - 0.5) * 10;
+      const y = ((e.clientY - r.top) / r.height - 0.5) * 8;
+      btn.style.setProperty("--mx", `${x.toFixed(1)}px`);
+      btn.style.setProperty("--my", `${y.toFixed(1)}px`);
+    });
+    btn.addEventListener("pointerleave", () => {
+      btn.style.setProperty("--mx", "0px");
+      btn.style.setProperty("--my", "0px");
+    });
+  });
 }

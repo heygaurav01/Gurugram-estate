@@ -18,7 +18,18 @@ const { project, settings, images = [] } = Astro.props;
 const image = images[0];
 // "arch" / "tonneau": split layout, text on the left and the slideshow inside a
 // shaped frame (an arch, or the barrel shape of a watch case).
-const arch = project.theme.heroLayout !== "full";
+const arch = ["arch", "tonneau"].includes(project.theme.heroLayout);
+// "window": the full image inside a rounded inset window, text on a glass card.
+const windowed = project.theme.heroLayout === "window";
+// Botanica motif: dappled light and a few drifting leaves (fixed values, stable builds).
+const botanica = project.theme.motif === "botanica";
+const leaves = Array.from({ length: 9 }, (_, i) => ({
+  left: (i * 23 + 7) % 100,
+  size: 10 + (i % 3) * 5,
+  dur: 14 + ((i * 5) % 9),
+  delay: -((i * 11) % 19),
+  spin: i % 2 ? 1 : -1,
+}));
 const tonneau = project.theme.heroLayout === "tonneau";
 // Horology motif: a live watch dial overlaps the frame.
 const horology = project.theme.motif === "horology";
@@ -58,11 +69,30 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
 ---
 
 <section
-  class:list={["hero", { "hero--no-image": !image, "hero--arch": arch, "hero--tonneau": tonneau }]}
+  class:list={[
+    "hero",
+    {
+      "hero--no-image": !image,
+      "hero--arch": arch,
+      "hero--tonneau": tonneau,
+      "hero--window": windowed,
+    },
+  ]}
   aria-labelledby="hero-title"
 >
   {!arch && <HeroSlides project={project} images={images} sizes="100vw" />}
   <div class="hero__scrim" aria-hidden="true"></div>
+  {botanica && (
+    <div class="hero__garden" aria-hidden="true">
+      <span class="hero__dapple" />
+      {leaves.map((l) => (
+        <span
+          class="hero__leaf"
+          style={`left:${l.left}%;--s:${l.size}px;--t:${l.dur}s;--r:${l.spin};animation-delay:${l.delay}s`}
+        />
+      ))}
+    </div>
+  )}
   {aurum && (
     <div class="hero__dust" aria-hidden="true">
       {dust.map((d) => (
@@ -513,6 +543,107 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     .hero__dial {
       left: -64px;
       bottom: 28px;
+    }
+  }
+
+  /*
+   * Window layout: the image sits in a rounded inset window, the headline on a
+   * frosted glass card. The info strip stays inside the window.
+   */
+  .hero--window {
+    padding-inline: var(--gutter);
+    padding-bottom: var(--gutter);
+  }
+  .hero--window :global(.hero__slides),
+  .hero--window .hero__scrim,
+  .hero--window .hero__garden {
+    inset: calc(4.25rem + 6px) var(--gutter) var(--gutter);
+    overflow: hidden;
+    border-radius: clamp(20px, 3vw, 40px);
+  }
+  .hero--window .hero__inner {
+    padding-inline: clamp(1rem, 3vw, 3rem);
+    padding-bottom: clamp(1rem, 2.5vw, 2.5rem);
+  }
+  .hero--window .hero__content {
+    max-width: 44rem;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 28px;
+    background: rgb(14 30 21 / 0.38);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
+  }
+  .hero--window .hero__scrim {
+    background: linear-gradient(
+      to top,
+      rgb(10 22 15 / 0.85) 0%,
+      rgb(10 22 15 / 0.2) 45%,
+      rgb(10 22 15 / 0.25) 100%
+    );
+  }
+  .hero--window :global(.hero__corner) {
+    right: calc(var(--gutter) * 2);
+    top: calc(4.25rem + 6px + var(--space-4));
+  }
+
+  /* Garden: dappled sunlight drifting over the image, and a few falling leaves. */
+  .hero__garden {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .hero__dapple {
+    position: absolute;
+    inset: -20%;
+    background:
+      radial-gradient(18% 14% at 20% 30%, rgb(255 246 214 / 0.22), transparent 70%),
+      radial-gradient(12% 10% at 62% 22%, rgb(255 246 214 / 0.18), transparent 70%),
+      radial-gradient(22% 16% at 78% 60%, rgb(255 246 214 / 0.14), transparent 70%),
+      radial-gradient(14% 12% at 38% 72%, rgb(255 246 214 / 0.16), transparent 70%);
+    mix-blend-mode: soft-light;
+  }
+  .hero__leaf {
+    position: absolute;
+    top: -30px;
+    width: var(--s);
+    height: calc(var(--s) * 0.62);
+    border-radius: 0 100% 0 100%;
+    background: linear-gradient(135deg, #9fc28d, #3e6b4f);
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__dapple {
+      animation: hero-dapple 16s ease-in-out infinite alternate;
+    }
+    .hero__leaf {
+      animation: hero-leaf var(--t) linear infinite;
+    }
+  }
+  @keyframes hero-dapple {
+    to {
+      transform: translate(6%, 4%) scale(1.06);
+    }
+  }
+  @keyframes hero-leaf {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.75;
+    }
+    50% {
+      transform: translate(calc(var(--r) * 60px), 50svh) rotate(calc(var(--r) * 200deg));
+    }
+    90% {
+      opacity: 0.6;
+    }
+    100% {
+      transform: translate(calc(var(--r) * -20px), 105svh) rotate(calc(var(--r) * 420deg));
+      opacity: 0;
     }
   }
 </style>

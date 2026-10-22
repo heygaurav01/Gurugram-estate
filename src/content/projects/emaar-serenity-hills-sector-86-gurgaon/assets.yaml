@@ -1,0 +1,323 @@
+# Asset inventory for Emaar Serenity Hills, Sector 86. Every file in images/ must be listed here.
+#
+# Renders and plans: from Emaar India's official Serenity Hills e-brochure
+#   https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf
+# (owner confirmed authorized Emaar channel partner status on 2026-10-22). The
+# brochure calls its visuals conceptual, so renders read "Artist's impression".
+# The hero banner from the owner's kit is the same tower render as brochure page 4.
+#
+# Kit images (kit-*): supplied in the owner's kit, sourced from an agent site. Not
+# matched to the brochure, so they are captioned "Representative image".
+#
+# Not used, on purpose:
+#   - the "3 BHK floor plan" from the kit: it is a VILLA plan, not this project
+#   - the kit "master plan" (320x240): it does not match Emaar's official master plan
+#   - prestige-group.in images: Prestige material, not Emaar's
+#   - the kit rooftop infinity pool: the brochure shows no rooftop pool, so it would
+#     suggest an amenity that is not planned
+
+assets:
+  - id: emaar-logo
+    file: emaar-india-logo.png
+    alt: "Emaar India logo"
+    kind: logo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India logo from in.emaar.com (owner, 2026-10-22)"
+    usage: [developer]
+
+  - id: emaar-logo-light
+    file: emaar-india-logo-light.png
+    alt: "Emaar India logo"
+    kind: logo
+    fromDeveloper: true
+    onDark: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Light version of the Emaar India logo, for dark backgrounds (owner, 2026-10-22)"
+    usage: [developer]
+
+  - id: sh-towers
+    file: serenity-hills-towers-central-greens.jpg
+    alt: "Artist's impression of the Serenity Hills towers at dusk, seen across the landscaped central greens and a footbridge."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    focus: "50% 55%"
+    usage: [hero, og, gallery, card]
+
+  - id: sh-balcony-view
+    file: serenity-hills-balcony-view.jpg
+    alt: "Artist's impression of a residence balcony overlooking the central greens and towers."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    focus: "50% 50%"
+    usage: [hero, gallery, amenity, section]
+
+  - id: sh-water-promenade
+    file: serenity-hills-water-promenade.jpg
+    alt: "Artist's impression of the water element with a walking promenade, lined with trees."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [gallery, amenity]
+
+  - id: sh-pool-deck
+    file: serenity-hills-pool-deck.jpg
+    alt: "Artist's impression of the resort-style pool deck with loungers beside the towers."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    focus: "50% 60%"
+    usage: [hero, gallery, amenity, section]
+
+  - id: sh-pool-lawns
+    file: serenity-hills-pool-lawns.jpg
+    alt: "Artist's impression of the pool and family lawns framed by flowering trees."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [gallery, amenity]
+
+  - id: sh-clubhouse-lobby
+    file: serenity-hills-clubhouse-lobby.jpg
+    alt: "Artist's impression of the clubhouse reception and lounge."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [gallery, amenity]
+
+  - id: sh-restaurant
+    file: serenity-hills-restaurant.jpg
+    alt: "Artist's impression of the clubhouse multi-cuisine restaurant."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [gallery]
+
+  - id: sh-forest-trail
+    file: serenity-hills-forest-trail.jpg
+    alt: "Artist's impression of a shaded forest trail with a jogger."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [amenity, gallery]
+
+  - id: sh-yoga
+    file: serenity-hills-yoga-zone.jpg
+    alt: "Artist's impression of the yoga and meditation zone in the gardens."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [amenity]
+
+  - id: sh-kids-play
+    file: serenity-hills-kids-play.jpg
+    alt: "Artist's impression of the kids play area with a slide and play tower."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [amenity]
+
+  - id: sh-tower-balconies
+    file: serenity-hills-tower-balconies.jpg
+    alt: "Artist's impression of a tower facade with wide, glazed balconies at dusk."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [gallery, section]
+
+  - id: sh-drop-off
+    file: serenity-hills-tower-drop-off.jpg
+    alt: "Artist's impression of a tower drop-off and entrance lobby."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [gallery]
+
+  - id: sh-tower-lobby
+    file: serenity-hills-tower-lobby.jpg
+    alt: "Artist's impression of a tower lobby meeting lounge."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [section, gallery]
+
+  - id: sh-living
+    file: serenity-hills-living-room.jpg
+    alt: "Artist's impression of a living and dining room with full-height glazing."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    focus: "50% 55%"
+    usage: [hero, gallery, section]
+
+  - id: sh-bedroom
+    file: serenity-hills-master-bedroom.jpg
+    alt: "Artist's impression of a master bedroom with warm wood finishes."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [gallery, section]
+
+  - id: sh-kitchen
+    file: serenity-hills-kitchen.jpg
+    alt: "Artist's impression of a kitchen opening onto a balcony."
+    caption: "Artist's impression"
+    kind: render
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [section]
+
+  - id: sh-master-plan
+    file: serenity-hills-master-plan.jpg
+    alt: "Master plan (proposed): phases, central greens, waterbody and entry gates"
+    kind: plan
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [plan]
+
+  - id: sh-plan-3bhk
+    file: serenity-hills-3bhk-plan.jpg
+    alt: "3 BHK (3 BHK + 2T), carpet area 948 sq ft"
+    kind: plan
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [plan]
+
+  - id: sh-plan-3bhk-large
+    file: serenity-hills-3bhk-large-plan.jpg
+    alt: "3 BHK Large (3 BHK + 3T + utility), carpet area 1,219 sq ft"
+    kind: plan
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [plan]
+
+  - id: sh-plan-4bhk
+    file: serenity-hills-4bhk-plan.jpg
+    alt: "4 BHK (4 BHK + 4T + powder room + utility), carpet area 1,576 sq ft"
+    kind: plan
+    fromDeveloper: true
+    projectSpecific: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Emaar India, Serenity Hills e-brochure (cdn.in.emaar.com, Nov 2025)"
+    usage: [plan]
+
+  - id: kit-clubhouse-lawn
+    file: kit-clubhouse-lawn.jpg
+    alt: "Low clubhouse pavilion beside a lawn and flowering tree, with towers behind."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Supplied in the owner's Emaar channel partner kit (owner, 2026-10-22)"
+    usage: [gallery]
+
+  - id: kit-waterfront
+    file: kit-waterfront.jpg
+    alt: "Stepped water cascade and landscaped terraces in front of residential towers."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Supplied in the owner's Emaar channel partner kit (owner, 2026-10-22)"
+    usage: [gallery]
+
+  - id: kit-main-park
+    file: kit-main-park.jpg
+    alt: "Residents doing yoga on a lawn beside mid-rise residential blocks."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Supplied in the owner's Emaar channel partner kit (owner, 2026-10-22)"
+    usage: [gallery]
+
+  - id: kit-entry
+    file: kit-entry.jpg
+    alt: "Grand entrance drive between two residential towers with an Emaar sign."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Emaar channel partner kit reference"
+    source: "Supplied in the owner's Emaar channel partner kit (owner, 2026-10-22)"
+    usage: [gallery]

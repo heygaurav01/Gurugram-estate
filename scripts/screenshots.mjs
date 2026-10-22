@@ -20,6 +20,7 @@ const pages = [
   ["m3m", "/m3m-brabus-sector-58-gurgaon/"],
   ["prestige", "/prestige-sector-92-gurgaon/"],
   ["franck-muller", "/m3m-franck-muller-sector-43-gurgaon/"],
+  ["serenity-hills", "/emaar-serenity-hills-sector-86-gurgaon/"],
   ["thank-you", "/l-and-t-sector-86-gurgaon/thank-you/"],
   ["disclaimer", "/disclaimer/"],
   ["privacy-policy", "/privacy-policy/"],

@@ -43,7 +43,9 @@ const heroIds =
 const heroImages = heroIds.map((id) => asset(id));
 const heroImage = heroImages[0];
 
-const heroSizes = project.theme.heroLayout !== "full" ? "(min-width: 1024px) 40vw, 64vw" : "100vw";
+const heroSizes = ["arch", "tonneau"].includes(project.theme.heroLayout)
+  ? "(min-width: 1024px) 40vw, 64vw"
+  : "100vw";
 // Preload the hero AVIF with the same widths the <Picture> uses.
 const heroSrc = heroImage ? projectImage(slug, heroImage.file) : undefined;
 const heroPreload = heroSrc

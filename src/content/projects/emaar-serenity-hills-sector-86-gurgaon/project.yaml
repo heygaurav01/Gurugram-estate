@@ -1,0 +1,233 @@
+# Emaar Serenity Hills, Sector 86, Gurgaon
+# Owner confirmed authorized Emaar India channel partner status on 2026-10-22.
+#
+# Official sources (checked 2026-10-22):
+#   Emaar India project page: https://in.emaar.com/en/properties/emaar-serenity-hills/
+#   Emaar e-brochure:         https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf
+# Secondary (press on the launch, 13 Nov 2025):
+#   https://therealtytoday.com/news/residential/emaar-launches-serenity-hills-in-sector-86-gurugram-offering-sustainable-luxury-living/
+#
+# HARERA: Phase I and Phase II registered on 16.10.2025 (Emaar page and brochure).
+# Prices: Emaar lists them "on request", so none are published here. Agent figures
+# (e.g. "from 2.98 Cr", "30:40:30 plan") are not used. Agent site reviewed, never
+# copied: serenityhillsgurgaon.in.
+
+slug: emaar-serenity-hills-sector-86-gurgaon
+name: "Emaar Serenity Hills, Sector 86, Gurgaon"
+tagline: "Seven towers around an 8-acre central meadow, by Emaar India in New Gurugram."
+published: true
+galleryIntro: "Artist's impressions from Emaar's official brochure, plus a few representative images. Emaar notes that its illustrations are conceptual and actual details may vary."
+
+overview:
+  title: "Come home to acres of nature"
+  body:
+    - "Emaar Serenity Hills is a residential community by Emaar India in Sector 86, New Gurugram. Seven towers are set around an 8-acre central meadow, and Emaar says over 80% of homes overlook the central greens or sit on a corner, with each home opening on three sides."
+    - "The project is registered with HARERA in two phases, and it is IGBC Platinum pre-certified. Homes are 3 and 4 BHK, from 948 sq ft to 1,576 sq ft of carpet area. Emaar shares prices on request, and the clubhouse is planned for a future phase."
+    - "Gurugram Estate Pvt Ltd is an authorized channel partner of Emaar India. Ask us for the current price list, the full brochure and a site visit, and we will answer with Emaar's official documents."
+
+developer:
+  name: "Emaar India"
+  wordmark: "Emaar | Serenity Hills"
+  authorizedChannelPartner: true
+  authorizedToUseName: true
+  authorizedToUseLogo: true
+  authorizedAssets: true
+  # REQUIRED before production: Emaar channel partner agreement reference and date.
+  authorizationProof: "TBD"
+  about: "Emaar is a global real estate group known for landmarks in Dubai. Emaar India develops homes and communities in Delhi NCR, Mohali, Lucknow, Indore, Alibaug and Jaipur."
+  aboutSource: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+
+status: launched
+
+rera:
+  status: registered
+  number: "RC/REP/HARERA/GGM/993/725/2025/96 and RC/REP/HARERA/GGM/994/726/2025/97, dated 16.10.2025"
+  verifyUrl: "https://haryanarera.gov.in"
+  verifiedOn: "2026-10-22"
+
+location:
+  sector: "Sector 86"
+  city: "Gurugram"
+  region: "Haryana"
+  mapQuery: "Emaar Serenity Hills, Sector 86, Gurugram, Haryana"
+  connectivity: [] # brochure distances are on a map graphic; add only measured, dated routes
+
+land:
+  areaAcres: 25.9
+  note: "Overall site, developed in phases"
+  source: "https://therealtytoday.com/news/residential/emaar-launches-serenity-hills-in-sector-86-gurugram-offering-sustainable-luxury-living/"
+  verifiedOn: "2026-10-22"
+
+highlights:
+  - text: "Registered with HARERA in two phases, both dated 16 October 2025."
+    short: "HARERA registered"
+    source: "https://in.emaar.com/en/properties/emaar-serenity-hills/"
+    verifiedOn: "2026-10-22"
+  - text: "Seven towers set around a vast central meadow, with 8 acres of central greens."
+    short: "8-acre central greens"
+    source: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+    verifiedOn: "2026-10-22"
+  - text: "Over 80% of homes overlook the central greens or enjoy a corner position, and each home opens on three sides."
+    short: "Homes open on three sides"
+    source: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+    verifiedOn: "2026-10-22"
+  - text: "20+ acres of pathways, courtyards and gardens woven through the community."
+    short: "20+ acres of gardens"
+    source: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+    verifiedOn: "2026-10-22"
+  - text: "IGBC Platinum pre-certified, with provision for EV charging points."
+    short: "IGBC Platinum pre-certified"
+    source: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+    verifiedOn: "2026-10-22"
+  - text: "Direct frontage on the 75-metre road, with links to NH-48 and the Dwarka Expressway."
+    short: "On the 75-metre road"
+    source: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+    verifiedOn: "2026-10-22"
+  - text: "About 1,000 homes in seven towers in the current launch, mainly 3 and 4 BHK."
+    source: "https://therealtytoday.com/news/residential/emaar-launches-serenity-hills-in-sector-86-gurugram-offering-sustainable-luxury-living/"
+    verifiedOn: "2026-10-22"
+
+configurations:
+  - type: "3 BHK"
+    carpetSqftMin: 948
+    carpetSqftMax: 948
+    source: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+    verifiedOn: "2026-10-22"
+  - type: "3 BHK Large"
+    carpetSqftMin: 1218
+    carpetSqftMax: 1220
+    source: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+    verifiedOn: "2026-10-22"
+  - type: "4 BHK"
+    carpetSqftMin: 1576
+    carpetSqftMax: 1576
+    source: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+    verifiedOn: "2026-10-22"
+
+amenities:
+  - name: "8 acres of central greens"
+    imageId: sh-balcony-view
+    projectSpecific: true
+    source: "https://in.emaar.com/en/properties/emaar-serenity-hills/"
+    verifiedOn: "2026-10-22"
+  - name: "Water element with a continuous promenade"
+    imageId: sh-water-promenade
+    projectSpecific: true
+    source: "https://in.emaar.com/en/properties/emaar-serenity-hills/"
+    verifiedOn: "2026-10-22"
+  - name: "Swimming pool, kids' pool and wellness spa"
+    imageId: sh-pool-deck
+    projectSpecific: true
+    source: "https://in.emaar.com/en/properties/emaar-serenity-hills/"
+    verifiedOn: "2026-10-22"
+  - name: "Yoga lawns and meditation zones"
+    imageId: sh-yoga
+    projectSpecific: true
+    source: "https://in.emaar.com/en/properties/emaar-serenity-hills/"
+    verifiedOn: "2026-10-22"
+  - name: "Shaded forest trails, jogging and cycling paths"
+    imageId: sh-forest-trail
+    projectSpecific: true
+    source: "https://in.emaar.com/en/properties/emaar-serenity-hills/"
+    verifiedOn: "2026-10-22"
+  - name: "Kids play area"
+    imageId: sh-kids-play
+    projectSpecific: true
+    source: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+    verifiedOn: "2026-10-22"
+  - name: "Pet park and family activity lawns"
+    imageId: sh-pool-lawns
+    projectSpecific: true
+    source: "https://in.emaar.com/en/properties/emaar-serenity-hills/"
+    verifiedOn: "2026-10-22"
+  - name: "Clubhouse, planned for a future phase"
+    imageId: sh-clubhouse-lobby
+    projectSpecific: true
+    source: "https://in.emaar.com/en/properties/emaar-serenity-hills/"
+    verifiedOn: "2026-10-22"
+
+timeline:
+  - label: "Registered with HARERA (Phase I and II)"
+    done: true
+    date: "2025-10-16"
+    source: "https://in.emaar.com/en/properties/emaar-serenity-hills/"
+  - label: "Launched by Emaar India"
+    done: true
+    date: "2025-11-13"
+    source: "https://therealtytoday.com/news/residential/emaar-launches-serenity-hills-in-sector-86-gurugram-offering-sustainable-luxury-living/"
+  - label: "Clubhouse (future phase)"
+    done: false
+  - label: "Possession"
+    done: false
+
+faqs:
+  - q: "Is Emaar Serenity Hills RERA registered?"
+    a: "Yes. Phase I and Phase II are registered with HARERA as RC/REP/HARERA/GGM/993/725/2025/96 and RC/REP/HARERA/GGM/994/726/2025/97, both dated 16.10.2025. You can check them on haryanarera.gov.in."
+  - q: "What home sizes are available?"
+    a: "Emaar's brochure lists a 3 BHK of 948 sq ft carpet area, a 3 BHK Large of about 1,218 to 1,220 sq ft, and a 4 BHK of 1,576 sq ft, each with balconies on top. Ask us for the plan of a specific tower and floor."
+  - q: "What is the price?"
+    a: "Emaar shares prices on request, and they change with availability. We will send you Emaar's current official price list for the home type you want."
+  - q: "How big is the project?"
+    a: "The overall site is about 25.9 acres, developed in phases. The current launch has seven towers with about 1,000 homes, set around 8 acres of central greens."
+  - q: "Is there a clubhouse?"
+    a: "Yes, a clubhouse is planned, but Emaar states that the club will be developed in future phases. The registered phases offered today are Phase I and Phase II."
+  - q: "Where is Emaar Serenity Hills?"
+    a: "In Sector 86, New Gurugram, with direct frontage on the 75-metre road and links to NH-48 and the Dwarka Expressway, as shown in Emaar's brochure."
+  - q: "Who are you?"
+    a: "{{agent_disclosure}} We help buyers compare projects, arrange site visits and handle paperwork."
+
+seo:
+  title: "Emaar Serenity Hills Sector 86 Gurgaon | 3 & 4 BHK"
+  description: "Authorized channel partner of Emaar India. HARERA-registered Emaar Serenity Hills, Sector 86: 3 and 4 BHK homes, official plans, 8-acre central greens."
+  primaryKeyword: "Emaar Serenity Hills Sector 86 Gurgaon"
+  secondaryKeywords:
+    - "Emaar Serenity Hills"
+    - "Emaar Sector 86 Gurgaon"
+    - "Emaar new launch Gurgaon"
+    - "3 BHK Sector 86 Gurgaon"
+    - "4 BHK New Gurugram"
+  ogImageId: sh-towers
+
+# Botanica theme: forest green and stone, from the brochure's leaves and meadows.
+theme:
+  mode: light
+  motif: botanica
+  heroLayout: window
+  accent: "#2F5D46"
+  accentSoft: "#CFE3C8"
+  heroImageId: sh-towers
+  # Hero slideshow, crossfading every 3 s.
+  heroImageIds: [sh-towers, sh-balcony-view, sh-pool-deck, sh-living]
+  heroFocus: "50% 55%"
+
+form:
+  otp: false
+  intents:
+    [hero, pricing, floor-plan, gallery, location, footer, sticky, nav, amenities, virtual-tour]
+
+sourceInfo:
+  - url: "https://in.emaar.com/en/properties/emaar-serenity-hills/"
+    title: "Emaar Serenity Hills: Come Home to Acres of Nature"
+    publisher: "Emaar India"
+  - url: "https://cdn.in.emaar.com/wp-content/uploads/2025/11/serenity-hills-e-brochure.pdf"
+    title: "Serenity Hills e-brochure"
+    publisher: "Emaar India"
+  - url: "https://therealtytoday.com/news/residential/emaar-launches-serenity-hills-in-sector-86-gurugram-offering-sustainable-luxury-living/"
+    title: "Emaar launches Serenity Hills in Sector 86, Gurugram"
+    publisher: "The Realty Today"
+    published: "2025-11-13"
+
+sectionImages:
+  overview: sh-tower-balconies
+  homes: sh-living
+  pricing: sh-tower-lobby
+  faq: sh-bedroom
+  amenities: sh-pool-deck
+  virtualTour: sh-living
+  masterPlan: sh-towers
+  floorPlans: sh-kitchen
+
+sections:
+  plans: true
+  gallery: true
+  developer: true

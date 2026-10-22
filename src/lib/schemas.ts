@@ -212,14 +212,17 @@ export const projectSchema = z
          * Extra visual motif layered on the theme: "neon" adds automotive light bars and
          * streaks; "aurum" adds gold foil cards, gold dust, a highlights marquee and
          * curtain reveals (warm black and champagne gold, styles/aurum.css); "horology"
-         * adds a live watch dial, guilloche patterns and bezel cards (styles/horology.css).
+         * adds a live watch dial, guilloche patterns and bezel cards (styles/horology.css);
+         * "botanica" adds dappled light, drifting leaves, pebble cards, pill buttons with a
+         * magnetic hover, a scroll progress line and a garden-sheet popup (styles/botanica.css).
          */
-        motif: z.enum(["none", "neon", "aurum", "horology"]).default("none"),
+        motif: z.enum(["none", "neon", "aurum", "horology", "botanica"]).default("none"),
         /**
          * Hero layout: "full" (full-bleed image), or split with the image in an
-         * "arch" frame or a "tonneau" frame (the barrel shape of a watch case).
+         * "arch" frame or a "tonneau" frame (the barrel shape of a watch case), or
+         * "window": the full image inside a rounded inset window with a glass text card.
          */
-        heroLayout: z.enum(["full", "arch", "tonneau"]).default("full"),
+        heroLayout: z.enum(["full", "arch", "tonneau", "window"]).default("full"),
         heroImageId: z.string().optional(),
         /** Hero slideshow (asset ids, first one loads first). Falls back to heroImageId. */
         heroImageIds: z.array(z.string()).optional(),

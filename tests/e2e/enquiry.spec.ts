@@ -336,7 +336,7 @@ test.describe("second project: M3M Brabus", () => {
 
   test("homepage lists every live project", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator(".cs__featured")).toHaveCount(4);
+    await expect(page.locator(".cs__featured")).toHaveCount(5);
   });
 });
 
@@ -401,4 +401,56 @@ test.describe("fourth project: M3M Franck Muller", () => {
       intent: "virtual-tour",
     });
   });
+});
+
+test.describe("fifth project: Emaar Serenity Hills (RERA registered)", () => {
+  const SH = "/emaar-serenity-hills-sector-86-gurgaon/";
+  test("renders the botanica theme with RERA numbers, sizes and official plans", async ({
+    page,
+  }) => {
+    await page.goto(SH);
+    await expect(page.locator("html")).toHaveAttribute("data-motif", "botanica");
+    await expect(page.locator(".hero--window")).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Emaar Serenity Hills");
+    await expect(page.locator(".hero")).toContainText("RC/REP/HARERA/GGM/993/725/2025/96");
+    await expect(page.locator("#homes")).toContainText("1,576 sq ft");
+    await expect(page.locator(".plans__preview")).toHaveCount(4);
+    // Prices are on request from Emaar, so no rupee figures are published.
+    await expect(page.locator("body")).not.toContainText("₹");
+  });
+
+  test("submits a lead tagged with Serenity Hills", async ({ page }) => {
+    const posts = await mockCrm(page, { status: 200, body: { id: "SH-1" } });
+    await page.goto(SH);
+    await openFrom(page, "floor-plan");
+    await fillValid(page);
+    await page.clock.fastForward(4000);
+    await page.getByRole("button", { name: "Send" }).click();
+    await page.waitForURL(/\/emaar-serenity-hills-sector-86-gurgaon\/thank-you\/\?ref=SH-1$/);
+    expect(posts[0]).toMatchObject({
+      project_slug: "emaar-serenity-hills-sector-86-gurgaon",
+      intent: "floor-plan",
+    });
+  });
+});
+
+test.describe("map tap opens the enquiry popup on every project", () => {
+  for (const slug of [
+    "l-and-t-sector-86-gurgaon",
+    "m3m-brabus-sector-58-gurgaon",
+    "prestige-sector-92-gurgaon",
+    "m3m-franck-muller-sector-43-gurgaon",
+    "emaar-serenity-hills-sector-86-gurgaon",
+  ]) {
+    test(slug, async ({ page }) => {
+      await page.route("https://www.google.com/**", (r) => r.fulfill({ status: 204 }));
+      await page.goto(`/${slug}/`);
+      const load = page.locator("[data-map-load]");
+      await load.scrollIntoViewIfNeeded();
+      await load.click();
+      await expect(page.locator("[data-enquiry]")).toBeVisible();
+      await expect(page.locator("#enquiry-title")).toBeVisible();
+      await expect(page.locator(".map__iframe")).toHaveCount(1);
+    });
+  }
 });

@@ -1,7 +1,9 @@
 ---
 /**
  * Static map preview; the Google Maps iframe loads only after a click
- * (no third-party request on page load).
+ * (no third-party request on page load). Any tap on the map, its load button or
+ * "Open in Google Maps" also opens the enquiry popup (intent "location"); the
+ * map still loads and the Google Maps tab still opens behind it.
  */
 import type { Asset, Project } from "~/lib/schemas";
 import Picture from "./Picture.astro";
@@ -37,21 +39,30 @@ const external = `https://www.google.com/maps/search/?api=1&query=${q}`;
     ) : (
       <div class="map__blank" aria-hidden="true" />
     )}
-    <button type="button" class="btn map__load" data-map-load>
+    <button type="button" class="btn map__load" data-map-load data-enquire="location">
       Load interactive map
     </button>
   </div>
   <p class="map__meta">
     {image?.caption && <span>{image.caption}. </span>}
     {approximate && <span>Shows {query}. The exact site will be marked once confirmed. </span>}
-    <a href={external} rel="noopener" target="_blank">
+    <a href={external} rel="noopener" target="_blank" data-map-external>
       Open in Google Maps<span class="visually-hidden"> (opens in a new tab)</span>
     </a>
   </p>
+  <button type="button" hidden data-enquire="location" data-map-enquire></button>
 </div>
 
 <script>
   document.querySelectorAll<HTMLElement>("[data-map]").forEach((map) => {
+    const enquire = () => map.querySelector<HTMLButtonElement>("[data-map-enquire]")?.click();
+    // A tap anywhere on the preview acts like the load button.
+    map.querySelector("[data-map-frame]")?.addEventListener("click", (e) => {
+      if ((e.target as Element).closest("[data-map-load], iframe")) return;
+      map.querySelector<HTMLButtonElement>("[data-map-load]")?.click();
+    });
+    // Google Maps opens in a new tab as usual; the form waits on this page.
+    map.querySelector("[data-map-external]")?.addEventListener("click", enquire);
     map.querySelector("[data-map-load]")?.addEventListener("click", () => {
       const frame = map.querySelector<HTMLElement>("[data-map-frame]")!;
       const iframe = document.createElement("iframe");
@@ -75,6 +86,7 @@ const external = `https://www.google.com/maps/search/?api=1&query=${q}`;
     border: 1px solid var(--hairline);
     border-radius: var(--radius);
     background: var(--paper);
+    cursor: pointer;
   }
   .map__frame :global(.map__img),
   .map__blank {

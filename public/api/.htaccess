@@ -1,0 +1,4 @@
+# Only the relay is reachable; the config template and anything else here is not.
+<FilesMatch "^(?!lead\.php$|lead-projects\.json$).*$">
+  Require all denied
+</FilesMatch>

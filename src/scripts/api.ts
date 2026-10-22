@@ -1,16 +1,18 @@
 /**
  * CRM connector. The ONLY place the site talks to an external API.
  *
- * The site is fully static: the enquiry form posts directly from the browser to
- * the CRM's lead-capture endpoint, configured at build time with
- *   PUBLIC_CRM_LEAD_URL   (see .env.example)
+ * The pages are static. The enquiry form posts from the browser to the site's
+ * own lead relay, configured at build time with
+ *   PUBLIC_CRM_LEAD_URL=/api/lead.php   (see .env.example)
+ * The relay (public/api/lead.php on Hostinger; scripts/leadrat-relay.mjs on the
+ * local dev/preview server) validates the lead, attaches the project name and
+ * forwards it to Leadrat with the secret API key, which never reaches the browser.
  *
- * SECURITY: everything in this file ships to the browser. Use a PUBLIC
- * lead-capture endpoint (e.g. EspoCRM Lead Capture, a Frappe web form, a CRM
- * webhook URL designed for web forms). Never put a private API key or token
- * here or in any PUBLIC_ variable. The CRM must allow CORS from the site's domain.
+ * SECURITY: everything in this file ships to the browser. Never put the Leadrat
+ * key (or any private key) here or in any PUBLIC_ variable.
  *
- * To adapt to a specific CRM, edit only toCrmBody() and readCrmResponse().
+ * To change what the browser sends, edit toCrmBody() and readCrmResponse();
+ * the Leadrat field mapping lives in the relay.
  */
 import type { FormIntent } from "~/lib/schemas";
 

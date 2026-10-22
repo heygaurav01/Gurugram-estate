@@ -143,8 +143,29 @@ if (!crmUrl) {
   (production ? errors : warnings).push(
     "env: [crm] PUBLIC_CRM_LEAD_URL is not set. Enquiries are simulated in dev and fail in production.",
   );
-} else if (!crmUrl.startsWith("https://")) {
-  errors.push(`env: [crm] PUBLIC_CRM_LEAD_URL must use https (got "${crmUrl}").`);
+} else if (!crmUrl.startsWith("https://") && !/^\/[^/]/.test(crmUrl)) {
+  // A same-site path (the lead relay, e.g. /api/lead.php) inherits the site's https.
+  errors.push(
+    `env: [crm] PUBLIC_CRM_LEAD_URL must be https or a same-site path (got "${crmUrl}").`,
+  );
+}
+
+// The Leadrat key is server-side only. Fail if it ever appears in the built site.
+const leadratKey = envValue("LEADRAT_API_KEY");
+if (leadratKey && existsSync(join(ROOT, "dist"))) {
+  const leaked = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const p = join(dir, entry.name);
+      if (entry.isDirectory()) walk(p);
+      else if (/\.(html|js|mjs|json|php|txt|xml|css|map)$/.test(entry.name)) {
+        if (readFileSync(p, "utf8").includes(leadratKey)) leaked.push(p.slice(ROOT.length + 1));
+      }
+    }
+  };
+  walk(join(ROOT, "dist"));
+  if (leaked.length > 0)
+    errors.push(`env: [secret] LEADRAT_API_KEY found in built files: ${leaked.join(", ")}`);
 }
 
 /* Report ------------------------------------------------------------ */

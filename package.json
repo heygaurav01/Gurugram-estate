@@ -8,8 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && tsx scripts/check-compliance.mjs",
-    "postbuild": "node -e \"const fs=require('fs');fs.rmSync('build',{recursive:true,force:true});fs.cpSync('dist','build',{recursive:true})\"",
+    "build": "astro build && tsx scripts/check-compliance.mjs && node -e \"const fs=require('fs');fs.rmSync('build',{recursive:true,force:true});fs.cpSync('dist','build',{recursive:true})\"",
     "build:production": "astro build && tsx scripts/check-compliance.mjs --production",
     "preview": "astro preview",
     "check": "astro check && tsx scripts/check-compliance.mjs",

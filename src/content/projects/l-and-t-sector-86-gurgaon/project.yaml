@@ -1,0 +1,148 @@
+# L&T Sector 86, Gurgaon
+# Facts below are sourced and dated. Do not fill gaps with plausible text.
+# A fact renders only when it has a real `source` and an ISO `verifiedOn` date.
+#
+# Sources (checked 2026-10-18). Both are secondary reports; swap in L&T's own
+# press release or stock exchange filing when available.
+#   SCC Online deal report, 2026-05-16:
+#     https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/
+#   Outlook Business, 2026-04-27:
+#     https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition
+
+slug: l-and-t-sector-86-gurgaon
+name: "L&T Sector 86, Gurgaon"
+tagline: "L&T Realty's first land in the NCR, from acquisition to launch."
+published: true
+
+overview:
+  title: "What we know so far"
+  body:
+    - "In April 2026, L&T Realty bought International Green Scapes Ltd, a company that holds about 19.97 acres of land in Sector 81 and Sector 86, Gurugram. The land is held under three residential licenses issued by the Department of Town and Country Planning, Haryana. Published reports put its development potential at about 3.6 million sq ft."
+    - "We have not yet seen an official project name, home types, sizes, prices or a launch date from the developer, and the project is not registered with HARERA. Until it is, this page lists only verified progress, each item with its source."
+    - "Gurugram Estate Pvt Ltd is an authorized channel partner of L&T Realty. Register interest and we will share official details, including plans and pricing, as soon as L&T Realty releases them after registration. Registering is free and does not reserve a unit."
+
+developer:
+  name: "L&T Realty"
+  # Owner confirmed authorized channel partner status on 2026-10-18.
+  authorizedChannelPartner: true
+  authorizedToUseName: true
+  authorizedToUseLogo: true
+  authorizedAssets: true
+  # REQUIRED before production: agreement reference and date, e.g. "CP agreement LTR/CP/123, 2026-05-01".
+  authorizationProof: "TBD"
+  about: "L&T Realty is the real estate arm of Larsen and Toubro, established in 2011. It develops residential, commercial and retail projects and is present in Mumbai, Navi Mumbai, the NCR, Bengaluru, Hyderabad and Chennai."
+  aboutSource: "https://www.lntrealty.com/about-us/"
+
+status: pre-registration
+
+rera:
+  status: not-registered # not-registered | applied | registered
+  verifyUrl: "https://haryanarera.gov.in"
+
+location:
+  sector: "Sector 86"
+  city: "Gurugram"
+  region: "Haryana"
+  # Area only: L&T Realty has not published the exact site location.
+  mapQuery: "Sector 86, Gurugram, Haryana"
+  connectivity: [] # add only measured, dated distances
+
+land:
+  areaAcres: 19.97
+  note: "Held across Sector 81 and Sector 86"
+  source: "https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/"
+  verifiedOn: "2026-10-18"
+
+highlights:
+  - text: "About 19.97 acres of land held across Sector 81 and Sector 86, Gurugram."
+    source: "https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/"
+    verifiedOn: "2026-10-18"
+  - text: "Held under three residential licenses issued by DTCP Haryana."
+    source: "https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/"
+    verifiedOn: "2026-10-18"
+  - text: "Reported development potential of about 3.6 million sq ft."
+    source: "https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition"
+    verifiedOn: "2026-10-18"
+  - text: "Reported as L&T Realty's first land acquisition in the NCR."
+    source: "https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition"
+    verifiedOn: "2026-10-18"
+
+configurations: [] # "3 and 4 BHK" is an agency claim, not confirmed by L&T
+amenities: []
+
+timeline:
+  - label: "Land acquired by the developer"
+    done: true
+    date: "2026-04-27"
+    source: "https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition"
+  - label: "RERA registration"
+    done: false
+  - label: "Official launch"
+    done: false
+  - label: "Possession"
+    done: false
+
+faqs:
+  - q: "Is L&T Sector 86 RERA registered?"
+    a: "{{rera_status}} You can check any project yourself on the Haryana RERA website, haryanarera.gov.in."
+  - q: "Who is developing L&T Sector 86, Gurgaon?"
+    a: "L&T Realty, the real estate arm of Larsen and Toubro. In April 2026 it bought International Green Scapes Ltd, which holds about 19.97 acres in Sector 81 and Sector 86, Gurugram."
+  - q: "Do I need to pay anything to register interest?"
+    a: "No. Registering interest is free and does not reserve a unit."
+  - q: "When will prices and floor plans be available?"
+    a: "After the project is registered with HARERA and the developer releases official details. We will share them with registered contacts first."
+  - q: "Who are you?"
+    a: "{{agent_disclosure}} We help buyers compare projects, arrange site visits and handle paperwork."
+  - q: "How do I verify a project's RERA registration?"
+    a: "Open haryanarera.gov.in and use the project search. Search by project name, developer or registration number. Check that the registration number, developer name and project address match what you were told. If you cannot find it, ask for the registration number in writing and search again."
+  - q: "Where is Sector 86?"
+    a: "Sector 86 is in Gurugram, Haryana. We will add travel distances here only after we have measured and dated them."
+
+seo:
+  # Configurations are unverified, so the title avoids "3 & 4 BHK".
+  title: "L&T Sector 86 Gurgaon: Status and Launch Updates"
+  description: "Authorized channel partner of L&T Realty. Status, location and launch updates for L&T Sector 86 in New Gurugram. Register interest free."
+  primaryKeyword: "L&T Sector 86 Gurgaon"
+  secondaryKeywords:
+    - "L&T Realty Gurgaon"
+    - "L&T new launch Gurgaon"
+    - "Sector 86 Gurgaon"
+  ogImageId: interior-living
+
+theme:
+  accent: "#8C6A3F"
+  heroImageId: interior-living
+  # Hero slideshow, crossfading every 3 s (add kit renders here as they arrive).
+  heroImageIds: [interior-living, interior-bedroom]
+  heroFocus: "50% 55%"
+
+form:
+  otp: false
+  intents: [hero, pricing, floor-plan, gallery, location, footer, sticky, nav]
+
+# Display details for each source URL (Sources cards).
+sourceInfo:
+  - url: "https://www.scconline.com/blog/post/2026/05/16/cam-advises-lt-realty-on-inr-1123-crore-acquisition-of-international-green-scapes/"
+    title: "CAM advises L&T Realty on INR 1,123 crore acquisition of International Green Scapes"
+    publisher: "SCC Online"
+    published: "2026-05-16"
+  - url: "https://www.outlookbusiness.com/corporate/lt-realty-properties-expands-development-portfolio-with-ncr-land-acquisition"
+    title: "L&T Realty Properties expands development portfolio with NCR land acquisition"
+    publisher: "Outlook Business"
+    published: "2026-04-27"
+
+# Supporting imagery per section (asset ids from assets.yaml).
+sectionImages:
+  overview: detail-city-view
+  homes: detail-bedside
+  pricing: detail-dining
+  faq: detail-balcony
+  masterPlan: detail-sofa
+  floorPlans: interior-bedroom
+  amenities: detail-lounge
+  virtualTour: interior-living
+
+sections:
+  plans: true # shows plan assets from the L&T kit once listed in assets.yaml
+  gallery: true # shows gallery assets from the L&T kit once listed in assets.yaml
+  developer: true

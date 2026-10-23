@@ -1,0 +1,69 @@
+---
+/** Final CTA band: short reassurance and the form trigger (intent "footer"). */
+import type { Project } from "~/lib/schemas";
+import { isRegisterInterestMode } from "~/lib/compliance";
+import { ctaCopy } from "~/lib/view";
+
+type Props = { project: Project };
+const { project } = Astro.props;
+const cta = ctaCopy(project);
+const ri = isRegisterInterestMode(project);
+---
+
+<section class="band" aria-labelledby="band-title">
+  <div class="container band__inner" data-reveal>
+    <h2 id="band-title" class="band__title">
+      {ri ? `Get launch updates for ${project.name}` : `Talk to us about ${project.name}`}
+    </h2>
+    <div class="band__side">
+      <p>
+        {ri
+          ? "Registering interest is free and does not reserve a unit. We will contact you when official details are released."
+          : "An advisor will answer your questions and share the latest official information."}
+      </p>
+      <a class="btn band__btn" href="#contact" data-enquire="footer">
+        {ri ? cta.updates : cta.primary}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .band {
+    padding-block: var(--space-section);
+    background: var(--night);
+    color: var(--on-dark);
+  }
+  .band__inner {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .band__title {
+    max-width: 18ch;
+  }
+  .band__side {
+    display: grid;
+    gap: var(--space-5);
+    align-content: end;
+    color: rgb(244 241 234 / 0.88);
+  }
+  .band__btn {
+    width: fit-content;
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
+  }
+  .band__btn:hover {
+    background: var(--on-dark-hover);
+  }
+  .band :focus-visible {
+    outline-color: var(--on-dark);
+  }
+  @media (min-width: 1024px) {
+    .band__inner {
+      grid-template-columns: 7fr 4fr;
+      column-gap: var(--gutter);
+      justify-content: space-between;
+    }
+  }
+</style>

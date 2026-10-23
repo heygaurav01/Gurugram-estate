@@ -1,0 +1,25 @@
+---
+/** Thank-you page for the homepage enquiry form (noindex). */
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Nav from "~/components/Nav.astro";
+import Footer from "~/components/Footer.astro";
+import ThankYou from "~/components/ThankYou.astro";
+import { getSettings } from "~/lib/data";
+import { companyName } from "~/lib/compliance";
+
+const settings = await getSettings();
+const company = companyName(settings);
+---
+
+<BaseLayout
+  title={`Thank you | ${company}`}
+  description="Your enquiry has been received."
+  path="/thank-you/"
+  noindex
+>
+  <Nav settings={settings} variant="company" />
+  <main id="main">
+    <ThankYou settings={settings} from={company} back={{ href: "/", label: "Back to home" }} />
+  </main>
+  <Footer settings={settings} variant="company" />
+</BaseLayout>

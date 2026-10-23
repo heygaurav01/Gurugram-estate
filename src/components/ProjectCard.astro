@@ -1,0 +1,104 @@
+---
+/** Hub card: image, name, sector, RERA status chip, link. */
+import type { Asset, Project } from "~/lib/schemas";
+import { RERA_LABEL } from "~/lib/view";
+import Picture from "./Picture.astro";
+
+type Props = { project: Project; image?: Asset | undefined };
+const { project, image } = Astro.props;
+---
+
+<article class="pcard" data-reveal>
+  <div class="pcard__media">
+    {image ? (
+      <Picture
+        slug={project.slug}
+        asset={image}
+        sizes="(min-width: 1024px) 40vw, 100vw"
+        class="pcard__img"
+      />
+    ) : (
+      <div class="pcard__blank" aria-hidden="true" />
+    )}
+    {image?.caption && <p class="pcard__caption">{image.caption}</p>}
+  </div>
+  <div class="pcard__body">
+    <p class="eyebrow">
+      {project.location.sector}, {project.location.city}
+    </p>
+    <h2 class="pcard__title">
+      <a href={`/${project.slug}/`} class="pcard__link">
+        {project.name}
+      </a>
+    </h2>
+    {project.tagline && <p class="pcard__tagline">{project.tagline}</p>}
+    <p class="pcard__chip">RERA: {RERA_LABEL[project.rera.status]}</p>
+  </div>
+</article>
+
+<style>
+  .pcard {
+    position: relative;
+    display: grid;
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .pcard__media {
+    position: relative;
+  }
+  .pcard__media :global(.pcard__img),
+  .pcard__blank {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--night);
+  }
+  .pcard__caption {
+    position: absolute;
+    right: var(--space-3);
+    bottom: var(--space-2);
+    font-size: 0.75rem;
+    color: rgb(244 241 234 / 0.85);
+  }
+  .pcard__body {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-6);
+  }
+  .pcard__title {
+    font-size: var(--step-2);
+  }
+  .pcard__link {
+    text-decoration: none;
+  }
+  /* Whole card is clickable via the title link. */
+  .pcard__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .pcard__link:focus-visible {
+    outline: none;
+  }
+  .pcard:has(.pcard__link:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+  .pcard:hover .pcard__title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+  .pcard__tagline {
+    color: var(--ink-2);
+  }
+  .pcard__chip {
+    width: fit-content;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+</style>

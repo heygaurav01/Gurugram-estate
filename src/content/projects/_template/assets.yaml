@@ -1,0 +1,13 @@
+# Asset inventory. Every file in images/ must be listed. Unlisted files fail the build.
+assets: []
+# - id: hero                          # lowercase-hyphen id referenced from project.yaml
+#   file: project-sector-nn-gurugram-hero.jpg   # descriptive file name in images/
+#   alt: "Specific description of what the image shows"
+#   caption: "Representative image"   # or "Artist's impression" for renders
+#   kind: photo                       # photo | render | plan | logo | map | illustration
+#   fromDeveloper: false              # true for developer renders, plans, logos
+#   projectSpecific: false            # true only if it shows this actual project/site
+#   license: licensed                 # owned | authorized | licensed | open
+#   licenseProof: "Invoice #123 / license URL / authorization email"
+#   source: "Stock library name and asset ID, or photographer"
+#   usage: [hero, og]

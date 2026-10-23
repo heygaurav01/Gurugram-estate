@@ -1,0 +1,116 @@
+---
+/**
+ * Pricing (#pricing). Before RERA registration no price exists to show, so this
+ * is a locked card with a "get pricing first" CTA. No numbers, real or blurred,
+ * are ever rendered for an unregistered project.
+ */
+import type { Project } from "~/lib/schemas";
+import { isRegisterInterestMode } from "~/lib/compliance";
+import type { ProjectBundle } from "~/lib/data";
+import SectionFigure from "./SectionFigure.astro";
+
+type Props = { project: Project; asset: ProjectBundle["asset"] };
+const { project, asset } = Astro.props;
+const image = project.sectionImages.pricing ? asset(project.sectionImages.pricing) : undefined;
+const ri = isRegisterInterestMode(project);
+const dev = project.developer.authorizedToUseName ? project.developer.name : "The developer";
+---
+
+<section class="section pricing" id="pricing" aria-labelledby="pricing-title">
+  <div class="container grid split-5-7">
+    <div class="pricing__head" data-reveal>
+      <p class="eyebrow">Pricing</p>
+      <h2 id="pricing-title">{ri ? "Be first to know the price" : "Current pricing"}</h2>
+      <SectionFigure project={project} asset={image} ratio="4 / 3" class="pricing__figure" />
+    </div>
+    <div class="pricing__card" data-reveal>
+      <svg class="pricing__lock" viewBox="0 0 48 48" aria-hidden="true">
+        <rect x="11" y="21" width="26" height="19" rx="2"></rect>
+        <path d="M16 21v-6a8 8 0 0 1 16 0v6"></path>
+        <path d="M24 29v4"></path>
+      </svg>
+      {ri ? (
+        <div class="stack">
+          <p class="pricing__lead">{dev} has not released pricing yet.</p>
+          <p>
+            Under the RERA Act, a project can be priced and marketed only after it is registered
+            with HARERA. Register now and we will send you the official price list the day it is
+            released.
+          </p>
+        </div>
+      ) : (
+        <div class="stack">
+          <p class="pricing__lead">Get the latest official price list.</p>
+          <p>
+            Prices change with availability. An advisor will share the current list for each home
+            type.
+          </p>
+        </div>
+      )}
+      <a class="btn pricing__btn" href="#contact" data-enquire="pricing">
+        {ri ? "Get pricing first" : "Request current pricing"}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing__head {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+  .pricing__head :global(.pricing__figure) {
+    margin-top: var(--space-4);
+  }
+  .pricing__card {
+    align-self: start;
+    position: relative;
+    display: grid;
+    gap: var(--space-5);
+    padding: clamp(var(--space-6), 4vw, var(--space-8));
+    border-radius: var(--radius);
+    background: var(--night);
+    color: rgb(244 241 234 / 0.86);
+    overflow: hidden;
+  }
+  /* Hairline frame inset, echoing a certificate border. */
+  .pricing__card::after {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .pricing__lock {
+    width: 2.75rem;
+    height: 2.75rem;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+  .pricing__lead {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-2);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--on-dark);
+  }
+  .pricing__btn {
+    position: relative;
+    z-index: 1;
+    width: fit-content;
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
+  }
+  .pricing__btn:hover {
+    background: var(--on-dark-hover);
+  }
+  .pricing :focus-visible {
+    outline-color: var(--on-dark);
+  }
+</style>

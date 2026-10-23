@@ -1,0 +1,29 @@
+# Site-wide business settings. Mirrors section 0 of the master prompt.
+# "TBD" values render as hidden or "On request" and are listed by `npm run check`.
+# A production build fails while launch-critical values are TBD or dummy.
+# Never put secrets here: this file is public. Secrets go in Cloudflare env vars.
+
+business:
+  brand_name: "Gurugram Estate Pvt Ltd" # name shown across the site (owner, 2026-10-20)
+  legal_name: "Gurugram Estate Private Limited" # as on the official logo; homepage + legal lines
+  company_logo_file: "/brand/gurugram-estate-mark.png" # official GE mark (full logo: /brand/gurugram-estate-logo.png)
+  agent_rera_number: "TBD" # HARERA agent registration number
+  phone_display: "+91 99588 33329"
+  phone_e164: "+919958833329"
+  whatsapp_e164: "+919958833329"
+  email: "TBD"
+  office_address: "TBD"
+  grievance_officer_name: "TBD" # privacy policy (DPDP Act)
+  grievance_officer_email: "TBD"
+  logo_file: "TBD" # path to SVG/PNG in public/, or TBD for text wordmark
+  brand_accent_hex: "#8C6A3F"
+
+site:
+  domain: "TBD" # e.g. gurgaonproperties.in
+  hosting: "cloudflare-pages"
+  # callback_promise: "within 2 working hours"   # set ONLY if the team can always hit it
+
+leads:
+  crm: "TBD" # frappe | espocrm | krayin | none
+  notify_email: "TBD"
+  otp_enabled: false

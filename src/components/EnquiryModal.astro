@@ -1,0 +1,672 @@
+---
+/**
+ * Enquiry modal (one per page). Opened by any [data-enquire="<intent>"] trigger.
+ * Desktop: two panels (image + benefits, form). Mobile: bottom sheet.
+ * Native <dialog>: modal, Esc closes, rest of the page inert. Logic in scripts/enquiry.ts.
+ * Without JS, triggers fall back to their href (#contact).
+ */
+import type { Asset, Project, SiteSettings } from "~/lib/schemas";
+import type { ProjectBundle } from "~/lib/data";
+import { formIntents } from "~/lib/schemas";
+import { CONSENT_VERSION, consentText } from "~/lib/validation";
+import { contactView, intentHeading, RERA_LABEL } from "~/lib/view";
+import { isRegisterInterestMode } from "~/lib/compliance";
+import Picture from "./Picture.astro";
+import PartnerLogo from "./PartnerLogo.astro";
+
+type Props = {
+  project: Project;
+  settings: SiteSettings;
+  assets: Asset[];
+  asset: ProjectBundle["asset"];
+};
+const { project, settings, assets, asset } = Astro.props;
+const brand = settings.business.brand_name;
+const c = contactView(settings, project);
+const headings = Object.fromEntries(formIntents.map((i) => [i, intentHeading(i, project)]));
+const consent = consentText(brand);
+const consentLead = consent.replace(/ the Privacy Policy.$/, "");
+const ri = isRegisterInterestMode(project);
+const asideId = project.sectionImages.virtualTour ?? project.theme.heroImageId;
+const asideImage = asideId ? asset(asideId) : undefined;
+const benefits = ri
+  ? [
+      "The official price list the day it is released",
+      "Master plan and floor plans as soon as they are out",
+      "Help with site visits, comparison and paperwork",
+    ]
+  : [
+      "The latest official price list",
+      "Floor plans for every home type",
+      "Help with site visits, comparison and paperwork",
+    ];
+---
+
+<dialog
+  class="enquiry"
+  aria-labelledby="enquiry-title"
+  data-enquiry
+  data-slug={project.slug}
+  data-project-name={project.name}
+  data-headings={JSON.stringify(headings)}
+  data-consent-version={CONSENT_VERSION}
+  data-consent-text={consent}
+>
+  <div class="enquiry__shell">
+    <aside class="enquiry__aside" aria-hidden="true">
+      {asideImage && (
+        <Picture slug={project.slug} asset={asideImage} sizes="420px" class="enquiry__aside-img" />
+      )}
+      <div class="enquiry__aside-veil"></div>
+      <div class="enquiry__aside-body">
+        <PartnerLogo project={project} assets={assets} on="dark" height={48} />
+        <p class="enquiry__aside-title">Why register with {brand}</p>
+        <ul class="enquiry__benefits" role="list">
+          {benefits.map((b) => (
+            <li>
+              <svg viewBox="0 0 24 24">
+                <path d="M5 12.5l4.5 4.5L19 7.5"></path>
+              </svg>
+              {b}
+            </li>
+          ))}
+        </ul>
+        <p class="enquiry__aside-rera">
+          RERA: {RERA_LABEL[project.rera.status]}
+          {asideImage?.caption && <span> &middot; Image: {asideImage.caption.toLowerCase()}</span>}
+        </p>
+      </div>
+    </aside>
+
+    <div class="enquiry__panel">
+      <div class="enquiry__grabber" aria-hidden="true"></div>
+      <div class="enquiry__top">
+        <p class="enquiry__eyebrow">{project.name}</p>
+        <button type="button" class="enquiry__close" aria-label="Close" data-enquiry-close>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+      </div>
+      <h2 id="enquiry-title" class="enquiry__title" data-enquiry-title>
+        {headings.hero}
+      </h2>
+      <p class="enquiry__intro">
+        {ri
+          ? "Free, with no obligation. Registering does not reserve a unit."
+          : "Free, with no obligation. An advisor will call you back."}
+      </p>
+
+      <form class="enquiry__form" novalidate data-enquiry-form>
+        <div class="field">
+          <label for="enq-name">Name</label>
+          <input
+            id="enq-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+            maxlength="60"
+            placeholder="Your full name"
+            aria-describedby="enq-name-error"
+          />
+          <p id="enq-name-error" class="field__error" data-error-for="name"></p>
+        </div>
+
+        <div class="field">
+          <label for="enq-phone">Mobile number</label>
+          <div class="field__phone">
+            <span class="field__prefix" aria-hidden="true">
+              +91
+            </span>
+            <input
+              id="enq-phone"
+              name="phone"
+              type="tel"
+              inputmode="numeric"
+              autocomplete="tel-national"
+              required
+              maxlength="16"
+              placeholder="10-digit mobile"
+              aria-describedby="enq-phone-hint enq-phone-error"
+            />
+          </div>
+          <p id="enq-phone-hint" class="visually-hidden">
+            Indian mobile number, 10 digits.
+          </p>
+          <p id="enq-phone-error" class="field__error" data-error-for="phone"></p>
+        </div>
+
+        <div class="field">
+          <label for="enq-email">
+            Email <span class="field__optional">(optional)</span>
+          </label>
+          <input
+            id="enq-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            maxlength="254"
+            placeholder="you@example.com"
+            aria-describedby="enq-email-error"
+          />
+          <p id="enq-email-error" class="field__error" data-error-for="email"></p>
+        </div>
+
+        <!-- Honeypot: hidden from people and assistive tech; bots tend to fill it. -->
+        <div class="enquiry__hp" aria-hidden="true">
+          <label for="enq-company">Company website</label>
+          <input
+            id="enq-company"
+            name="company_website"
+            type="text"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+
+        <p class="visually-hidden" aria-live="polite" data-enquiry-live></p>
+
+        <p class="enquiry__consent" id="enq-consent-note">
+          {consentLead} the{" "}
+          <a href="/privacy-policy/" target="_blank" rel="noopener">
+            Privacy Policy<span class="visually-hidden"> (opens in a new tab)</span>
+          </a>
+          .
+        </p>
+
+        <button
+          type="submit"
+          class="btn enquiry__submit"
+          data-enquiry-submit
+          aria-describedby="enq-consent-note"
+        >
+          <span class="enquiry__spinner" aria-hidden="true"></span>
+          <span data-submit-label>Send</span>
+        </button>
+
+        <div class="enquiry__failure" role="alert" hidden data-enquiry-failure>
+          <p>We could not send your details. Please try again, or call or WhatsApp us.</p>
+          <div class="enquiry__failure-actions">
+            <button type="submit" class="btn">
+              Try again
+            </button>
+            {c.phone && (
+              <a class="btn btn--ghost" href={c.phone.href} data-track="call_click">
+                Call
+              </a>
+            )}
+            {c.whatsapp && (
+              <a
+                class="btn btn--ghost"
+                href={c.whatsapp.href}
+                target="_blank"
+                rel="noopener"
+                data-track="whatsapp_click"
+              >
+                WhatsApp<span class="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            )}
+          </div>
+        </div>
+
+        <p class="enquiry__trust">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="5" y="11" width="14" height="10" rx="1.5"></rect>
+            <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+          </svg>
+          We never sell your details. See our Privacy Policy for how they are used.
+        </p>
+      </form>
+
+      <div class="enquiry__success" hidden data-enquiry-success>
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="24" r="21"></circle>
+          <path d="M15 24.5l6 6 12-13"></path>
+        </svg>
+        <p class="enquiry__success-title">Thank you. We have your details.</p>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  import { initEnquiry } from "~/scripts/enquiry";
+  import { captureAttribution } from "~/scripts/attribution";
+  captureAttribution();
+  initEnquiry();
+</script>
+
+<style>
+  .enquiry {
+    width: min(100% - 2rem, 58rem);
+    max-width: none;
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: var(--bone);
+    color: var(--ink);
+    overflow: hidden;
+    box-shadow: 0 40px 80px -20px rgb(0 0 0 / 0.45);
+  }
+  .enquiry::backdrop {
+    background: rgb(18 17 15 / 0.62);
+    backdrop-filter: blur(4px);
+  }
+  .enquiry__shell {
+    display: grid;
+    max-height: calc(100dvh - 2rem);
+  }
+
+  /* Image + benefits panel (desktop only). */
+  .enquiry__aside {
+    display: none;
+    position: relative;
+    isolation: isolate;
+    color: var(--on-dark);
+  }
+  .enquiry__aside :global(.enquiry__aside-img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .enquiry__aside-veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(18 17 15 / 0.7);
+  }
+  .enquiry__aside-body {
+    display: grid;
+    align-content: end;
+    gap: var(--space-5);
+    height: 100%;
+    padding: var(--space-7) var(--space-6);
+  }
+  .enquiry__aside-title {
+    font-family: var(--font-display);
+    font-size: 1.9rem;
+    font-weight: 500;
+    line-height: 1.05;
+  }
+  .enquiry__benefits {
+    display: grid;
+    gap: var(--space-3);
+    font-size: 0.92rem;
+  }
+  .enquiry__benefits li {
+    display: grid;
+    grid-template-columns: 1.25rem 1fr;
+    gap: var(--space-3);
+    align-items: start;
+  }
+  .enquiry__benefits svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: var(--accent-soft);
+    stroke-width: 2;
+  }
+  .enquiry__aside-rera {
+    padding-top: var(--space-4);
+    border-top: 1px solid rgb(244 241 234 / 0.2);
+    font-size: 0.75rem;
+    color: rgb(244 241 234 / 0.75);
+  }
+
+  /* Form panel. */
+  .enquiry__panel {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .enquiry__grabber {
+    display: none;
+  }
+  .enquiry__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .enquiry__eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .enquiry__close {
+    display: grid;
+    place-items: center;
+    width: var(--tap-min);
+    height: var(--tap-min);
+    margin-right: calc(var(--space-3) * -1);
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    transition:
+      background var(--dur-fast) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+  .enquiry__close:hover {
+    background: var(--hairline);
+    transform: rotate(90deg);
+  }
+  .enquiry__close svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    fill: none;
+  }
+  .enquiry__title {
+    font-size: clamp(2rem, 1.6rem + 1.4vw, 2.6rem);
+  }
+  .enquiry__intro {
+    color: var(--ink-2);
+    font-size: 0.95rem;
+  }
+  .enquiry__form[hidden] {
+    display: none;
+  }
+  .enquiry__form {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+  }
+  .field {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .field label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .field__optional {
+    font-weight: 400;
+    color: var(--stone);
+  }
+  .field input[type="text"],
+  .field input[type="tel"],
+  .field input[type="email"] {
+    width: 100%;
+    min-height: 50px;
+    padding: 0 var(--space-4);
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    border-bottom-color: var(--stone);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    transition:
+      border-color var(--dur-fast) var(--ease),
+      box-shadow var(--dur-fast) var(--ease);
+  }
+  .field input::placeholder {
+    color: #8f8a80;
+  }
+  .field input:hover {
+    border-color: var(--stone);
+  }
+  .field input:focus-visible {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px rgb(21 21 21 / 0.12);
+  }
+  .field input[aria-invalid="true"] {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgb(161 42 30 / 0.12);
+  }
+  .field__phone {
+    display: flex;
+  }
+  .field__prefix {
+    display: grid;
+    place-items: center;
+    padding: 0 var(--space-4);
+    background: var(--hairline);
+    border: 1px solid var(--hairline);
+    border-bottom-color: var(--stone);
+    border-right: 0;
+    border-radius: var(--radius) 0 0 var(--radius);
+    font-weight: 600;
+  }
+  .field__phone input {
+    border-radius: 0 var(--radius) var(--radius) 0 !important;
+  }
+  .field__error {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--error);
+  }
+  .field__error:empty {
+    display: none;
+  }
+  .enquiry__consent {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--stone);
+  }
+  .enquiry__consent a {
+    color: var(--ink-2);
+  }
+  .enquiry__hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .enquiry__submit {
+    width: 100%;
+    min-height: 54px;
+    margin-top: var(--space-1);
+    letter-spacing: 0.02em;
+  }
+  .enquiry__spinner {
+    display: none;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: enquiry-spin 0.8s linear infinite;
+  }
+  .enquiry__form[aria-busy="true"] .enquiry__spinner {
+    display: inline-block;
+  }
+  .enquiry__form[aria-busy="true"] .enquiry__submit {
+    opacity: 0.85;
+    cursor: progress;
+  }
+  @keyframes enquiry-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .enquiry__failure {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 1px solid var(--error);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .enquiry__failure[hidden] {
+    display: none;
+  }
+  .enquiry__failure-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .enquiry__form.is-failed .enquiry__submit {
+    display: none;
+  }
+  .enquiry__trust {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.78rem;
+    color: var(--stone);
+  }
+  .enquiry__trust svg {
+    flex: none;
+    width: 0.95rem;
+    height: 0.95rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+  }
+  .enquiry__success {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-4);
+    padding: var(--space-7) 0;
+    text-align: center;
+  }
+  .enquiry__success[hidden] {
+    display: none;
+  }
+  .enquiry__success svg {
+    width: 64px;
+    height: 64px;
+    fill: none;
+    stroke: var(--success);
+    stroke-width: 2;
+  }
+  .enquiry__success-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 500;
+  }
+
+  @media (min-width: 860px) {
+    .enquiry__shell {
+      grid-template-columns: 0.85fr 1fr;
+    }
+    .enquiry__aside {
+      display: block;
+    }
+    .enquiry__panel {
+      padding: var(--space-7) var(--space-7) var(--space-6);
+    }
+  }
+
+  /* Phones: bottom sheet. */
+  @media (max-width: 599.98px) {
+    .enquiry {
+      width: 100%;
+      max-height: calc(100dvh - 1.5rem);
+      margin: auto 0 0;
+      border-radius: 14px 14px 0 0;
+    }
+    .enquiry__shell {
+      max-height: calc(100dvh - 1.5rem);
+    }
+    .enquiry__panel {
+      padding: var(--space-3) var(--gutter) calc(var(--space-6) + env(safe-area-inset-bottom));
+    }
+    .enquiry__grabber {
+      display: block;
+      justify-self: center;
+      width: 44px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--hairline);
+    }
+  }
+
+  /* Motion: tilt-and-rise in, fall-away out (phones slide up as a sheet). */
+  @media (prefers-reduced-motion: no-preference) {
+    .enquiry[open] {
+      animation: enquiry-in 560ms var(--ease) both;
+    }
+    .enquiry.is-closing {
+      animation: enquiry-out 300ms cubic-bezier(0.4, 0, 1, 1) both;
+    }
+    .enquiry.is-closing::backdrop {
+      animation: enquiry-fade-out 300ms ease both;
+    }
+    .enquiry[open] .field,
+    .enquiry[open] .enquiry__submit {
+      animation: enquiry-field 520ms var(--ease) both;
+    }
+    .enquiry[open] .field:nth-child(1) {
+      animation-delay: 140ms;
+    }
+    .enquiry[open] .field:nth-child(2) {
+      animation-delay: 190ms;
+    }
+    .enquiry[open] .field:nth-child(3) {
+      animation-delay: 240ms;
+    }
+    .enquiry[open] .field:nth-child(4) {
+      animation-delay: 290ms;
+    }
+    .enquiry[open] .enquiry__submit {
+      animation-delay: 340ms;
+    }
+    @media (max-width: 599.98px) {
+      .enquiry[open] {
+        animation: enquiry-sheet-in 460ms var(--ease) both;
+      }
+      .enquiry.is-closing {
+        animation: enquiry-sheet-out 280ms cubic-bezier(0.4, 0, 1, 1) both;
+      }
+    }
+  }
+  @keyframes enquiry-in {
+    from {
+      opacity: 0;
+      transform: perspective(1400px) translateY(48px) rotateX(9deg) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes enquiry-out {
+    to {
+      opacity: 0;
+      transform: perspective(1400px) translateY(28px) rotateX(-7deg) scale(0.96);
+    }
+  }
+  @keyframes enquiry-sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes enquiry-sheet-out {
+    to {
+      transform: translateY(100%);
+    }
+  }
+  @keyframes enquiry-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes enquiry-field {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

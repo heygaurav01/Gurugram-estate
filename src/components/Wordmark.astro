@@ -1,0 +1,90 @@
+---
+/**
+ * Wordmark. "brand" (default) shows the trading name / logo_file.
+ * "company" shows the registered company: its mark on a white tile plus the
+ * name in two lines (homepage). Text only until a logo file is supplied.
+ */
+import type { SiteSettings } from "~/lib/schemas";
+import { companyName, isPlaceholder } from "~/lib/compliance";
+
+type Props = { settings: SiteSettings; class?: string; variant?: "brand" | "company" };
+const { settings, class: className, variant = "brand" } = Astro.props;
+const b = settings.business;
+const isCompany = variant === "company";
+const name = isCompany ? companyName(settings) : b.brand_name;
+const file = isCompany ? b.company_logo_file : b.logo_file;
+const logo = isPlaceholder(file) ? undefined : file;
+// "Gurugram Estate Private Limited" -> "Gurugram Estate" + "Private Limited".
+const split = name.match(/^(.*?)\s+(Private Limited|Pvt\.? Ltd\.?)$/i);
+---
+
+<a class:list={["wordmark", { "wordmark--company": isCompany }, className]} href="/">
+  {isCompany && logo ? (
+    <>
+      <span class="wordmark__tile">
+        <img src={logo} alt="" width="62" height="30" />
+      </span>
+      <span class="wordmark__name">
+        {split ? (
+          <>
+            <span class="wordmark__line">{split[1]}</span>
+            <span class="wordmark__sub">{split[2]}</span>
+          </>
+        ) : (
+          name
+        )}
+      </span>
+    </>
+  ) : logo ? (
+    <img src={logo} alt={name} height="32" />
+  ) : (
+    <span>{name}</span>
+  )}
+</a>
+
+<style>
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: var(--tap-min);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .wordmark > img {
+    height: 32px;
+    width: auto;
+  }
+  .wordmark__tile {
+    display: grid;
+    place-items: center;
+    padding: 5px 6px;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.18);
+  }
+  .wordmark__tile img {
+    display: block;
+    width: 62px;
+    height: 30px;
+  }
+  .wordmark__name {
+    display: grid;
+    line-height: 1.05;
+  }
+  .wordmark__line {
+    font-size: 1.2rem;
+  }
+  .wordmark__sub {
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+</style>

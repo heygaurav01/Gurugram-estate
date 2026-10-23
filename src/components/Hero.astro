@@ -1,0 +1,649 @@
+---
+/**
+ * Full-bleed hero in two zones:
+ *  1. Headline block: eyebrow, H1 (project name with primary keyword), tagline, CTAs.
+ *  2. Info strip along the bottom: RERA status, status line, agent disclosure.
+ * The only gradient on the site is the legibility scrim.
+ */
+import type { Asset, Project, SiteSettings } from "~/lib/schemas";
+import { reraStatusLine } from "~/lib/compliance";
+import { ctaCopy } from "~/lib/view";
+import HeroSlides from "./HeroSlides.astro";
+import ReraBadge from "./ReraBadge.astro";
+import Disclosure from "./Disclosure.astro";
+import WatchDial from "./WatchDial.astro";
+
+type Props = { project: Project; settings: SiteSettings; images?: Asset[] };
+const { project, settings, images = [] } = Astro.props;
+const image = images[0];
+// "arch" / "tonneau": split layout, text on the left and the slideshow inside a
+// shaped frame (an arch, or the barrel shape of a watch case).
+const arch = ["arch", "tonneau"].includes(project.theme.heroLayout);
+// "window": the full image inside a rounded inset window, text on a glass card.
+const windowed = project.theme.heroLayout === "window";
+// Botanica motif: dappled light and a few drifting leaves (fixed values, stable builds).
+const botanica = project.theme.motif === "botanica";
+const leaves = Array.from({ length: 9 }, (_, i) => ({
+  left: (i * 23 + 7) % 100,
+  size: 10 + (i % 3) * 5,
+  dur: 14 + ((i * 5) % 9),
+  delay: -((i * 11) % 19),
+  spin: i % 2 ? 1 : -1,
+}));
+const tonneau = project.theme.heroLayout === "tonneau";
+// Horology motif: a live watch dial overlaps the frame.
+const horology = project.theme.motif === "horology";
+// Aurum motif: drifting gold dust (positions and timings fixed, so builds are stable).
+const aurum = project.theme.motif === "aurum";
+const dust = Array.from({ length: 18 }, (_, i) => ({
+  left: (i * 37 + 11) % 100,
+  size: 2 + (i % 3),
+  dur: 9 + ((i * 7) % 8),
+  delay: -((i * 13) % 17),
+}));
+
+// Neon motif: vertical light bars (as in BRABUS studio lighting), mostly on the
+// right so they frame the image without crossing the headline.
+const neon = project.theme.motif === "neon";
+const bars = [
+  [52, 14, 18, 0],
+  [57, 30, 26, 140],
+  [61, 8, 22, 300],
+  [65, 22, 34, 80],
+  [69, 12, 20, 420],
+  [73, 34, 24, 220],
+  [77, 6, 30, 520],
+  [81, 26, 18, 160],
+  [85, 14, 36, 360],
+  [89, 32, 22, 60],
+  [93, 10, 28, 480],
+  [97, 24, 20, 260],
+].map(([left, top, height, delay]) => ({ left, top, height, delay }));
+const cta = ctaCopy(project);
+
+// "L&T Sector 86, Gurgaon" -> "L&T Sector 86," + italic "Gurgaon" on its own line.
+// The H1 text content is unchanged for search engines and screen readers.
+const comma = project.name.lastIndexOf(",");
+const titleMain = comma > 0 ? project.name.slice(0, comma + 1) : project.name;
+const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
+---
+
+<section
+  class:list={[
+    "hero",
+    {
+      "hero--no-image": !image,
+      "hero--arch": arch,
+      "hero--tonneau": tonneau,
+      "hero--window": windowed,
+    },
+  ]}
+  aria-labelledby="hero-title"
+>
+  {!arch && <HeroSlides project={project} images={images} sizes="100vw" />}
+  <div class="hero__scrim" aria-hidden="true"></div>
+  {botanica && (
+    <div class="hero__garden" aria-hidden="true">
+      <span class="hero__dapple" />
+      {leaves.map((l) => (
+        <span
+          class="hero__leaf"
+          style={`left:${l.left}%;--s:${l.size}px;--t:${l.dur}s;--r:${l.spin};animation-delay:${l.delay}s`}
+        />
+      ))}
+    </div>
+  )}
+  {aurum && (
+    <div class="hero__dust" aria-hidden="true">
+      {dust.map((d) => (
+        <span style={`left:${d.left}%;--s:${d.size}px;--t:${d.dur}s;animation-delay:${d.delay}s`} />
+      ))}
+    </div>
+  )}
+  {neon && (
+    <div class="hero__neon" aria-hidden="true">
+      {bars.map((b) => (
+        <span
+          class="hero__bar"
+          style={`left:${b.left}%;top:${b.top}%;height:${b.height}%;--d:${b.delay}ms`}
+        />
+      ))}
+      <span class="hero__floor" />
+    </div>
+  )}
+
+  <div class="container hero__inner">
+    <div class="hero__content">
+      <p class="hero__eyebrow" data-hero-line>
+        <span class="hero__rule" aria-hidden="true"></span>
+        {project.developer.authorizedToUseName && <span>By {project.developer.name}</span>}
+        {project.developer.authorizedToUseName && (
+          <span class="hero__dot" aria-hidden="true">
+            /
+          </span>
+        )}
+        <span>
+          {project.location.sector}, {project.location.city}
+        </span>
+      </p>
+      <h1 id="hero-title" class="hero__title" data-hero-line>
+        {titleMain}
+        {titleAccent && " "}
+        {titleAccent && <em class="hero__accent">{titleAccent}</em>}
+      </h1>
+      {project.tagline && (
+        <p class="hero__tagline" data-hero-line>
+          {project.tagline}
+        </p>
+      )}
+      <div class="hero__ctas" data-hero-line>
+        <a class="btn hero__primary" href="#contact" data-enquire="hero">
+          {cta.primary}
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6"></path>
+          </svg>
+        </a>
+        <a class="btn btn--ghost hero__secondary" href="#pricing" data-enquire="pricing">
+          {cta.primary === "Register interest" ? "Get pricing first" : "Request pricing"}
+        </a>
+      </div>
+    </div>
+
+    {arch && image && (
+      <div class="hero__arch" data-hero-line>
+        <span class="hero__halo" aria-hidden="true"></span>
+        <div class="hero__archframe">
+          <HeroSlides project={project} images={images} sizes="(min-width: 1024px) 40vw, 64vw" />
+        </div>
+        {horology && (
+          <div class="hero__dial">
+            <WatchDial />
+          </div>
+        )}
+      </div>
+    )}
+
+    <div class="hero__meta" data-hero-line>
+      <ReraBadge project={project} tone="dark" detail={false} />
+      <p class="hero__status">{reraStatusLine(project)}</p>
+      <Disclosure settings={settings} developer={project.developer} tone="dark" />
+    </div>
+  </div>
+</section>
+
+<script>
+  // Background slideshow: crossfade every 3 s. Pauses when the tab is hidden or
+  // the visitor presses pause; never runs under prefers-reduced-motion.
+  const root = document.querySelector<HTMLElement>("[data-hero-slides]");
+  const slides = root ? Array.from(root.querySelectorAll<HTMLElement>(".hero__slide")) : [];
+  const toggle = document.querySelector<HTMLButtonElement>("[data-hero-pause]");
+  const caption = document.querySelector<HTMLElement>("[data-hero-caption]");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (root && slides.length > 1) {
+    let index = 0;
+    let paused = reduce;
+    const show = (next: number) => {
+      slides[index]!.classList.remove("is-active");
+      slides[index]!.setAttribute("aria-hidden", "true");
+      index = next % slides.length;
+      slides[index]!.classList.add("is-active");
+      slides[index]!.removeAttribute("aria-hidden");
+      const text = slides[index]!.dataset.caption;
+      if (caption && text) caption.textContent = text;
+    };
+    const setPaused = (value: boolean) => {
+      paused = value;
+      toggle?.setAttribute("aria-pressed", String(value));
+      toggle?.setAttribute(
+        "aria-label",
+        value ? "Play background slideshow" : "Pause background slideshow",
+      );
+    };
+    setPaused(reduce);
+    toggle?.addEventListener("click", () => setPaused(!paused));
+    window.setInterval(
+      () => {
+        if (!paused && !document.hidden) show(index + 1);
+      },
+      Number(root.dataset.interval) || 3000,
+    );
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    min-height: clamp(660px, 100svh, 980px);
+    padding-top: calc(4.25rem + var(--space-7));
+    padding-bottom: var(--space-6);
+    overflow: hidden;
+    background: var(--night);
+    color: var(--on-dark);
+  }
+  .hero :global(.hero__img),
+  .hero :global(picture) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+  }
+  .hero :global(.hero__img) {
+    object-fit: cover;
+    transform-origin: 50% 60%;
+  }
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    /* Two layers: a left-side wash behind the text column and a bottom fade for the info strip. */
+    background:
+      linear-gradient(
+        to right,
+        rgb(18 17 15 / 0.82) 0%,
+        rgb(18 17 15 / 0.62) 32%,
+        rgb(18 17 15 / 0.18) 62%,
+        rgb(18 17 15 / 0) 80%
+      ),
+      linear-gradient(
+        to top,
+        rgb(18 17 15 / 0.94) 0%,
+        rgb(18 17 15 / 0.6) 30%,
+        rgb(18 17 15 / 0.2) 62%,
+        rgb(18 17 15 / 0.5) 100%
+      );
+  }
+  .hero--no-image .hero__scrim {
+    display: none;
+  }
+
+  .hero__inner {
+    display: grid;
+    align-content: end;
+    gap: clamp(var(--space-6), 5vh, var(--space-8));
+  }
+  .hero__content {
+    display: grid;
+    gap: var(--space-5);
+    max-width: 48rem;
+  }
+  .hero__eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--on-dark);
+    text-shadow: 0 1px 12px rgb(0 0 0 / 0.55);
+  }
+  .hero__rule {
+    width: 2.5rem;
+    height: 1px;
+    background: var(--accent);
+    filter: brightness(1.4);
+  }
+  .hero__dot {
+    opacity: 0.5;
+  }
+  .hero__title {
+    text-shadow: 0 2px 30px rgb(0 0 0 / 0.45);
+    font-size: clamp(3.1rem, 2rem + 5vw, 6.6rem);
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+  }
+  .hero__accent {
+    display: block;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent-soft);
+  }
+  .hero__tagline {
+    max-width: 34ch;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--on-dark);
+    text-shadow: 0 1px 16px rgb(0 0 0 / 0.55);
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .hero__primary {
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
+  }
+  .hero__primary svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    transition: transform var(--dur) var(--ease);
+  }
+  .hero__primary:hover {
+    background: var(--on-dark-hover);
+  }
+  .hero__primary:hover svg {
+    transform: translateX(3px);
+  }
+  .hero__secondary {
+    color: var(--on-dark);
+    border-color: rgb(244 241 234 / 0.55);
+    backdrop-filter: blur(2px);
+  }
+  .hero__secondary:hover {
+    background: var(--on-dark);
+    color: var(--on-light);
+  }
+  .hero :focus-visible {
+    outline-color: var(--on-dark);
+  }
+
+  /* Bottom info strip. */
+  .hero__meta {
+    display: grid;
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: 1px solid rgb(244 241 234 / 0.2);
+  }
+  .hero__status {
+    font-size: var(--step--1);
+    line-height: 1.5;
+    color: rgb(244 241 234 / 0.85);
+  }
+  .hero__meta :global(.disclosure) {
+    font-size: 0.8rem;
+  }
+  @media (min-width: 1024px) {
+    .hero__meta {
+      grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.25fr);
+      align-items: start;
+      gap: var(--gutter);
+    }
+  }
+
+  /* Arch layout: warm dark stage with a soft glow; the image sits in an arched frame. */
+  .hero--arch {
+    background:
+      radial-gradient(
+        60% 70% at 78% 40%,
+        color-mix(in srgb, var(--accent) 22%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        40% 50% at 10% 90%,
+        color-mix(in srgb, var(--accent) 10%, transparent),
+        transparent 70%
+      ),
+      var(--night);
+  }
+  .hero--arch .hero__scrim {
+    display: none;
+  }
+  .hero--arch .hero__inner {
+    align-content: center;
+  }
+  .hero__arch {
+    position: relative;
+    justify-self: center;
+    width: min(64vw, 320px);
+    margin-top: var(--space-4);
+    order: -1;
+  }
+  .hero__archframe {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    border-radius: 999px 999px var(--radius) var(--radius);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent),
+      0 40px 80px -30px rgb(0 0 0 / 0.8);
+  }
+  /* Thin outer frame line, offset from the arch. */
+  .hero__arch::after {
+    content: "";
+    position: absolute;
+    inset: -12px;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: 999px 999px 6px 6px;
+    pointer-events: none;
+  }
+  .hero__halo {
+    position: absolute;
+    inset: -18%;
+    z-index: -1;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      color-mix(in srgb, var(--accent) 45%, transparent),
+      transparent 30%,
+      transparent 60%,
+      color-mix(in srgb, var(--accent-soft) 35%, transparent),
+      transparent
+    );
+    filter: blur(28px);
+    opacity: 0.7;
+  }
+  .hero--arch .hero__archframe :global(.hero__corner) {
+    top: auto;
+    right: 50%;
+    bottom: var(--space-3);
+    transform: translateX(50%);
+    width: max-content;
+    max-width: calc(100% - 2rem);
+  }
+  .hero--arch .hero__archframe :global(.hero__caption) {
+    font-size: 0.66rem;
+  }
+  @media (min-width: 1024px) {
+    .hero--arch .hero__inner {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      column-gap: clamp(var(--space-7), 5vw, 6rem);
+    }
+    .hero--arch .hero__content {
+      align-self: center;
+    }
+    .hero__arch {
+      order: 0;
+      width: min(100%, 440px);
+      justify-self: end;
+      margin-right: 12px;
+      margin-top: 0;
+    }
+    .hero--arch .hero__meta {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Gold dust: tiny particles drifting upward (static under reduced motion). */
+  .hero__dust {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .hero__dust span {
+    position: absolute;
+    bottom: -10px;
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: var(--accent-soft);
+    box-shadow: 0 0 8px 1px color-mix(in srgb, var(--accent) 80%, transparent);
+    opacity: 0.5;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__dust span {
+      bottom: auto;
+      top: calc(var(--t) * 5%);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__dust span {
+      animation: hero-dust var(--t) linear infinite;
+    }
+    .hero__halo {
+      animation: hero-halo 18s linear infinite;
+    }
+  }
+  @keyframes hero-dust {
+    0% {
+      transform: translate(0, 0);
+      opacity: 0;
+    }
+    15% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translate(30px, -105svh);
+      opacity: 0;
+    }
+  }
+  @keyframes hero-halo {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Tonneau frame: the barrel shape of a watch case, wider than the arch. */
+  .hero--tonneau .hero__arch {
+    width: min(78vw, 360px);
+  }
+  .hero--tonneau .hero__archframe {
+    aspect-ratio: 5 / 6;
+    border-radius: 44% / 16%;
+  }
+  .hero--tonneau .hero__arch::after {
+    inset: -14px;
+    border-radius: 44% / 16%;
+  }
+  .hero__dial {
+    position: absolute;
+    left: -18px;
+    bottom: -26px;
+    width: clamp(92px, 26vw, 150px);
+    z-index: 1;
+  }
+  @media (min-width: 1024px) {
+    .hero--tonneau .hero__arch {
+      width: min(100%, 480px);
+    }
+    .hero__dial {
+      left: -64px;
+      bottom: 28px;
+    }
+  }
+
+  /*
+   * Window layout: the image sits in a rounded inset window, the headline on a
+   * frosted glass card. The info strip stays inside the window.
+   */
+  .hero--window {
+    padding-inline: var(--gutter);
+    padding-bottom: var(--gutter);
+  }
+  .hero--window :global(.hero__slides),
+  .hero--window .hero__scrim,
+  .hero--window .hero__garden {
+    inset: calc(4.25rem + 6px) var(--gutter) var(--gutter);
+    overflow: hidden;
+    border-radius: clamp(20px, 3vw, 40px);
+  }
+  .hero--window .hero__inner {
+    padding-inline: clamp(1rem, 3vw, 3rem);
+    padding-bottom: clamp(1rem, 2.5vw, 2.5rem);
+  }
+  .hero--window .hero__content {
+    max-width: 44rem;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 28px;
+    background: rgb(14 30 21 / 0.38);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    backdrop-filter: blur(14px) saturate(1.2);
+  }
+  .hero--window .hero__scrim {
+    background: linear-gradient(
+      to top,
+      rgb(10 22 15 / 0.85) 0%,
+      rgb(10 22 15 / 0.2) 45%,
+      rgb(10 22 15 / 0.25) 100%
+    );
+  }
+  .hero--window :global(.hero__corner) {
+    right: calc(var(--gutter) * 2);
+    top: calc(4.25rem + 6px + var(--space-4));
+  }
+
+  /* Garden: dappled sunlight drifting over the image, and a few falling leaves. */
+  .hero__garden {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .hero__dapple {
+    position: absolute;
+    inset: -20%;
+    background:
+      radial-gradient(18% 14% at 20% 30%, rgb(255 246 214 / 0.22), transparent 70%),
+      radial-gradient(12% 10% at 62% 22%, rgb(255 246 214 / 0.18), transparent 70%),
+      radial-gradient(22% 16% at 78% 60%, rgb(255 246 214 / 0.14), transparent 70%),
+      radial-gradient(14% 12% at 38% 72%, rgb(255 246 214 / 0.16), transparent 70%);
+    mix-blend-mode: soft-light;
+  }
+  .hero__leaf {
+    position: absolute;
+    top: -30px;
+    width: var(--s);
+    height: calc(var(--s) * 0.62);
+    border-radius: 0 100% 0 100%;
+    background: linear-gradient(135deg, #9fc28d, #3e6b4f);
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__dapple {
+      animation: hero-dapple 16s ease-in-out infinite alternate;
+    }
+    .hero__leaf {
+      animation: hero-leaf var(--t) linear infinite;
+    }
+  }
+  @keyframes hero-dapple {
+    to {
+      transform: translate(6%, 4%) scale(1.06);
+    }
+  }
+  @keyframes hero-leaf {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.75;
+    }
+    50% {
+      transform: translate(calc(var(--r) * 60px), 50svh) rotate(calc(var(--r) * 200deg));
+    }
+    90% {
+      opacity: 0.6;
+    }
+    100% {
+      transform: translate(calc(var(--r) * -20px), 105svh) rotate(calc(var(--r) * 420deg));
+      opacity: 0;
+    }
+  }
+</style>

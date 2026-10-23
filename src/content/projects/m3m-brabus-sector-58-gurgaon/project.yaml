@@ -1,0 +1,121 @@
+# M3M Brabus, Sector 58, Gurgaon
+# Developer: M3M India, with BRABUS as brand partner (not Emaar).
+# Owner confirmed authorized M3M channel partner status on 2026-10-19.
+#
+# Status checked 2026-10-19: no HARERA registration found; agent sites list it as
+# "applied". No official M3M or BRABUS source for land, towers, units, sizes or
+# prices could be found; agent sites contradict each other (2 towers/240 units vs
+# 7-8 towers/600-700 units), so none of those figures are used here.
+# Add facts only from M3M's official kit or HARERA, each with source + verifiedOn.
+
+slug: m3m-brabus-sector-58-gurgaon
+name: "M3M Brabus, Sector 58, Gurgaon"
+tagline: "BRABUS-branded residences by M3M on Golf Course Extension Road."
+published: true
+galleryIntro: "BRABUS automotive photography and conceptual interiors, for mood only. None show the actual project; official M3M images will replace them once released."
+
+overview:
+  title: "A BRABUS residence, before the details"
+  body:
+    - "M3M India is planning branded residences with BRABUS, the German luxury car specialist, in Sector 58, Gurugram, on Golf Course Extension Road. This page tracks the project from announcement to launch, so you can follow each confirmed step in one place."
+    - "The project is not yet registered with HARERA. Until it is, we do not publish prices, sizes or plans, and figures quoted elsewhere should be treated with care. When M3M releases official details, this page will carry them, each with its source."
+    - "Gurugram Estate Pvt Ltd is an authorized channel partner of M3M India. Register interest and we will share M3M's official details, including plans and pricing, as soon as they are released after registration. Registering is free and does not reserve a unit."
+
+developer:
+  name: "M3M India"
+  wordmark: "M3M | BRABUS"
+  authorizedChannelPartner: true
+  authorizedToUseName: true
+  authorizedToUseLogo: true
+  authorizedAssets: true
+  # REQUIRED before production: M3M channel partner agreement reference and date.
+  authorizationProof: "TBD"
+
+status: pre-registration
+
+rera:
+  status: not-registered
+  verifyUrl: "https://haryanarera.gov.in"
+
+location:
+  sector: "Sector 58"
+  city: "Gurugram"
+  region: "Haryana"
+  # Area only: the exact site is not published yet.
+  mapQuery: "Sector 58, Gurugram, Haryana"
+  connectivity: []
+
+highlights: []
+configurations: [] # 4/5 BHK and sizes appear only on agent sites; add from M3M's kit
+amenities: []
+
+timeline:
+  - label: "RERA registration"
+    done: false
+  - label: "Official launch"
+    done: false
+  - label: "Possession"
+    done: false
+
+faqs:
+  - q: "Is M3M Brabus RERA registered?"
+    a: "{{rera_status}} You can check any project yourself on the Haryana RERA website, haryanarera.gov.in."
+  - q: "Who is developing M3M Brabus, Sector 58?"
+    a: "M3M India, with BRABUS, the German luxury car specialist, as the brand partner."
+  - q: "I have seen prices quoted online. Are they official?"
+    a: "Not from us. The project is not registered with HARERA yet, and under the RERA Act it cannot be priced or marketed until it is. We will share M3M's official price list only after registration."
+  - q: "Do I need to pay anything to register interest?"
+    a: "No. Registering interest is free and does not reserve a unit."
+  - q: "When will floor plans and the master plan be available?"
+    a: "After the project is registered with HARERA and M3M releases official details. We will share them with registered contacts first."
+  - q: "Who are you?"
+    a: "{{agent_disclosure}} We help buyers compare projects, arrange site visits and handle paperwork."
+  - q: "How do I verify a project's RERA registration?"
+    a: "Open haryanarera.gov.in and use the project search. Search by project name, developer or registration number. Check that the registration number, developer name and project address match what you were told."
+  - q: "Where is Sector 58?"
+    a: "Sector 58 is in Gurugram, Haryana, on Golf Course Extension Road. We will add travel times here only after we have measured and dated them."
+
+seo:
+  title: "M3M Brabus Sector 58 Gurgaon: Launch Updates"
+  description: "Authorized channel partner of M3M India. Status, location and launch updates for M3M Brabus, Sector 58, Golf Course Extension Road. Register free."
+  primaryKeyword: "M3M Brabus Sector 58 Gurgaon"
+  secondaryKeywords:
+    - "M3M Brabus Gurgaon"
+    - "M3M Brabus Residences"
+    - "Brabus residences Gurugram"
+    - "Golf Course Extension Road new launch"
+  ogImageId: noir-living
+
+# Noir theme: dark surfaces with BRABUS red.
+theme:
+  mode: dark
+  # BRABUS signature red on black, with automotive neon lighting.
+  motif: neon
+  accent: "#E3262C"
+  accentSoft: "#FF6F68"
+  heroImageId: brabus-light-bars
+  # Hero slideshow, crossfading every 3 s (add kit renders here as they arrive).
+  heroImageIds: [brabus-light-bars, brabus-studio-neon, brabus-bodo, brabus-g800, noir-living]
+  heroFocus: "50% 55%"
+
+form:
+  otp: false
+  intents:
+    [hero, pricing, floor-plan, gallery, location, footer, sticky, nav, amenities, virtual-tour]
+
+sourceInfo: []
+
+sectionImages:
+  overview: noir-city
+  homes: noir-bedside
+  pricing: noir-dining
+  faq: noir-balcony
+  masterPlan: noir-sofa
+  floorPlans: noir-bedroom
+  amenities: noir-lounge
+  virtualTour: noir-living
+
+sections:
+  plans: true # official M3M plans render here once listed in assets.yaml
+  gallery: true
+  developer: true # shows once developer.about has an official source

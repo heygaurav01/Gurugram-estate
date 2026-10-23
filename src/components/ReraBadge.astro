@@ -1,0 +1,69 @@
+---
+/** Project RERA status with a link to verify on HARERA. */
+import type { Project } from "~/lib/schemas";
+import { HARERA_URL, reraStatusLine } from "~/lib/compliance";
+import { RERA_LABEL } from "~/lib/view";
+
+type Props = { project: Project; tone?: "light" | "dark"; detail?: boolean };
+const { project, tone = "light", detail = true } = Astro.props;
+const registered = project.rera.status === "registered";
+const verifyUrl = project.rera.verifyUrl ?? HARERA_URL;
+---
+
+<div class:list={["rera", `rera--${tone}`, { "rera--registered": registered }]}>
+  <p class="rera__chip">
+    <span class="rera__dot" aria-hidden="true"></span>
+    <span>
+      RERA: {RERA_LABEL[project.rera.status]}
+      {registered && project.rera.number && `, ${project.rera.number}`}
+    </span>
+  </p>
+  {detail && <p class="rera__line">{reraStatusLine(project)}</p>}
+  <a class="rera__verify" href={verifyUrl} rel="noopener" target="_blank">
+    Verify on haryanarera.gov.in<span class="visually-hidden"> (opens in a new tab)</span>
+  </a>
+</div>
+
+<style>
+  .rera {
+    display: grid;
+    gap: var(--space-2);
+    font-size: var(--step--1);
+  }
+  .rera__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: fit-content;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid currentColor;
+    border-radius: var(--radius);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .rera__dot {
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+  }
+  .rera--registered .rera__dot {
+    background: currentColor;
+  }
+  .rera__line {
+    max-width: 60ch;
+  }
+  .rera__verify {
+    width: fit-content;
+    min-height: 24px;
+  }
+  .rera--light {
+    color: var(--ink-2);
+  }
+  .rera--dark {
+    color: var(--on-dark);
+  }
+</style>

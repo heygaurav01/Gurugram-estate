@@ -1,0 +1,49 @@
+/* Layout primitives. Breakpoints (mobile first): 480, 768, 1024, 1280, 1536. */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--space-section);
+}
+.section + .section {
+  border-top: 1px solid var(--hairline);
+}
+
+/* 12-column grid. Children default to full width on mobile. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--space-6);
+}
+.grid > * {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 1024px) {
+  /* Asymmetric splits. */
+  .split-7-5 > :first-child {
+    grid-column: 1 / span 7;
+  }
+  .split-7-5 > :last-child {
+    grid-column: 9 / span 4;
+  }
+  .split-5-7 > :first-child {
+    grid-column: 1 / span 5;
+  }
+  .split-5-7 > :last-child {
+    grid-column: 6 / span 7;
+  }
+}
+
+.full-bleed {
+  width: 100%;
+}
+
+.stack > * + * {
+  margin-top: var(--stack-gap, var(--space-4));
+}

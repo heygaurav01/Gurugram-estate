@@ -1,0 +1,122 @@
+# Asset inventory for L&T Sector 86. Every file in images/ must be listed here.
+# license: owned | authorized | licensed | open   ("unknown" fails the build)
+#
+# L&T material (from the channel partner marketing kit):
+#   fromDeveloper: true, license: authorized, licenseProof: the agreement reference.
+#   Renders: kind render, caption "Artist's impression".
+#   Plans: kind plan, usage [plan]. Gallery images: usage [gallery].
+#   Photos not of this project: caption "Representative image".
+# Do not add images copied from lntrealty.com or other websites; use the kit files.
+
+assets:
+  - id: lt-realty-logo
+    file: lt-realty-logo.png
+    alt: "L&T Realty"
+    kind: logo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: channel partner agreement reference"
+    source: "Supplied by the site owner (authorized L&T Realty channel partner), 2026-10-18"
+    usage: [developer]
+
+  - id: lt-realty-logo-white
+    file: lt-realty-logo-white.png
+    alt: "L&T Realty"
+    kind: logo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: channel partner agreement reference"
+    onDark: true
+    source: "White version of the supplied logo, for dark backgrounds"
+    usage: [developer]
+
+  # Interiors supplied by the owner on 2026-10-18 (AI-generated conceptual images).
+  # NOT L&T Realty material and NOT this project: always "Representative image".
+  - id: interior-living
+    file: representative-living-room-city-view.jpg
+    alt: "Conceptual living and dining room with floor-to-ceiling windows and a city view at sunset. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    fromDeveloper: false
+    projectSpecific: false
+    license: owned
+    source: "AI-generated image supplied by the site owner, 2026-10-18"
+    usage: [hero, og, card, gallery]
+
+  - id: interior-bedroom
+    file: representative-bedroom-suite.jpg
+    alt: "Conceptual bedroom suite with warm wood floors, a balcony and soft lighting. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    fromDeveloper: false
+    projectSpecific: false
+    license: owned
+    source: "AI-generated image supplied by the site owner, 2026-10-18"
+    usage: [hero, gallery]
+
+  - id: skyline-illustration
+    file: gurugram-skyline-dusk-illustration.png
+    alt: "Flat illustration of residential towers at dusk with lit windows. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    fromDeveloper: false
+    projectSpecific: false
+    license: owned
+    source: "Generated in-house by scripts/generate-placeholders.mjs (seed 86)"
+    usage: []
+
+  # Editorial detail crops of the two owner-supplied interiors (2026-10-18), used to
+  # give each section its own image. Conceptual, never the actual project.
+  - id: detail-city-view
+    file: representative-detail-city-view.jpg
+    alt: "Conceptual living room opening onto a balcony with a city view at sunset. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated living room image"
+    usage: [section, gallery]
+
+  - id: detail-dining
+    file: representative-detail-dining.jpg
+    alt: "Conceptual dining area with a glass globe chandelier and upholstered chairs. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated living room image"
+    usage: [section, gallery]
+
+  - id: detail-lounge
+    file: representative-detail-lounge.jpg
+    alt: "Conceptual lounge corner with a marble wall, shelving and an armchair. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated living room image"
+    usage: [section]
+
+  - id: detail-sofa
+    file: representative-detail-sofa.jpg
+    alt: "Conceptual sectional sofa and marble coffee table in a living room. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated living room image"
+    usage: [section]
+
+  - id: detail-balcony
+    file: representative-detail-balcony.jpg
+    alt: "Conceptual bedroom seating area beside full-height balcony doors. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated bedroom image"
+    usage: [section, gallery]
+
+  - id: detail-bedside
+    file: representative-detail-bedside.jpg
+    alt: "Conceptual bed with patterned cushions and bedside lamps. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Crop of the owner-supplied AI-generated bedroom image"
+    usage: [section]

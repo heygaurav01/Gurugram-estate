@@ -1,0 +1,125 @@
+---
+/**
+ * Static map preview; the Google Maps iframe loads only after a click
+ * (no third-party request on page load). Any tap on the map, its load button or
+ * "Open in Google Maps" also opens the enquiry popup (intent "location"); the
+ * map still loads and the Google Maps tab still opens behind it.
+ */
+import type { Asset, Project } from "~/lib/schemas";
+import Picture from "./Picture.astro";
+
+type Props = {
+  project: Project;
+  /** "lat,lng" for an exact site, or a place query such as "Sector 86, Gurugram, Haryana". */
+  query: string;
+  /** True when the query is an area, not the exact plot; shown to the visitor. */
+  approximate?: boolean;
+  image?: Asset | undefined;
+};
+const { project, query, approximate = false, image } = Astro.props;
+const q = encodeURIComponent(query);
+const embed = `https://www.google.com/maps?q=${q}&z=${approximate ? 14 : 15}&output=embed`;
+const external = `https://www.google.com/maps/search/?api=1&query=${q}`;
+---
+
+<div
+  class="map"
+  data-map
+  data-embed={embed}
+  data-title={`Map of ${project.location.sector}, ${project.location.city}`}
+>
+  <div class="map__frame" data-map-frame>
+    {image ? (
+      <Picture
+        slug={project.slug}
+        asset={image}
+        sizes="(min-width: 1024px) 55vw, 100vw"
+        class="map__img"
+      />
+    ) : (
+      <div class="map__blank" aria-hidden="true" />
+    )}
+    <button type="button" class="btn map__load" data-map-load data-enquire="location">
+      Load interactive map
+    </button>
+  </div>
+  <p class="map__meta">
+    {image?.caption && <span>{image.caption}. </span>}
+    {approximate && <span>Shows {query}. The exact site will be marked once confirmed. </span>}
+    <a href={external} rel="noopener" target="_blank" data-map-external>
+      Open in Google Maps<span class="visually-hidden"> (opens in a new tab)</span>
+    </a>
+  </p>
+  <button type="button" hidden data-enquire="location" data-map-enquire></button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-map]").forEach((map) => {
+    const enquire = () => map.querySelector<HTMLButtonElement>("[data-map-enquire]")?.click();
+    // A tap anywhere on the preview acts like the load button.
+    map.querySelector("[data-map-frame]")?.addEventListener("click", (e) => {
+      if ((e.target as Element).closest("[data-map-load], iframe")) return;
+      map.querySelector<HTMLButtonElement>("[data-map-load]")?.click();
+    });
+    // Google Maps opens in a new tab as usual; the form waits on this page.
+    map.querySelector("[data-map-external]")?.addEventListener("click", enquire);
+    map.querySelector("[data-map-load]")?.addEventListener("click", () => {
+      const frame = map.querySelector<HTMLElement>("[data-map-frame]")!;
+      const iframe = document.createElement("iframe");
+      iframe.src = map.dataset.embed!;
+      iframe.title = map.dataset.title ?? "Map";
+      iframe.loading = "lazy";
+      iframe.referrerPolicy = "no-referrer-when-downgrade";
+      iframe.className = "map__iframe";
+      frame.replaceChildren(iframe);
+      iframe.focus();
+      window.dispatchEvent(new CustomEvent("gp:map_load"));
+    });
+  });
+</script>
+
+<style>
+  .map__frame {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    background: var(--paper);
+    cursor: pointer;
+  }
+  .map__frame :global(.map__img),
+  .map__blank {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  /* Neutral grid preview until the live map is requested. */
+  .map__blank {
+    background-color: var(--night);
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 47px, rgb(244 241 234 / 0.08) 47px 48px),
+      repeating-linear-gradient(90deg, transparent 0 47px, rgb(244 241 234 / 0.08) 47px 48px);
+  }
+  .map__frame:has(.map__blank) .map__load {
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
+  }
+  .map__load {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .map__frame :global(.map__iframe) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .map__meta {
+    margin-top: var(--space-2);
+    font-size: var(--step--1);
+    color: var(--stone);
+  }
+</style>

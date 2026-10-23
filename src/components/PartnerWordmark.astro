@@ -1,0 +1,49 @@
+---
+/**
+ * Text lockup for an authorized developer brand, used until the official logo
+ * file is listed in assets.yaml. Inherits the surrounding text color.
+ */
+import type { Project } from "~/lib/schemas";
+
+type Props = { project: Project; size?: "sm" | "md" | "lg"; class?: string };
+const { project, size = "md", class: className } = Astro.props;
+const text = project.developer.wordmark ?? project.developer.name;
+const parts = text.split("|").map((s) => s.trim());
+---
+
+<span class:list={["pwm", `pwm--${size}`, className]}>
+  {parts.map((p, i) => (
+    <>
+      {i > 0 && <span class="pwm__bar" aria-hidden="true" />}
+      <span>{p}</span>
+    </>
+  ))}
+</span>
+
+<style>
+  .pwm {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .pwm--sm {
+    font-size: 0.8rem;
+  }
+  .pwm--md {
+    font-size: 0.95rem;
+  }
+  .pwm--lg {
+    font-size: 1.2rem;
+  }
+  .pwm__bar {
+    width: 1px;
+    height: 1.2em;
+    background: currentColor;
+    opacity: 0.5;
+  }
+</style>

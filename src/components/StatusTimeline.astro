@@ -1,0 +1,117 @@
+---
+/** Status timeline: done/pending states, dates only where sourced. */
+import type { Project } from "~/lib/schemas";
+import { formatDate } from "~/lib/format";
+import { buildSources, ctaCopy, verifiedView } from "~/lib/view";
+import SectionHeading from "./SectionHeading.astro";
+import SourceRef from "./SourceRef.astro";
+
+type Props = { project: Project };
+const { project } = Astro.props;
+const steps = verifiedView(project).timeline;
+const { ref } = buildSources(project);
+const cta = ctaCopy(project);
+---
+
+{steps.length > 0 && (
+  <section class="section" id="status" aria-labelledby="status-title">
+    <div class="container">
+      <SectionHeading
+        id="status-title"
+        eyebrow="Status"
+        title="Where the project stands"
+        intro="Updated as each step is confirmed. Pending steps have no date until the developer or HARERA confirms one."
+      />
+      <ol class="timeline" role="list">
+        {steps.map((s) => (
+          <li class:list={["timeline__step", { "is-done": s.done }]} data-reveal>
+            <span class="timeline__marker" aria-hidden="true" />
+            <p class="timeline__state">{s.done ? "Done" : "Pending"}</p>
+            <p class="timeline__label">
+              {s.label}
+              {s.done && <SourceRef n={ref(s.source)} />}
+            </p>
+            {s.date && s.done && <p class="timeline__date">{formatDate(s.date)}</p>}
+          </li>
+        ))}
+      </ol>
+      <p class="timeline__cta" data-reveal>
+        <a class="btn" href="#contact" data-enquire="footer">
+          {cta.updates}
+        </a>
+      </p>
+    </div>
+  </section>
+)}
+
+<style>
+  .timeline {
+    display: grid;
+    position: relative;
+  }
+  .timeline__step {
+    position: relative;
+    display: grid;
+    gap: var(--space-1);
+    padding: 0 0 var(--space-6) var(--space-6);
+    border-left: 1px solid var(--hairline);
+  }
+  .timeline__step:last-child {
+    border-left-color: transparent;
+  }
+  .timeline__marker {
+    position: absolute;
+    left: -0.5rem;
+    top: 0.2rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--stone);
+    background: var(--bone);
+  }
+  .is-done .timeline__marker {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .timeline__state {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .is-done .timeline__state {
+    color: var(--accent-ink);
+  }
+  .timeline__label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-1);
+    line-height: 1.25;
+  }
+  .timeline__date {
+    font-size: var(--step--1);
+    color: var(--stone);
+  }
+  .timeline__cta {
+    margin-top: var(--space-4);
+  }
+  @media (min-width: 1024px) {
+    .timeline {
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+      grid-auto-flow: column;
+    }
+    .timeline__step {
+      padding: var(--space-6) var(--space-5) 0 0;
+      border-left: 0;
+      border-top: 1px solid var(--hairline);
+    }
+    .timeline__step:last-child {
+      border-top-color: var(--hairline);
+    }
+    .timeline__marker {
+      left: 0;
+      top: -0.5rem;
+    }
+  }
+</style>

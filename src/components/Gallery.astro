@@ -1,0 +1,222 @@
+---
+/**
+ * Editorial gallery: one large feature tile plus supporting tiles, with a
+ * keyboard-accessible lightbox (arrows, Esc, focus trapped by the native modal
+ * dialog). Rendered only when sections.gallery is on and gallery assets exist.
+ * Without JS, tiles link to the full images.
+ */
+import { getImage } from "astro:assets";
+import type { Asset, Project } from "~/lib/schemas";
+import { projectImage } from "~/lib/images";
+import SectionHeading from "./SectionHeading.astro";
+import Picture from "./Picture.astro";
+
+type Props = { project: Project; assets: Asset[] };
+const { project, assets } = Astro.props;
+const items = project.sections.gallery ? assets.filter((a) => a.usage.includes("gallery")) : [];
+const full = await Promise.all(
+  items.map((a) => {
+    const src = projectImage(project.slug, a.file);
+    return getImage({ src, width: Math.min(1920, src.width), format: "webp" });
+  }),
+);
+const allRepresentative = items.every((a) => !a.projectSpecific);
+---
+
+{items.length > 0 && (
+  <section class="section" id="gallery" aria-labelledby="gallery-title">
+    <div class="container">
+      <SectionHeading
+        id="gallery-title"
+        eyebrow="Gallery"
+        title="The way these homes could feel"
+        intro={
+          project.galleryIntro ??
+          (allRepresentative
+            ? "Representative interiors for mood only. They do not show the actual project; official images will replace them once released."
+            : undefined)
+        }
+      />
+      <ul class="gallery" role="list" data-gallery>
+        {items.map((a, i) => (
+          <li class="gallery__tile" data-reveal>
+            <a
+              class="gallery__link"
+              href={full[i]!.src}
+              data-gallery-item
+              data-full={full[i]!.src}
+              data-alt={a.alt}
+              data-caption={a.caption ?? ""}
+            >
+              <Picture
+                slug={project.slug}
+                asset={a}
+                sizes={
+                  i === 0 ? "(min-width: 1024px) 66vw, 100vw" : "(min-width: 1024px) 33vw, 50vw"
+                }
+                class="gallery__img"
+              />
+              {a.caption && <span class="gallery__chip">{a.caption}</span>}
+              <span class="visually-hidden">
+                Open image {i + 1} of {items.length}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="gallery__cta">
+        <a class="btn" href="#contact" data-enquire="gallery">
+          Get official project images first
+        </a>
+      </p>
+    </div>
+
+    <dialog class="lightbox" aria-label="Image viewer" data-lightbox>
+      <figure class="lightbox__figure">
+        <img class="lightbox__img" alt="" data-lightbox-img />
+        <figcaption class="lightbox__caption" data-lightbox-caption />
+      </figure>
+      <div class="lightbox__controls">
+        <button type="button" class="lightbox__btn" data-lightbox-prev>
+          Previous
+        </button>
+        <p class="lightbox__count" aria-live="polite" data-lightbox-count />
+        <button type="button" class="lightbox__btn" data-lightbox-next>
+          Next
+        </button>
+        <button type="button" class="lightbox__btn" data-lightbox-close>
+          Close
+        </button>
+      </div>
+    </dialog>
+  </section>
+)}
+
+<script>
+  import { initGallery } from "~/scripts/gallery";
+  initGallery();
+</script>
+
+<style>
+  /* Fixed row heights keep every tile filled; the first tile is a 2x2 feature. */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: clamp(150px, 42vw, 220px);
+    grid-auto-flow: dense;
+    gap: var(--space-3);
+  }
+  .gallery__tile:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  /* A trailing tile alone in its row spans the full width. */
+  .gallery__tile:last-child:nth-child(even) {
+    grid-column: span 2;
+  }
+  .gallery__link {
+    position: relative;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--night);
+  }
+  .gallery__link :global(.gallery__img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+      transform 900ms var(--ease),
+      filter var(--dur) var(--ease);
+  }
+  .gallery__link:hover :global(.gallery__img) {
+    transform: scale(1.04);
+    filter: brightness(0.92);
+  }
+  .gallery__chip {
+    position: absolute;
+    left: var(--space-3);
+    bottom: var(--space-3);
+    padding: 0.2rem 0.55rem;
+    border-radius: 2px;
+    background: rgb(18 17 15 / 0.72);
+    color: var(--on-dark);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+  .gallery__cta {
+    margin-top: var(--space-6);
+  }
+  @media (min-width: 1024px) {
+    .gallery {
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 260px;
+      gap: var(--space-4);
+    }
+    .gallery__tile:last-child:nth-child(even) {
+      grid-column: auto;
+    }
+    /* Five tiles: feature + two beside it + a wide pair below. */
+    .gallery__tile:nth-child(4):nth-last-child(2) {
+      grid-column: span 1;
+    }
+    .gallery__tile:nth-child(5):last-child {
+      grid-column: span 2;
+    }
+  }
+
+  .lightbox {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-5) var(--gutter);
+    border: 0;
+    background: var(--night);
+    color: var(--on-dark);
+  }
+  .lightbox[open] {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: var(--space-4);
+  }
+  .lightbox::backdrop {
+    background: var(--night);
+  }
+  .lightbox__figure {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+  }
+  .lightbox__img {
+    max-height: 78vh;
+    width: auto;
+    object-fit: contain;
+  }
+  .lightbox__caption {
+    margin-top: var(--space-2);
+    font-size: var(--step--1);
+  }
+  .lightbox__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+  .lightbox__btn {
+    min-height: var(--tap-min);
+    padding: 0 var(--space-4);
+    background: transparent;
+    border: 1px solid rgb(244 241 234 / 0.6);
+    border-radius: var(--radius);
+    color: var(--on-dark);
+  }
+  .lightbox :focus-visible {
+    outline-color: var(--on-dark);
+  }
+</style>

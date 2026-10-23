@@ -1,0 +1,81 @@
+---
+import LegalLayout from "~/layouts/LegalLayout.astro";
+import { getSettings } from "~/lib/data";
+import { HARERA_URL, agentDisclosure } from "~/lib/compliance";
+import { contactView } from "~/lib/view";
+
+const settings = await getSettings();
+const brand = settings.business.brand_name;
+const c = contactView(settings);
+---
+
+<LegalLayout
+  title={`Disclaimer | ${brand}`}
+  description={`How ${brand} sources project information, and what it does and does not mean.`}
+  path="/disclaimer/"
+  heading="Disclaimer"
+  summary="What the information on this site means, where it comes from, and what it does not promise."
+  lastUpdated="2026-10-18"
+>
+  <h2>Who we are</h2>
+  <p>{agentDisclosure(settings)}</p>
+
+  <h2>Not a developer website</h2>
+  <p>
+    This site is run by {brand}. It is not owned, run or endorsed by any developer named on it,
+    unless a page states that we are an authorized channel partner of that developer. Developer
+    names are used only to identify the projects we write about.
+  </p>
+
+  <h2>Information accuracy</h2>
+  <p>
+    Every fact on a project page links to a source and shows the date we checked it. Developers
+    change plans, and public reports can be wrong or out of date. Please verify any information
+    independently before making a decision, and rely only on documents issued by the developer and
+    registered with HARERA.
+  </p>
+
+  <h2>Images</h2>
+  <p>
+    Images captioned "Artist's impression" are renders and may differ from what is built. Images
+    captioned "Representative image" do not show the actual project.
+  </p>
+
+  <h2>Prices and availability</h2>
+  <p>
+    Prices, sizes and availability are set by the developer and can change at any time. We do not
+    show any pricing for a project before it is registered with HARERA.
+  </p>
+
+  <h2>No offer or contract</h2>
+  <p>
+    Nothing on this site is an offer, an invitation to buy, or a contract. Registering interest is
+    free and does not reserve a unit.
+  </p>
+
+  <h2>How to verify a project on HARERA</h2>
+  <ul>
+    <li>
+      Open{" "}
+      <a href={HARERA_URL} rel="noopener" target="_blank">
+        haryanarera.gov.in
+      </a>{" "}
+      and use the project search.
+    </li>
+    <li>Search by project name, developer or registration number.</li>
+    <li>Check that the registration number, developer and address match what you were told.</li>
+  </ul>
+
+  <h2>Contact</h2>
+  <p>
+    {c.email || c.phone || c.address
+      ? [
+          c.email && `Email: ${c.email}.`,
+          c.phone && `Phone: ${c.phone.display}.`,
+          c.address && `Office: ${c.address}.`,
+        ]
+          .filter(Boolean)
+          .join(" ")
+      : "Contact details will be published here before this site goes live."}
+  </p>
+</LegalLayout>

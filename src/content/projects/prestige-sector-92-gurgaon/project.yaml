@@ -1,0 +1,154 @@
+# Prestige Sector 92, Gurgaon
+# Owner confirmed authorized Prestige channel partner status on 2026-10-20.
+#
+# Source (checked 2026-10-20): Prestige Estates Projects Ltd intimation to NSE,
+# 1 April 2026, on a joint development agreement for land in Sector 92, Gurugram:
+#   https://nsearchives.nseindia.com/corporate/PRESTIGE_01042026183724_PEPLIntimation010426.pdf
+# Not used: the GDV estimate (a revenue figure, too close to pricing before RERA),
+# and every tower, unit, size, price or plan claim on agent sites. M3M's plans
+# offered for this page belong to a different developer and are never used here.
+
+slug: prestige-sector-92-gurgaon
+name: "Prestige Sector 92, Gurgaon"
+tagline: "A 17.212 acre Prestige community near the Dwarka Expressway, from first filing to launch."
+published: true
+galleryIntro: "Imagery from Prestige's channel partner kit and conceptual interiors, for mood only. None show Sector 92; official Prestige renders will replace them once released."
+
+overview:
+  title: "A new Prestige address in Sector 92"
+  body:
+    - "On 1 April 2026, Prestige Estates Projects Ltd told the National Stock Exchange that it had signed a joint development agreement for a 17.212 acre land parcel in Sector 92, Gurugram. The filing describes a residential community in close proximity to the Dwarka Expressway, with an estimated saleable area of about 3 million sq ft."
+    - "The project is not yet registered with HARERA, and Prestige has not released a project name, home types, sizes, prices or plans. Until it does, this page lists only what Prestige has stated on record, each item with its source."
+    - "Gurugram Estate Pvt Ltd is an authorized channel partner of Prestige Group. Register interest and we will share Prestige's official details, including plans and pricing, as soon as they are released after registration. Registering is free and does not reserve a unit."
+
+developer:
+  name: "Prestige Group"
+  wordmark: "Prestige | Group"
+  authorizedChannelPartner: true
+  authorizedToUseName: true
+  authorizedToUseLogo: true
+  authorizedAssets: true
+  # REQUIRED before production: Prestige channel partner agreement reference and date.
+  authorizationProof: "TBD"
+  about: "Prestige Group, through Prestige Estates Projects Ltd, has been in real estate for almost four decades. As at December 2025 it had delivered 313 projects spanning 206 million sq ft, with a pipeline of 128 projects across 195 million sq ft."
+  aboutSource: "https://nsearchives.nseindia.com/corporate/PRESTIGE_01042026183724_PEPLIntimation010426.pdf"
+
+status: pre-registration
+
+rera:
+  status: not-registered
+  verifyUrl: "https://haryanarera.gov.in"
+
+location:
+  sector: "Sector 92"
+  city: "Gurugram"
+  region: "Haryana"
+  # Area only: the exact site is not published yet.
+  mapQuery: "Sector 92, Gurugram, Haryana"
+  connectivity: [] # add only measured, dated distances
+
+land:
+  areaAcres: 17.212
+  note: "Joint development land parcel"
+  source: "https://nsearchives.nseindia.com/corporate/PRESTIGE_01042026183724_PEPLIntimation010426.pdf"
+  verifiedOn: "2026-10-20"
+
+highlights:
+  - text: "A joint development agreement for a 17.212 acre land parcel in Sector 92, Gurugram."
+    short: "17.212 acres in Sector 92"
+    source: "https://nsearchives.nseindia.com/corporate/PRESTIGE_01042026183724_PEPLIntimation010426.pdf"
+    verifiedOn: "2026-10-20"
+  - text: "Planned as a residential community, in close proximity to the Dwarka Expressway."
+    short: "Near the Dwarka Expressway"
+    source: "https://nsearchives.nseindia.com/corporate/PRESTIGE_01042026183724_PEPLIntimation010426.pdf"
+    verifiedOn: "2026-10-20"
+  - text: "Estimated saleable area of about 3 million sq ft."
+    short: "About 3 million sq ft"
+    source: "https://nsearchives.nseindia.com/corporate/PRESTIGE_01042026183724_PEPLIntimation010426.pdf"
+    verifiedOn: "2026-10-20"
+  - text: "Land owned by Sare Gurugram Pvt Ltd, with Prestige as the development partner."
+    short: "Developed by Prestige Group"
+    source: "https://nsearchives.nseindia.com/corporate/PRESTIGE_01042026183724_PEPLIntimation010426.pdf"
+    verifiedOn: "2026-10-20"
+
+configurations: [] # home types and sizes appear only on agent sites; add from Prestige's kit
+amenities: [] # facility photos below are representative; the list is not announced
+
+timeline:
+  - label: "Joint development agreement signed"
+    done: true
+    date: "2026-04-01"
+    source: "https://nsearchives.nseindia.com/corporate/PRESTIGE_01042026183724_PEPLIntimation010426.pdf"
+  - label: "RERA registration"
+    done: false
+  - label: "Official launch"
+    done: false
+  - label: "Possession"
+    done: false
+
+faqs:
+  - q: "Is Prestige Sector 92 RERA registered?"
+    a: "{{rera_status}} You can check any project yourself on the Haryana RERA website, haryanarera.gov.in."
+  - q: "Who is developing the Sector 92 project?"
+    a: "Prestige Estates Projects Ltd, part of Prestige Group. It signed a joint development agreement for the 17.212 acre land parcel in April 2026, as disclosed to the National Stock Exchange."
+  - q: "How large is the project?"
+    a: "Prestige's filing puts the land at 17.212 acres and the estimated saleable area at about 3 million sq ft. Tower counts, unit counts and home sizes have not been announced."
+  - q: "I have seen prices and floor plans online. Are they official?"
+    a: "Not from us. The project is not registered with HARERA yet, and under the RERA Act it cannot be priced or marketed until it is. We will share Prestige's official price list and plans only after registration."
+  - q: "Do I need to pay anything to register interest?"
+    a: "No. Registering interest is free and does not reserve a unit."
+  - q: "Where is Sector 92?"
+    a: "Sector 92 is in Gurugram, Haryana. Prestige's filing describes the land as being in close proximity to the Dwarka Expressway. We will add travel times here only after we have measured and dated them."
+  - q: "Who are you?"
+    a: "{{agent_disclosure}} We help buyers compare projects, arrange site visits and handle paperwork."
+  - q: "How do I verify a project's RERA registration?"
+    a: "Open haryanarera.gov.in and use the project search. Search by project name, developer or registration number, and check that the details match what you were told."
+
+seo:
+  title: "Prestige Sector 92 Gurgaon: Launch Updates"
+  description: "Authorized channel partner of Prestige Group. Verified status, land and location updates for Prestige Sector 92, near the Dwarka Expressway. Register free."
+  primaryKeyword: "Prestige Sector 92 Gurgaon"
+  secondaryKeywords:
+    - "Prestige Gurgaon"
+    - "Prestige new launch Gurgaon"
+    - "Prestige Dwarka Expressway"
+    - "Sector 92 Gurgaon"
+  ogImageId: prestige-towers
+
+# Aurum theme: warm black and champagne gold from the Prestige eagle mark.
+theme:
+  mode: dark
+  motif: aurum
+  heroLayout: arch
+  accent: "#C9A24B"
+  accentSoft: "#E9D6A6"
+  heroImageId: prestige-towers
+  # Hero slideshow inside the arch, crossfading every 3 s.
+  heroImageIds: [prestige-towers, prestige-living, prestige-resort-pool, aurum-bedroom]
+  heroFocus: "50% 50%"
+
+form:
+  otp: false
+  intents:
+    [hero, pricing, floor-plan, gallery, location, footer, sticky, nav, amenities, virtual-tour]
+
+sourceInfo:
+  - url: "https://nsearchives.nseindia.com/corporate/PRESTIGE_01042026183724_PEPLIntimation010426.pdf"
+    title: "Intimation of joint development agreement for land in Sector 92, Gurugram"
+    publisher: "Prestige Estates Projects Ltd, filed with NSE"
+    published: "2026-04-01"
+
+sectionImages:
+  overview: prestige-resort-pool
+  homes: aurum-bedside
+  pricing: aurum-dining
+  faq: aurum-lounge
+  masterPlan: prestige-towers
+  floorPlans: aurum-bedroom
+  amenities: prestige-resort-pool
+  virtualTour: prestige-living
+
+sections:
+  plans: true # official Prestige plans render here once listed in assets.yaml
+  gallery: true
+  developer: true

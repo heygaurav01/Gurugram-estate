@@ -1,0 +1,49 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Nav from "~/components/Nav.astro";
+import Footer from "~/components/Footer.astro";
+import { getSettings } from "~/lib/data";
+
+const settings = await getSettings();
+---
+
+<BaseLayout
+  title={`Page not found | ${settings.business.brand_name}`}
+  description="This page could not be found."
+  path="/404/"
+  noindex
+>
+  <Nav settings={settings} />
+  <main id="main" class="container notfound">
+    <p class="eyebrow">Error 404</p>
+    <h1>We could not find that page.</h1>
+    <p>The link may be old, or the project may no longer be listed.</p>
+    <p class="notfound__actions">
+      <a class="btn" href="/">
+        See all projects
+      </a>
+      <a class="btn btn--ghost" href="/#contact">
+        Contact us
+      </a>
+    </p>
+  </main>
+  <Footer settings={settings} />
+</BaseLayout>
+
+<style>
+  .notfound {
+    display: grid;
+    gap: var(--space-5);
+    padding-top: calc(4.25rem + var(--space-section));
+    padding-bottom: var(--space-section);
+  }
+  .notfound h1 {
+    font-size: var(--step-3);
+    max-width: 16ch;
+  }
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+</style>

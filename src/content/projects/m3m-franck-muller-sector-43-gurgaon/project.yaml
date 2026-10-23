@@ -1,0 +1,124 @@
+# M3M Franck Muller, Sector 43, Gurgaon
+# Developer: M3M India, with Franck Muller (Swiss watchmaker) as brand partner.
+# Owner confirmed authorized M3M channel partner status on 2026-10-21.
+#
+# Status checked 2026-10-21: no HARERA registration found. No official M3M or
+# Franck Muller source for land, towers, units, sizes or prices could be found.
+# Agent sites contradict each other (5 vs 6 acres; 120 vs 240 units; "from" prices
+# of 20, 22.5, 25 and 27.5 crore), so none of those figures are used here.
+# Agent sites reviewed (never copy from them): m3mproperties.com (Rudram Realty),
+# m3mrealty.com (Ikonic Property Consultants LLP), franckmullerresidence.com.
+# Add facts only from M3M's official kit or HARERA, each with source + verifiedOn.
+
+slug: m3m-franck-muller-sector-43-gurgaon
+name: "M3M Franck Muller, Sector 43, Gurgaon"
+tagline: "Franck Muller-branded residences by M3M, off Golf Course Road."
+published: true
+galleryIntro: "A concept render, Franck Muller's Aeternitas tower in Dubai and conceptual interiors, for mood only. None show the actual project; official M3M images will replace them once released."
+
+overview:
+  title: "Swiss watchmaking, translated into a home"
+  body:
+    - "M3M India is planning branded residences with Franck Muller, the Swiss watchmaker known for its curved tonneau cases and Crazy Hours dials, in Sector 43, Gurugram, off Golf Course Road. This page follows the project from announcement to launch, one confirmed step at a time."
+    - "The project is not yet registered with HARERA. Until it is, we do not publish prices, sizes or plans, and figures quoted elsewhere differ from site to site. When M3M releases official details, this page will carry them, each with its source."
+    - "Gurugram Estate Pvt Ltd is an authorized channel partner of M3M India. Register interest and we will share M3M's official details, including plans and pricing, as soon as they are released after registration. Registering is free and does not reserve a unit."
+
+developer:
+  name: "M3M India"
+  wordmark: "M3M | Franck Muller"
+  authorizedChannelPartner: true
+  authorizedToUseName: true
+  authorizedToUseLogo: true
+  authorizedAssets: true
+  # REQUIRED before production: M3M channel partner agreement reference and date.
+  authorizationProof: "TBD"
+
+status: pre-registration
+
+rera:
+  status: not-registered
+  verifyUrl: "https://haryanarera.gov.in"
+
+location:
+  sector: "Sector 43"
+  city: "Gurugram"
+  region: "Haryana"
+  # Area only: the exact site is not published yet.
+  mapQuery: "Sector 43, Gurugram, Haryana"
+  connectivity: [] # agent travel times differ; add only measured, dated distances
+
+highlights: []
+configurations: [] # 4/5 BHK and sizes appear only on agent sites; add from M3M's kit
+amenities: [] # agent lists differ; add from M3M's official list
+
+timeline:
+  - label: "RERA registration"
+    done: false
+  - label: "Official launch"
+    done: false
+  - label: "Possession"
+    done: false
+
+faqs:
+  - q: "Is M3M Franck Muller RERA registered?"
+    a: "{{rera_status}} You can check any project yourself on the Haryana RERA website, haryanarera.gov.in."
+  - q: "Who is developing M3M Franck Muller, Sector 43?"
+    a: "M3M India, with Franck Muller, the Swiss luxury watchmaker, as the brand partner."
+  - q: "Websites quote different land sizes, unit counts and prices. Which is right?"
+    a: "None of them is official yet. The project is not registered with HARERA, and under the RERA Act it cannot be priced or marketed until it is. We will share M3M's official figures, plans and price list only after registration."
+  - q: "Do I need to pay anything to register interest?"
+    a: "No. Registering interest is free and does not reserve a unit."
+  - q: "When will floor plans and the master plan be available?"
+    a: "After the project is registered with HARERA and M3M releases official details. We will share them with registered contacts first."
+  - q: "Are the tower images on this page the actual project?"
+    a: "No. They are a concept render and Franck Muller's Aeternitas tower in Dubai, shown for mood. Every image is labeled. Official M3M renders will replace them once released."
+  - q: "Who are you?"
+    a: "{{agent_disclosure}} We help buyers compare projects, arrange site visits and handle paperwork."
+  - q: "Where is Sector 43?"
+    a: "Sector 43 is in Gurugram, Haryana, off Golf Course Road. We will add travel times here only after we have measured and dated them."
+
+seo:
+  title: "M3M Franck Muller Sector 43 Gurgaon: Launch Updates"
+  description: "Authorized channel partner of M3M India. Status, location and launch updates for M3M Franck Muller Residences, Sector 43, Golf Course Road. Register free."
+  primaryKeyword: "M3M Franck Muller Sector 43 Gurgaon"
+  secondaryKeywords:
+    - "M3M Franck Muller Residences"
+    - "Franck Muller residences Gurugram"
+    - "M3M Golf Course Road new launch"
+    - "Sector 43 Gurgaon"
+  ogImageId: twin-towers-concept
+
+# Horology theme: ivory and midnight sapphire, from M3M's blue and Franck
+# Muller's watchmaking (tonneau-shaped frames, a live dial, guilloche patterns).
+theme:
+  mode: light
+  motif: horology
+  heroLayout: tonneau
+  accent: "#1F4FA3"
+  accentSoft: "#C7D5F2"
+  heroImageId: twin-towers-concept
+  # Hero slideshow inside the tonneau frame, crossfading every 3 s.
+  heroImageIds: [twin-towers-concept, aeternitas-marina, aeternitas-pool, sapphire-living]
+  heroFocus: "50% 45%"
+
+form:
+  otp: false
+  intents:
+    [hero, pricing, floor-plan, gallery, location, footer, sticky, nav, amenities, virtual-tour]
+
+sourceInfo: []
+
+sectionImages:
+  overview: sapphire-city
+  homes: sapphire-bedside
+  pricing: sapphire-dining
+  faq: sapphire-balcony
+  masterPlan: aeternitas-tower
+  floorPlans: sapphire-bedroom
+  amenities: aeternitas-pool
+  virtualTour: sapphire-living
+
+sections:
+  plans: true # official M3M plans render here once listed in assets.yaml
+  gallery: true
+  developer: true # shows once developer.about has an official source

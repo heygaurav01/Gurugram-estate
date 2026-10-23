@@ -1,0 +1,112 @@
+/*
+ * Noir design layer: only for projects with theme.mode: dark (html[data-mode="dark"]).
+ * Chrome-edged cards, a platinum sheen on the hero accent, metallic rules and
+ * blur-in reveals. Light-theme projects are unaffected.
+ */
+
+/* Cards and boxes: dark glass with a chrome top edge. */
+html[data-mode="dark"] .card,
+html[data-mode="dark"] .sources__card,
+html[data-mode="dark"] .legal-card,
+html[data-mode="dark"] .legal-toc,
+html[data-mode="dark"] .ty__card,
+html[data-mode="dark"] .ty__step,
+html[data-mode="dark"] .cf {
+  background: linear-gradient(180deg, #19191c 0%, #111113 100%);
+  border-color: #2c2c31;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.07),
+    0 30px 60px -40px rgb(0 0 0 / 0.8);
+}
+
+/* Locked cards and the pricing card get a thin platinum frame that brightens on hover. */
+html[data-mode="dark"] .locked,
+html[data-mode="dark"] .pricing__card,
+html[data-mode="dark"] .tour {
+  outline: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  outline-offset: -1px;
+  transition: outline-color 500ms var(--ease);
+}
+html[data-mode="dark"] .locked:hover,
+html[data-mode="dark"] .pricing__card:hover,
+html[data-mode="dark"] .tour:hover {
+  outline-color: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* Section dividers fade out at the edges, like a polished metal rule. */
+html[data-mode="dark"] .section + .section {
+  border-top: 0;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent) 32%, transparent) 30%,
+    color-mix(in srgb, var(--accent) 32%, transparent) 70%,
+    transparent
+  );
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: top;
+}
+
+/* Key facts and numbered markers in platinum. */
+html[data-mode="dark"] .facts__value,
+html[data-mode="dark"] .highlights__num,
+html[data-mode="dark"] .sources__num {
+  color: var(--accent-soft);
+}
+html[data-mode="dark"] .eyebrow {
+  color: var(--accent);
+  letter-spacing: 0.22em;
+}
+
+/* Hero accent word: platinum with a single sheen sweep on load. */
+html[data-mode="dark"] .hero__accent {
+  color: var(--accent-soft);
+  background-image: linear-gradient(
+    100deg,
+    var(--accent-soft) 0%,
+    var(--accent-soft) 40%,
+    #ffffff 50%,
+    var(--accent-soft) 60%,
+    var(--accent-soft) 100%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Floating buttons: chrome ring instead of a flat dark disc. */
+html[data-mode="dark"] .fab__btn--call {
+  background: #1b1b1e;
+  box-shadow:
+    inset 0 0 0 1px rgb(216 221 227 / 0.35),
+    0 10px 24px -8px rgb(0 0 0 / 0.6);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-mode="dark"] .hero__accent {
+    animation: noir-sheen 2.4s var(--ease) 900ms both;
+  }
+  /* Reveals: sharpen out of a soft blur instead of rising. */
+  html[data-mode="dark"].reveal-ready [data-reveal] {
+    transition:
+      opacity 700ms var(--ease),
+      filter 700ms var(--ease),
+      transform 700ms var(--ease);
+  }
+  html[data-mode="dark"].reveal-ready [data-reveal]:not(.is-revealed) {
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(0.985);
+  }
+}
+@keyframes noir-sheen {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}

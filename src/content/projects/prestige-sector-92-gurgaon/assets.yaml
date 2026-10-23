@@ -1,0 +1,173 @@
+# Asset inventory for Prestige Sector 92. Every file in images/ must be listed here.
+#
+# Kit images: supplied in the owner's Prestige channel partner kit (owner confirmed
+# 2026-10-20). None show the Sector 92 project, which has no official images yet,
+# so every one is captioned "Representative image".
+# Do NOT add images copied from agent sites (prestige-group.in, prestigegurgaon.com,
+# rightsolutions are run by other channel partners), and never M3M's plans.
+#
+# When Prestige releases official Sector 92 material, add it here with
+# fromDeveloper: true, license: authorized, licenseProof: <agreement ref>:
+#   - renders: kind render, caption "Artist's impression", projectSpecific: true
+#   - master plan / floor plans: kind plan, usage [plan]
+
+assets:
+  - id: prestige-logo
+    file: prestige-group-logo.png
+    alt: "Prestige Group logo"
+    kind: logo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Prestige channel partner kit reference"
+    source: "Prestige Group, supplied in the Prestige channel partner kit (owner, 2026-10-20)"
+    usage: [developer]
+
+  - id: prestige-logo-light
+    file: prestige-group-logo-light.png
+    alt: "Prestige Group logo"
+    kind: logo
+    fromDeveloper: true
+    onDark: true
+    license: authorized
+    licenseProof: "TBD: Prestige channel partner kit reference"
+    source: "Light version of the Prestige Group kit logo, for dark backgrounds (owner, 2026-10-20)"
+    usage: [developer]
+
+  - id: prestige-towers
+    file: prestige-towers-render.jpg
+    alt: "Artist's impression of high-rise residential towers around a landscaped central green. A different Prestige project, not Sector 92."
+    caption: "Representative image: artist's impression of another Prestige project"
+    kind: render
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Prestige channel partner kit reference"
+    source: "Prestige Group, supplied in the Prestige channel partner kit (owner, 2026-10-20)"
+    focus: "50% 45%"
+    usage: [hero, og, gallery, card]
+
+  - id: prestige-resort-pool
+    file: prestige-resort-pool.jpg
+    alt: "Clubhouse pavilion beside a long swimming pool, framed by palms and lawns. Not the Sector 92 project."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Prestige channel partner kit reference"
+    source: "Prestige Group, supplied in the Prestige channel partner kit (owner, 2026-10-20)"
+    focus: "50% 55%"
+    usage: [hero, gallery, section]
+
+  - id: prestige-living
+    file: prestige-living-interior.jpg
+    alt: "Living and dining room with marble floors, full-height glazing and a city view. Not the Sector 92 project."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Prestige channel partner kit reference"
+    source: "Prestige Group, supplied in the Prestige channel partner kit (owner, 2026-10-20)"
+    focus: "50% 55%"
+    usage: [hero, gallery, section]
+
+  - id: amenity-cricket
+    file: amenity-cricket.jpg
+    alt: "Young batter playing a shot on a grass cricket ground. Not the Sector 92 project."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Prestige channel partner kit reference"
+    source: "Prestige Group, supplied in the Prestige channel partner kit (owner, 2026-10-20)"
+    focus: "40% 40%"
+    usage: [amenity, gallery]
+
+  - id: amenity-badminton
+    file: amenity-badminton.jpg
+    alt: "Hand holding a badminton racquet and shuttlecock over a red court. Not the Sector 92 project."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Prestige channel partner kit reference"
+    source: "Prestige Group, supplied in the Prestige channel partner kit (owner, 2026-10-20)"
+    usage: [amenity]
+
+  - id: amenity-football
+    file: amenity-football.jpg
+    alt: "Goalkeeper striking a football on an artificial turf pitch. Not the Sector 92 project."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Prestige channel partner kit reference"
+    source: "Prestige Group, supplied in the Prestige channel partner kit (owner, 2026-10-20)"
+    usage: [amenity]
+
+  - id: amenity-swimming
+    file: amenity-swimming.jpg
+    alt: "Outdoor lap pool with lane ropes. Not the Sector 92 project."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Prestige channel partner kit reference"
+    source: "Prestige Group, supplied in the Prestige channel partner kit (owner, 2026-10-20)"
+    usage: [amenity, gallery]
+
+  - id: amenity-shooting
+    file: amenity-shooting.jpg
+    alt: "Indoor shooting range with students at the firing points. Not the Sector 92 project."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: Prestige channel partner kit reference"
+    source: "Prestige Group, supplied in the Prestige channel partner kit (owner, 2026-10-20)"
+    usage: [amenity]
+
+  # Warm "aurum" grade of the owner's AI-generated interiors (also used on the
+  # L&T and M3M pages). Conceptual only.
+  - id: aurum-city
+    file: aurum-city-view.jpg
+    alt: "Conceptual living room opening onto a balcony with a city skyline, in a warm grade. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Warm grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section, gallery]
+
+  - id: aurum-dining
+    file: aurum-dining.jpg
+    alt: "Conceptual dining room with a glass globe chandelier, in a warm grade. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Warm grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section, gallery]
+
+  - id: aurum-lounge
+    file: aurum-lounge.jpg
+    alt: "Conceptual lounge corner with a stone wall and shelving, in a warm grade. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Warm grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section]
+
+  - id: aurum-bedside
+    file: aurum-bedside.jpg
+    alt: "Conceptual bed with cushions and bedside lamps, in a warm grade. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Warm grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section]
+
+  - id: aurum-bedroom
+    file: aurum-bedroom-suite.jpg
+    alt: "Conceptual bedroom suite with a balcony and soft lighting, in a warm grade. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Warm grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section, gallery]

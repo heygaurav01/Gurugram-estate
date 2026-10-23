@@ -1,0 +1,76 @@
+---
+/** Developer section. Rendered only with written authorization to use the developer's name. */
+import type { Project, SiteSettings } from "~/lib/schemas";
+import type { ProjectBundle } from "~/lib/data";
+import { sourceLabel } from "~/lib/view";
+import SectionHeading from "./SectionHeading.astro";
+import PartnerLogo from "./PartnerLogo.astro";
+
+type Props = { project: Project; assets: ProjectBundle["assets"]; settings: SiteSettings };
+const { project, assets, settings } = Astro.props;
+const { developer } = project;
+const show =
+  developer.authorizedToUseName && project.sections.developer && Boolean(developer.about);
+---
+
+{show && (
+  <section class="section developer" id="developer" aria-labelledby="developer-title">
+    <div class="container grid split-5-7">
+      <div class="developer__brand" data-reveal>
+        <SectionHeading id="developer-title" eyebrow="The developer" title={developer.name} />
+        <PartnerLogo
+          project={project}
+          assets={assets}
+          on={project.theme.mode === "dark" ? "dark" : "light"}
+          height={120}
+          class="developer__logo"
+        />
+      </div>
+      <div class="developer__body stack" data-reveal>
+        <p class="developer__about">{developer.about}</p>
+        {developer.aboutSource && (
+          <p class="developer__source">
+            Source:{" "}
+            <a href={developer.aboutSource} rel="noopener" target="_blank">
+              {sourceLabel(developer.aboutSource)}
+              <span class="visually-hidden"> (opens in a new tab)</span>
+            </a>
+          </p>
+        )}
+        {developer.authorizedChannelPartner && (
+          <p class="developer__cp">
+            {settings.business.brand_name} is an authorized channel partner of {developer.name} for
+            this project. Official plans, pricing and documents come from {developer.name} and are
+            shared only after RERA registration.
+          </p>
+        )}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .developer {
+    background: var(--paper);
+  }
+  .developer__brand {
+    display: grid;
+    align-content: start;
+  }
+  .developer__brand :global(.developer__logo) {
+    max-width: 100%;
+  }
+  .developer__about {
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  .developer__source {
+    font-size: var(--step--1);
+    color: var(--stone);
+  }
+  .developer__cp {
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--hairline);
+    color: var(--ink-2);
+  }
+</style>

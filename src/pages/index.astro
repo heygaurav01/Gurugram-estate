@@ -1,0 +1,177 @@
+---
+/**
+ * Homepage: the official website of the registered company, coming soon.
+ * Company only, no project content. Projects live at their own paths,
+ * e.g. /l-and-t-sector-86-gurgaon/.
+ */
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Nav from "~/components/Nav.astro";
+import ComingSoon from "~/components/ComingSoon.astro";
+import ContactForm from "~/components/ContactForm.astro";
+import Footer from "~/components/Footer.astro";
+import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
+import { ON_REQUEST, companyName } from "~/lib/compliance";
+import { contactView } from "~/lib/view";
+import { graph, realEstateAgentLd } from "~/lib/seo";
+
+const settings = await getSettings();
+const company = companyName(settings);
+const c = contactView(settings);
+
+// Mood image only (no project content): reuse a listed interior if one exists.
+const projects = await getProjects({ publishedOnly: true });
+const [first] = projects;
+let background;
+if (first) {
+  const { asset, project } = await getProjectBundle(first.slug);
+  const id = project.theme.heroImageId;
+  if (id) background = { slug: project.slug, asset: asset(id) };
+}
+
+const agent = realEstateAgentLd(settings, Astro.site!);
+const jsonLd = graph([{ ...agent, legalName: company }]);
+---
+
+<BaseLayout
+  title={`${company} | Official website coming soon`}
+  description={`The official website of ${company}, a real estate company in Gurugram, is coming soon. Leave your details to be told when it launches.`}
+  path="/"
+  jsonLd={jsonLd}
+>
+  <Nav settings={settings} overHero variant="company" />
+  <main id="main">
+    <ComingSoon
+      company={company}
+      background={background}
+      phone={c.phone}
+      featured={projects.map((p) => ({ href: `/${p.slug}/`, label: p.name }))}
+    />
+
+    <section class="section hub-about" id="contact" aria-labelledby="about-title">
+      <div class="container hub-about__grid">
+        <div class="hub-about__copy" data-reveal>
+          <p class="eyebrow">About us</p>
+          <h2 id="about-title">{company}</h2>
+          <p class="hub-about__lead">
+            A real estate company in Gurugram. Our full website is being built. Until then, we are
+            one call or message away for anything you need.
+          </p>
+          <ul class="hub-about__points" role="list">
+            <li>
+              <span class="hub-about__num">01</span>
+              <span>
+                <strong>Verified facts only.</strong> We share what is confirmed, with its source.
+              </span>
+            </li>
+            <li>
+              <span class="hub-about__num">02</span>
+              <span>
+                <strong>RERA first.</strong> No prices or offers before a project is registered.
+              </span>
+            </li>
+            <li>
+              <span class="hub-about__num">03</span>
+              <span>
+                <strong>One advisor, start to finish.</strong> Site visits, comparison and
+                paperwork.
+              </span>
+            </li>
+          </ul>
+          <dl class="hub-about__facts">
+            <div>
+              <dt>HARERA agent registration</dt>
+              <dd>{c.reraNo ?? ON_REQUEST}</dd>
+            </div>
+            {c.phone && (
+              <div>
+                <dt>Phone and WhatsApp</dt>
+                <dd>
+                  <a href={c.phone.href}>{c.phone.display}</a>
+                </dd>
+              </div>
+            )}
+            {c.email && (
+              <div>
+                <dt>Email</dt>
+                <dd>
+                  <a href={`mailto:${c.email}`}>{c.email}</a>
+                </dd>
+              </div>
+            )}
+            {c.address && (
+              <div>
+                <dt>Office</dt>
+                <dd>{c.address}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+        <div data-reveal>
+          <ContactForm settings={settings} />
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer settings={settings} variant="company" />
+</BaseLayout>
+
+<style>
+  .hub-about {
+    background: var(--paper);
+  }
+  .hub-about__grid {
+    display: grid;
+    gap: var(--space-7) var(--gutter);
+    align-items: start;
+  }
+  .hub-about__copy {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .hub-about__lead {
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  .hub-about__points {
+    display: grid;
+    border-top: 1px solid var(--hairline);
+  }
+  .hub-about__points li {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    gap: var(--space-3);
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--hairline);
+    color: var(--ink-2);
+  }
+  .hub-about__points strong {
+    color: var(--ink);
+  }
+  .hub-about__num {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--accent-ink);
+  }
+  .hub-about__facts {
+    display: grid;
+    gap: var(--space-3) var(--gutter);
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  }
+  .hub-about__facts dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .hub-about__facts dd {
+    font-size: 1.05rem;
+  }
+  @media (min-width: 1024px) {
+    .hub-about__grid {
+      grid-template-columns: 1.1fr 1fr;
+    }
+  }
+</style>

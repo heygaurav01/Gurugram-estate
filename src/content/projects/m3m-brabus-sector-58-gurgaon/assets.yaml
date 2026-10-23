@@ -1,0 +1,135 @@
+# Asset inventory for M3M Brabus, Sector 58. Every file in images/ must be listed here.
+#
+# Placeholders: noir-graded copies of the owner-supplied AI interiors (also used,
+# ungraded, on the L&T page). Conceptual only: always "Representative image".
+#
+# When M3M's channel partner kit arrives, add its files here with
+# fromDeveloper: true, license: authorized, licenseProof: <agreement ref>:
+#   - M3M / BRABUS logo: kind logo (add onDark: true for a white version)
+#   - renders: kind render, caption "Artist's impression"
+#   - master plan / floor plans: kind plan, usage [plan]
+# Do NOT add images copied from agent sites (brabusindia.com, brabusresidence.com,
+# m3mproperties.com are run by other channel partners).
+
+assets:
+  # BRABUS automotive photography, supplied in the owner's M3M/BRABUS channel
+  # partner kit (owner confirmed 2026-10-20). Brand imagery, not the project.
+  - id: brabus-light-bars
+    file: brabus-g-class-red-light-bars.jpg
+    alt: "Black BRABUS G-Class at dusk, lit by red light tubes on the ground. BRABUS automotive imagery, not the residential project."
+    caption: "Representative image: BRABUS automotive"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M/BRABUS channel partner kit reference"
+    source: "BRABUS GmbH, supplied in the M3M/BRABUS channel partner kit (owner, 2026-10-20)"
+    focus: "50% 68%"
+    usage: [hero, gallery]
+
+  - id: brabus-studio-neon
+    file: brabus-g-class-studio-red-neon.jpg
+    alt: "Silver BRABUS G-Class in a studio with vertical red neon lights and a wet reflective floor. BRABUS automotive imagery, not the residential project."
+    caption: "Representative image: BRABUS automotive"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M/BRABUS channel partner kit reference"
+    source: "BRABUS GmbH, supplied in the M3M/BRABUS channel partner kit (owner, 2026-10-20)"
+    focus: "55% 55%"
+    usage: [hero, gallery]
+
+  - id: brabus-bodo
+    file: brabus-bodo-monaco.jpg
+    alt: "Black BRABUS coupe on a terrace above the Monaco coast at sunset. BRABUS automotive imagery, not the residential project."
+    caption: "Representative image: BRABUS automotive"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M/BRABUS channel partner kit reference"
+    source: "BRABUS GmbH (brabus.com, photo Steffen Miethke), supplied in the M3M/BRABUS kit (owner, 2026-10-20)"
+    focus: "70% 70%"
+    usage: [hero, gallery]
+
+  - id: brabus-g800
+    file: brabus-g800-superblack-studio.jpg
+    alt: "BRABUS 800 G-Class in superblack, photographed in a light studio. BRABUS automotive imagery, not the residential project."
+    caption: "Representative image: BRABUS automotive"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: M3M/BRABUS channel partner kit reference"
+    source: "BRABUS GmbH (brabus.com), supplied in the M3M/BRABUS channel partner kit (owner, 2026-10-20)"
+    focus: "40% 60%"
+    usage: [hero, gallery]
+
+  - id: noir-living
+    file: noir-living-room.jpg
+    alt: "Conceptual living and dining room with full-height glazing and a city view, in a cool monochrome grade. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Noir grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [hero, og, card, gallery]
+
+  - id: noir-bedroom
+    file: noir-bedroom-suite.jpg
+    alt: "Conceptual bedroom suite with a balcony and soft lighting, in a cool monochrome grade. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Noir grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [hero, gallery]
+
+  - id: noir-city
+    file: noir-city-view.jpg
+    alt: "Conceptual living room opening onto a balcony with a city skyline. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Noir grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section, gallery]
+
+  - id: noir-dining
+    file: noir-dining.jpg
+    alt: "Conceptual dining area with a glass globe chandelier. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Noir grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section, gallery]
+
+  - id: noir-balcony
+    file: noir-balcony.jpg
+    alt: "Conceptual bedroom seating beside full-height balcony doors. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Noir grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section, gallery]
+
+  - id: noir-lounge
+    file: noir-lounge.jpg
+    alt: "Conceptual lounge corner with a stone wall and shelving. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Noir grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section]
+
+  - id: noir-sofa
+    file: noir-sofa.jpg
+    alt: "Conceptual sectional sofa and stone coffee table. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Noir grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section]
+
+  - id: noir-bedside
+    file: noir-bedside.jpg
+    alt: "Conceptual bed with cushions and bedside lamps. Not the actual project."
+    caption: "Representative image"
+    kind: illustration
+    license: owned
+    source: "Noir grade of an AI-generated interior supplied by the site owner, 2026-10-18"
+    usage: [section]

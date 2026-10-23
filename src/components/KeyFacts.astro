@@ -1,0 +1,126 @@
+---
+/** Key facts strip: only verified facts, large numerals, hairline separators. */
+import type { Project } from "~/lib/schemas";
+import { RERA_LABEL, STATUS_LABEL, buildSources, verifiedView } from "~/lib/view";
+import SourceRef from "./SourceRef.astro";
+
+type Props = { project: Project };
+const { project } = Astro.props;
+const v = verifiedView(project);
+const { ref } = buildSources(project);
+
+type Fact = {
+  value: string;
+  unit?: string;
+  label: string;
+  n?: number | undefined;
+  numeric: boolean;
+};
+const facts: Fact[] = [];
+
+const sectorNo = /(\d+)/.exec(project.location.sector)?.[1];
+facts.push(
+  sectorNo
+    ? { value: sectorNo, label: `Sector, ${project.location.city}`, numeric: true }
+    : { value: project.location.sector, label: project.location.city, numeric: false },
+);
+if (v.land) {
+  facts.push({
+    value: String(v.land.areaAcres),
+    unit: "acres",
+    label: v.land.note ?? "Land area",
+    n: ref(v.land.source),
+    numeric: true,
+  });
+}
+if (v.configurations.length > 0) {
+  facts.push({
+    value: v.configurations.map((c) => c.type).join(", "),
+    label: "Configurations",
+    n: ref(v.configurations[0]!.source),
+    numeric: false,
+  });
+}
+facts.push({ value: STATUS_LABEL[project.status], label: "Project status", numeric: false });
+facts.push({ value: RERA_LABEL[project.rera.status], label: "RERA status", numeric: false });
+---
+
+<section class="facts" aria-label="Key facts">
+  <div class="container">
+    <dl class="facts__list">
+      {facts.map((f) => (
+        <div class="facts__item" data-reveal>
+          <dt class="facts__label">{f.label}</dt>
+          <dd class:list={["facts__value", { "facts__value--text": !f.numeric }]}>
+            <span data-count={f.numeric ? f.value : undefined}>{f.value}</span>
+            {f.unit && <span class="facts__unit">{f.unit}</span>}
+            <SourceRef n={f.n} />
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<style>
+  .facts {
+    border-bottom: 1px solid var(--hairline);
+  }
+  .facts__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .facts__item {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    padding: var(--space-6) var(--space-4) var(--space-6) 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .facts__value {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-3);
+    font-variation-settings: "opsz" 144;
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+  }
+  .facts__value:not(.facts__value--text) {
+    white-space: nowrap;
+  }
+  .facts__value--text {
+    font-size: var(--step-1);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .facts__unit {
+    margin-left: 0.3em;
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    letter-spacing: 0;
+    color: var(--stone);
+  }
+  .facts__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  @media (min-width: 1024px) {
+    .facts__list {
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+      grid-auto-flow: column;
+    }
+    .facts__item {
+      padding: var(--space-7) var(--space-5);
+      border-bottom: 0;
+      border-left: 1px solid var(--hairline);
+    }
+    .facts__item:first-child {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+</style>

@@ -1,0 +1,385 @@
+/*
+ * Aurum motif (theme.motif: aurum): warm black and champagne gold, drawn from the
+ * Prestige eagle mark. Layered on top of the dark mode (noir.css).
+ *  - warm black surfaces instead of noir's cool graphite
+ *  - gold foil card edges, a slowly rotating gold border on hover
+ *  - gold shimmer on the hero accent and key numerals
+ *  - curtain reveals (content unveils top to bottom) and count-up numerals
+ *  - gold dust in the hero and a light sweep across the CTA band
+ * All motion is off under prefers-reduced-motion.
+ */
+
+html[data-motif="aurum"] {
+  --bone: #0d0b08;
+  --paper: #16120c;
+  --ink: #f3ecdc;
+  --ink-2: #d8cdb5;
+  --stone: #ab9f86;
+  --hairline: #30291d;
+  --night: #080705;
+  --focus: #e9d6a6;
+  --gold-foil: linear-gradient(
+    135deg,
+    #f3e4b8 0%,
+    #c9a24b 28%,
+    #8a6a2a 50%,
+    #d9b867 72%,
+    #f6e9c4 100%
+  );
+}
+
+@property --aurum-a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* Eyebrows: a small gold diamond before the label. */
+html[data-motif="aurum"] .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  color: var(--accent);
+  letter-spacing: 0.26em;
+}
+html[data-motif="aurum"] .eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  transform: rotate(45deg);
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+
+/* Section headings: a gold rule that draws in under the title. */
+html[data-motif="aurum"] .section-heading::after {
+  content: "";
+  display: block;
+  width: 4.5rem;
+  height: 1px;
+  margin-top: var(--space-2);
+  background: var(--gold-foil);
+  transform-origin: left;
+}
+
+/* Cards and boxes: warm glass with a gold foil edge. */
+html[data-motif="aurum"] .card,
+html[data-motif="aurum"] .sources__card,
+html[data-motif="aurum"] .legal-card,
+html[data-motif="aurum"] .legal-toc,
+html[data-motif="aurum"] .ty__card,
+html[data-motif="aurum"] .ty__step,
+html[data-motif="aurum"] .cf {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(180deg, #1a150e 0%, #110e09 100%) padding-box,
+    linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--accent) 75%, transparent),
+        color-mix(in srgb, var(--accent) 12%, transparent) 40%,
+        color-mix(in srgb, var(--accent) 12%, transparent) 70%,
+        color-mix(in srgb, var(--accent-soft) 55%, transparent)
+      )
+      border-box;
+  box-shadow:
+    inset 0 1px 0 rgb(255 236 190 / 0.08),
+    0 30px 60px -40px rgb(0 0 0 / 0.9);
+}
+
+/* Feature boxes: a gold border that slowly rotates on hover. */
+html[data-motif="aurum"] .locked,
+html[data-motif="aurum"] .pricing__card,
+html[data-motif="aurum"] .tour,
+html[data-motif="aurum"] .gallery__link {
+  border: 1px solid transparent;
+  outline: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  outline-offset: -1px;
+  transition:
+    outline-color 500ms var(--ease),
+    box-shadow 500ms var(--ease);
+}
+html[data-motif="aurum"] .locked:hover,
+html[data-motif="aurum"] .pricing__card:hover,
+html[data-motif="aurum"] .tour:hover,
+html[data-motif="aurum"] .gallery__link:hover {
+  outline-color: var(--accent);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent),
+    0 30px 70px -30px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* Highlights: numbered in gold foil, each item on a soft gold edge. */
+html[data-motif="aurum"] .highlights__num,
+html[data-motif="aurum"] .sources__num,
+html[data-motif="aurum"] .facts__value > span:first-child {
+  background: var(--gold-foil);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--accent-soft);
+}
+html[data-motif="aurum"] .facts__item {
+  position: relative;
+}
+
+/* Hero: gold foil accent word and a gold primary button. */
+html[data-motif="aurum"] .hero__accent {
+  background-image: linear-gradient(
+    100deg,
+    #c9a24b 0%,
+    #f6e9c4 22%,
+    #c9a24b 44%,
+    #8a6a2a 60%,
+    #e9d6a6 80%,
+    #c9a24b 100%
+  );
+  background-size: 300% 100%;
+  background-position: 0 0;
+}
+html[data-motif="aurum"] .hero__rule {
+  background: var(--gold-foil);
+  filter: none;
+}
+html[data-motif="aurum"] .hero__primary,
+html[data-motif="aurum"] .band__btn,
+html[data-motif="aurum"] .nav__cta {
+  position: relative;
+  overflow: hidden;
+  border-color: transparent;
+  background: var(--gold-foil);
+  background-size: 160% 100%;
+  color: #17120a;
+  transition: background-position 600ms var(--ease);
+}
+html[data-motif="aurum"] .hero__primary:hover,
+html[data-motif="aurum"] .band__btn:hover,
+html[data-motif="aurum"] .nav__cta:hover {
+  background-position: 100% 0;
+  color: #17120a;
+}
+/* The nav button's over-hero style is scoped in Nav.astro and more specific. */
+html[data-motif="aurum"] .nav .nav__cta {
+  background: var(--gold-foil) !important;
+  background-size: 160% 100% !important;
+  border-color: transparent !important;
+  color: #17120a !important;
+}
+html[data-motif="aurum"] .hero__secondary {
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+html[data-motif="aurum"] .hero__meta {
+  border-top-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/* Tour play disc and ripples in gold. */
+html[data-motif="aurum"] .tour__disc {
+  background: var(--gold-foil);
+  color: #17120a;
+}
+html[data-motif="aurum"] .tour__ripple {
+  border-color: var(--accent);
+}
+
+/* Section dividers: a gold rule. */
+html[data-motif="aurum"] .section + .section {
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent) 40%, transparent) 35%,
+    color-mix(in srgb, var(--accent) 40%, transparent) 65%,
+    transparent
+  );
+}
+
+/* CTA band: deep warm black with a gold sheen that sweeps across. */
+html[data-motif="aurum"] .band {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      50% 120% at 85% 50%,
+      color-mix(in srgb, var(--accent) 18%, transparent),
+      transparent 70%
+    ),
+    var(--night);
+  border-block: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+html[data-motif="aurum"] .band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgb(246 233 196 / 0.09) 48%,
+    rgb(246 233 196 / 0.02) 56%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+
+/* Floating call button: gold ring. */
+html[data-motif="aurum"] .fab__btn--call {
+  background: #17130c;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent),
+    0 10px 24px -8px rgb(0 0 0 / 0.7);
+}
+
+/* Gallery: the feature tile gets an arched top, echoing the hero frame. */
+@media (min-width: 768px) {
+  html[data-motif="aurum"] .gallery__tile:first-child .gallery__link {
+    border-radius: 999px 999px var(--radius) var(--radius);
+    overflow: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero entrance: the arch unveils from the bottom while the halo turns. */
+  html[data-motif="aurum"] .hero__arch {
+    animation: aurum-arch 1.4s var(--ease) 150ms both;
+  }
+  html[data-motif="aurum"] .hero__accent {
+    animation: aurum-shimmer 7s ease-in-out 1s infinite;
+  }
+  html[data-motif="aurum"] .facts__value > span:first-child {
+    animation: aurum-foil 6s ease-in-out infinite alternate;
+  }
+
+  /*
+   * Reveals: content rises into place while its images unveil like a curtain,
+   * top to bottom. (The clip sits on the images, not the observed element, so
+   * IntersectionObserver still sees it.)
+   */
+  html[data-motif="aurum"].reveal-ready [data-reveal] {
+    transition:
+      opacity 900ms var(--ease),
+      transform 900ms var(--ease),
+      filter 900ms var(--ease);
+  }
+  html[data-motif="aurum"].reveal-ready [data-reveal]:not(.is-revealed) {
+    opacity: 0;
+    filter: none;
+    transform: translateY(28px);
+  }
+  html[data-motif="aurum"].reveal-ready [data-reveal] img {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 1300ms var(--ease) 150ms;
+  }
+  html[data-motif="aurum"].reveal-ready [data-reveal]:not(.is-revealed) img {
+    clip-path: inset(0 0 100% 0);
+  }
+  /* Grids reveal in a cascade. */
+  html[data-motif="aurum"].reveal-ready [data-reveal]:nth-child(2) {
+    transition-delay: 90ms;
+  }
+  html[data-motif="aurum"].reveal-ready [data-reveal]:nth-child(3) {
+    transition-delay: 180ms;
+  }
+  html[data-motif="aurum"].reveal-ready [data-reveal]:nth-child(4) {
+    transition-delay: 270ms;
+  }
+  html[data-motif="aurum"].reveal-ready [data-reveal]:nth-child(5) {
+    transition-delay: 360ms;
+  }
+  html[data-motif="aurum"].reveal-ready .section-heading::after {
+    transition: transform 1200ms var(--ease) 300ms;
+  }
+  html[data-motif="aurum"].reveal-ready .section-heading:not(.is-revealed)::after {
+    transform: scaleX(0);
+  }
+
+  /* Feature boxes: gold border rotates while hovered. */
+  html[data-motif="aurum"] .locked:hover,
+  html[data-motif="aurum"] .tour:hover {
+    outline-color: transparent;
+    border-image: conic-gradient(
+        from var(--aurum-a),
+        #8a6a2a,
+        #f6e9c4,
+        #c9a24b,
+        #8a6a2a,
+        #e9d6a6,
+        #8a6a2a
+      )
+      1;
+    animation: aurum-spin 4s linear infinite;
+  }
+
+  html[data-motif="aurum"] .band::before {
+    animation: aurum-sweep 5s var(--ease) 0.8s infinite;
+  }
+}
+
+@keyframes aurum-arch {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+    clip-path: inset(100% 0 0 0 round 999px 999px 4px 4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(-40% -40% -40% -40%);
+  }
+}
+@keyframes aurum-shimmer {
+  0%,
+  100% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 100% 0;
+  }
+}
+@keyframes aurum-foil {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+@keyframes aurum-spin {
+  to {
+    --aurum-a: 360deg;
+  }
+}
+@keyframes aurum-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Solid buttons across the page in gold foil; ghost buttons keep a gold outline. */
+html[data-motif="aurum"] .btn:not(.btn--ghost, .hero__secondary, .footer__btn-ghost, .ty__wa) {
+  border-color: transparent;
+  background: var(--gold-foil);
+  background-size: 160% 100%;
+  color: #17120a;
+  transition: background-position 600ms var(--ease);
+}
+html[data-motif="aurum"]
+  .btn:not(.btn--ghost, .hero__secondary, .footer__btn-ghost, .ty__wa):hover {
+  background-position: 100% 0;
+}
+html[data-motif="aurum"] .btn--ghost {
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+html[data-motif="aurum"] .btn--ghost:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--ink);
+}
+
+/* Mobile sticky bar in gold. */
+html[data-motif="aurum"] .sticky-bar__item {
+  background: var(--gold-foil);
+  color: #17120a;
+}

@@ -1,0 +1,48 @@
+---
+/** Overview: original editorial copy from project.overview, 5/7 split. Hidden if absent. */
+import type { Project } from "~/lib/schemas";
+import type { ProjectBundle } from "~/lib/data";
+import SectionFigure from "./SectionFigure.astro";
+
+type Props = { project: Project; asset: ProjectBundle["asset"] };
+const { project, asset } = Astro.props;
+const o = project.overview;
+const image = project.sectionImages.overview ? asset(project.sectionImages.overview) : undefined;
+---
+
+{o && (
+  <section class="section" id="overview" aria-labelledby="overview-title">
+    <div class="container grid split-5-7">
+      <div class="overview__head" data-reveal>
+        <p class="eyebrow">Overview</p>
+        <h2 id="overview-title">{o.title}</h2>
+        <SectionFigure project={project} asset={image} ratio="4 / 3" class="overview__figure" />
+      </div>
+      <div class="overview__body stack" data-reveal>
+        {o.body.map((p, i) => (
+          <p class:list={{ overview__lead: i === 0 }}>{p}</p>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .overview__head {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+  .overview__head :global(.overview__figure) {
+    margin-top: var(--space-5);
+  }
+  .overview__body {
+    --stack-gap: var(--space-5);
+    color: var(--ink-2);
+  }
+  .overview__lead {
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+</style>

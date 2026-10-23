@@ -1,0 +1,164 @@
+---
+/** Project page. Every section reads from the project's data file; nothing here is project-specific. */
+import type { GetStaticPaths } from "astro";
+import { getImage } from "astro:assets";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Nav from "~/components/Nav.astro";
+import Hero from "~/components/Hero.astro";
+import KeyFacts from "~/components/KeyFacts.astro";
+import Overview from "~/components/Overview.astro";
+import Highlights from "~/components/Highlights.astro";
+import Configurations from "~/components/Configurations.astro";
+import Plans from "~/components/Plans.astro";
+import Amenities from "~/components/Amenities.astro";
+import Gallery from "~/components/Gallery.astro";
+import Location from "~/components/Location.astro";
+import StatusTimeline from "~/components/StatusTimeline.astro";
+import Developer from "~/components/Developer.astro";
+import AboutAgent from "~/components/AboutAgent.astro";
+import Faq from "~/components/Faq.astro";
+import CtaBand from "~/components/CtaBand.astro";
+import Sources from "~/components/Sources.astro";
+import Footer from "~/components/Footer.astro";
+import StickyBar from "~/components/StickyBar.astro";
+import EnquiryModal from "~/components/EnquiryModal.astro";
+import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
+import { IMAGE_WIDTHS, projectImage } from "~/lib/images";
+import type { FormIntent } from "~/lib/schemas";
+import Pricing from "~/components/Pricing.astro";
+import { apartmentComplexLd, breadcrumbLd, faqLd, graph, realEstateAgentLd } from "~/lib/seo";
+import VirtualTour from "~/components/VirtualTour.astro";
+import Marquee from "~/components/Marquee.astro";
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects({ publishedOnly: true });
+  return projects.map((p) => ({ params: { project: p.slug } }));
+}) satisfies GetStaticPaths;
+
+const { project: slug } = Astro.params;
+const settings = await getSettings();
+const { project, assets, asset, theme } = await getProjectBundle(slug);
+const heroIds =
+  project.theme.heroImageIds ?? (project.theme.heroImageId ? [project.theme.heroImageId] : []);
+const heroImages = heroIds.map((id) => asset(id));
+const heroImage = heroImages[0];
+
+const heroSizes = ["arch", "tonneau"].includes(project.theme.heroLayout)
+  ? "(min-width: 1024px) 40vw, 64vw"
+  : "100vw";
+// Preload the hero AVIF with the same widths the <Picture> uses.
+const heroSrc = heroImage ? projectImage(slug, heroImage.file) : undefined;
+const heroPreload = heroSrc
+  ? await getImage({
+      src: heroSrc,
+      format: "avif",
+      widths: IMAGE_WIDTHS.filter((w) => w <= heroSrc.width),
+      sizes: heroSizes,
+    })
+  : undefined;
+
+const hasGallery = project.sections.gallery && assets.some((a) => a.usage.includes("gallery"));
+
+// Share image (1200x630) and structured data from verified fields only.
+const ogAsset = project.seo.ogImageId ? asset(project.seo.ogImageId) : undefined;
+const og = ogAsset
+  ? await getImage({
+      src: projectImage(slug, ogAsset.file),
+      width: 1200,
+      height: 630,
+      fit: "cover",
+      format: "jpg",
+    })
+  : undefined;
+const ogUrl = og ? new URL(og.src, Astro.site).href : undefined;
+const site = Astro.site!;
+const jsonLd = graph([
+  realEstateAgentLd(settings, site),
+  breadcrumbLd(
+    [
+      { name: "Home", path: "/" },
+      { name: project.name, path: `/${project.slug}/` },
+    ],
+    site,
+  ),
+  apartmentComplexLd(project, site, ogUrl),
+  faqLd(project, settings),
+]);
+
+// Nav order requested by the owner. Links with an intent open the enquiry modal;
+// links only appear for sections that actually render.
+type NavLink = { href: string; label: string; intent?: FormIntent };
+const links = [
+  { href: "#hero-title", label: "Home" },
+  { href: "#amenities", label: "Amenities", intent: "amenities" },
+  hasGallery && { href: "#gallery", label: "Gallery", intent: "gallery" },
+  { href: "#location", label: "Map", intent: "location" },
+  { href: "#virtual-tour", label: "Virtual Tour", intent: "virtual-tour" },
+  { href: "#plans", label: "Master & Floor Plan", intent: "floor-plan" },
+  { href: "#pricing", label: "Pricing", intent: "pricing" },
+].filter((l): l is NavLink => Boolean(l));
+
+// Footer: plain anchors to every section that renders (no popups).
+const footerLinks = [
+  project.overview && { href: "#overview", label: "Overview" },
+  hasGallery && { href: "#gallery", label: "Gallery" },
+  { href: "#homes", label: "Homes and sizes" },
+  { href: "#pricing", label: "Pricing" },
+  { href: "#plans", label: "Master and floor plans" },
+  { href: "#amenities", label: "Amenities" },
+  { href: "#location", label: "Location" },
+  { href: "#faq", label: "FAQ" },
+].filter((l): l is { href: string; label: string } => Boolean(l));
+---
+
+<BaseLayout
+  title={project.seo.title}
+  description={project.seo.description}
+  path={`/${project.slug}/`}
+  theme={theme}
+  stickyBar
+  contactProject={project}
+  ogImage={ogUrl}
+  ogImageAlt={ogAsset?.alt}
+  jsonLd={jsonLd}
+>
+  {heroPreload && (
+    <link
+      slot="head"
+      rel="preload"
+      as="image"
+      type="image/avif"
+      imagesrcset={heroPreload.srcSet.attribute}
+      imagesizes={heroSizes}
+      fetchpriority="high"
+    />
+  )}
+  <Nav settings={settings} links={links} overHero cta="Enquire now" partner={{ project, assets }} />
+  <main id="main">
+    <Hero project={project} settings={settings} images={heroImages} />
+    {project.theme.motif === "aurum" && <Marquee project={project} />}
+    <KeyFacts project={project} />
+    <Overview project={project} asset={asset} />
+    <Gallery project={project} assets={assets} />
+    <Highlights project={project} />
+    <Configurations project={project} asset={asset} />
+    <Pricing project={project} asset={asset} />
+    <Plans project={project} assets={assets} asset={asset} />
+    <Amenities
+      project={project}
+      asset={asset}
+      moodImages={assets.filter((a) => a.usage.includes("amenity"))}
+    />
+    <VirtualTour project={project} asset={asset} />
+    <Location project={project} asset={asset} />
+    <StatusTimeline project={project} />
+    <Developer project={project} assets={assets} settings={settings} />
+    <AboutAgent settings={settings} project={project} />
+    <Faq project={project} settings={settings} asset={asset} />
+    <CtaBand project={project} />
+    <Sources project={project} />
+  </main>
+  <Footer settings={settings} project={project} assets={assets} links={footerLinks} />
+  <StickyBar settings={settings} project={project} />
+  <EnquiryModal project={project} settings={settings} assets={assets} asset={asset} />
+</BaseLayout>

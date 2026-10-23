@@ -1,0 +1,215 @@
+---
+/**
+ * Virtual tour (#virtual-tour): section heading, then a cinematic band with a
+ * large play button. Before launch no tour exists, so the button registers
+ * interest; it never pretends to play a video. With project.virtualTourUrl
+ * set, the button opens the official tour.
+ */
+import type { Project } from "~/lib/schemas";
+import type { ProjectBundle } from "~/lib/data";
+import Picture from "./Picture.astro";
+import SectionHeading from "./SectionHeading.astro";
+
+type Props = { project: Project; asset: ProjectBundle["asset"] };
+const { project, asset } = Astro.props;
+const image = project.sectionImages.virtualTour
+  ? asset(project.sectionImages.virtualTour)
+  : undefined;
+const tour = project.virtualTourUrl;
+const dev = project.developer.authorizedToUseName ? project.developer.name : "the developer";
+---
+
+<section class="section tour-section" id="virtual-tour" aria-labelledby="tour-title">
+  <div class="container">
+    <SectionHeading
+      id="tour-title"
+      eyebrow="Experience"
+      title="Virtual Tour"
+      intro={
+        tour
+          ? "Walk through the homes from anywhere."
+          : `The official walkthrough opens here once ${dev} launches the project. Register and we will send you the link first.`
+      }
+    />
+  </div>
+
+  <div class="container">
+    <div class="tour" data-reveal>
+      {image && (
+        <Picture
+          slug={project.slug}
+          asset={image}
+          sizes="(min-width: 1320px) 1240px, 100vw"
+          class="tour__img"
+        />
+      )}
+      <div class="tour__veil" aria-hidden="true"></div>
+
+      <div class="tour__center">
+        {tour ? (
+          <a class="tour__play" href={tour} target="_blank" rel="noopener">
+            <span class="tour__ripple" aria-hidden="true"></span>
+            <span class="tour__ripple tour__ripple--late" aria-hidden="true"></span>
+            <span class="tour__disc" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M8.5 6.5v11l9-5.5z"></path>
+              </svg>
+            </span>
+            <span class="visually-hidden">Play the virtual tour (opens in a new tab)</span>
+          </a>
+        ) : (
+          <a class="tour__play" href="#contact" data-enquire="virtual-tour">
+            <span class="tour__ripple" aria-hidden="true"></span>
+            <span class="tour__ripple tour__ripple--late" aria-hidden="true"></span>
+            <span class="tour__disc" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M8.5 6.5v11l9-5.5z"></path>
+              </svg>
+            </span>
+            <span class="visually-hidden">Get the virtual tour at launch</span>
+          </a>
+        )}
+        <p class="tour__label">{tour ? "Play the tour" : "Tour opens at launch"}</p>
+        {!tour && <p class="tour__sub">Tap play to get the link first</p>}
+      </div>
+
+      {image?.caption && <p class="tour__caption">{image.caption}</p>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .tour {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    min-height: clamp(380px, 56vw, 620px);
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--night);
+    color: var(--on-dark);
+    text-align: center;
+  }
+  .tour :global(.tour__img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1600ms var(--ease);
+  }
+  .tour:hover :global(.tour__img) {
+    transform: scale(1.03);
+  }
+  .tour__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(18 17 15 / 0.5);
+  }
+  .tour__center {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-2);
+  }
+
+  /* Play button: cream disc inside a frosted ring, with two ripple rings. */
+  .tour__play {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 148px;
+    height: 148px;
+    margin-bottom: var(--space-4);
+    border-radius: 50%;
+    border: 1px solid rgb(244 241 234 / 0.45);
+    background: rgb(244 241 234 / 0.12);
+    backdrop-filter: blur(6px);
+    color: var(--on-light);
+    text-decoration: none;
+  }
+  .tour__disc {
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--on-dark);
+    box-shadow:
+      0 12px 30px -8px rgb(0 0 0 / 0.55),
+      inset 0 0 0 1px rgb(255 255 255 / 0.6);
+    transition:
+      transform 420ms var(--ease),
+      background var(--dur) var(--ease);
+  }
+  .tour__disc svg {
+    width: 34px;
+    height: 34px;
+    margin-left: 5px;
+    fill: var(--on-light);
+    transition: transform 420ms var(--ease);
+  }
+  .tour__play:hover .tour__disc {
+    transform: scale(1.08);
+    background: #fff;
+  }
+  .tour__play:hover .tour__disc svg {
+    transform: translateX(2px);
+  }
+  .tour__play:focus-visible {
+    outline: 2px solid var(--on-dark);
+    outline-offset: 6px;
+  }
+  .tour__ripple {
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    border: 1px solid rgb(228 207 168 / 0.7);
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tour__ripple {
+      animation: tour-ripple 2.8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+    }
+    .tour__ripple--late {
+      animation-delay: 1.4s;
+    }
+  }
+  @keyframes tour-ripple {
+    0% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    100% {
+      transform: scale(1.65);
+      opacity: 0;
+    }
+  }
+  .tour__label {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.1;
+    text-shadow: 0 2px 18px rgb(0 0 0 / 0.5);
+  }
+  .tour__sub {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: rgb(244 241 234 / 0.85);
+  }
+  .tour__caption {
+    position: absolute;
+    right: var(--space-4);
+    bottom: var(--space-4);
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    background: rgb(18 17 15 / 0.6);
+    font-size: 0.72rem;
+    color: rgb(244 241 234 / 0.9);
+  }
+</style>

@@ -1,0 +1,66 @@
+---
+/**
+ * Responsive AVIF/WebP image for an assets.yaml entry, with an optional caption.
+ * Alt text always comes from assets.yaml.
+ */
+import { Picture as AstroPicture } from "astro:assets";
+import type { Asset } from "~/lib/schemas";
+import { IMAGE_WIDTHS, projectImage } from "~/lib/images";
+
+type Props = {
+  slug: string;
+  asset: Asset;
+  sizes: string;
+  eager?: boolean;
+  class?: string;
+  style?: string;
+  /** Wrap in a figure and show the caption below. */
+  figure?: boolean;
+};
+
+const { slug, asset, sizes, eager = false, class: className, style, figure = false } = Astro.props;
+const src = projectImage(slug, asset.file);
+const alt = asset.decorative ? "" : asset.alt;
+// Never upscale; images narrower than the smallest step use their own width.
+const fitting = IMAGE_WIDTHS.filter((w) => w <= src.width);
+const widths = fitting.length > 0 ? fitting : [src.width];
+---
+
+{figure ? (
+  <figure class="picture">
+    <AstroPicture
+      src={src}
+      alt={alt}
+      formats={["avif", "webp"]}
+      widths={widths}
+      sizes={sizes}
+      loading={eager ? "eager" : "lazy"}
+      fetchpriority={eager ? "high" : "auto"}
+      decoding={eager ? "sync" : "async"}
+      class={className}
+      style={style}
+    />
+    {asset.caption && <figcaption class="picture__caption">{asset.caption}</figcaption>}
+  </figure>
+) : (
+  <AstroPicture
+    src={src}
+    alt={alt}
+    formats={["avif", "webp"]}
+    widths={widths}
+    sizes={sizes}
+    loading={eager ? "eager" : "lazy"}
+    fetchpriority={eager ? "high" : "auto"}
+    decoding={eager ? "sync" : "async"}
+    class={className}
+    style={style}
+  />
+)}
+
+<style>
+  .picture__caption {
+    margin-top: var(--space-2);
+    font-size: var(--step--1);
+    color: var(--stone);
+  }
+</style>

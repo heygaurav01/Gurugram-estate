@@ -1,0 +1,48 @@
+---
+import LegalLayout from "~/layouts/LegalLayout.astro";
+import { getSettings } from "~/lib/data";
+
+const settings = await getSettings();
+const brand = settings.business.brand_name;
+---
+
+<LegalLayout
+  title={`Terms of use | ${brand}`}
+  description={`Terms for using the ${brand} website.`}
+  path="/terms/"
+  heading="Terms of use"
+  summary="The short set of rules for using this website."
+  lastUpdated="2026-10-18"
+>
+  <h2>Use of this site</h2>
+  <p>
+    This site gives general information about residential projects in Gurugram. You may use it for
+    your own, non-commercial research. Do not copy its content for other websites or use automated
+    tools to collect it.
+  </p>
+
+  <h2>No warranty</h2>
+  <p>
+    We work to keep information accurate and sourced, but the site is provided "as is". We do not
+    promise that it is complete, current or free of errors. See our{" "}
+    <a href="/disclaimer/">disclaimer</a> for details.
+  </p>
+
+  <h2>Intellectual property</h2>
+  <p>
+    The design, text and images created by {brand} belong to {brand}. Developer names and marks
+    belong to their owners and are used only to identify projects.
+  </p>
+
+  <h2>Limitation of liability</h2>
+  <p>
+    To the extent the law allows, {brand} is not liable for any loss arising from reliance on this
+    site. Always confirm details with the developer and on HARERA before making a decision.
+  </p>
+
+  <h2>Governing law</h2>
+  <p>
+    These terms are governed by the laws of India. Courts at Gurugram, Haryana have exclusive
+    jurisdiction.
+  </p>
+</LegalLayout>

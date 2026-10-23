@@ -1,0 +1,62 @@
+---
+/**
+ * Per-page SEO: title, description, canonical (no query string), robots,
+ * Open Graph, Twitter card and JSON-LD.
+ */
+type Props = {
+  title: string;
+  description: string;
+  /** Path such as "/l-and-t-sector-86-gurgaon/". */
+  path: string;
+  noindex?: boolean;
+  /** Absolute URL of a 1200x630 image. */
+  ogImage?: string | undefined;
+  ogImageAlt?: string | undefined;
+  siteName: string;
+  jsonLd?: Record<string, unknown> | undefined;
+};
+const {
+  title,
+  description,
+  path,
+  noindex = false,
+  ogImage,
+  ogImageAlt,
+  siteName,
+  jsonLd,
+} = Astro.props;
+const canonical = new URL(path, Astro.site).href;
+// Escape "<" so JSON-LD can never close the script tag early.
+const ld = jsonLd ? JSON.stringify(jsonLd).replace(/</g, "\\u003c") : undefined;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta
+  name="robots"
+  content={
+    noindex || import.meta.env.PUBLIC_PREVIEW === "1"
+      ? "noindex,nofollow"
+      : "index,follow,max-image-preview:large"
+  }
+/>
+<meta name="theme-color" content="#12110F" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content="en_IN" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+{ogImage && <meta property="og:image:width" content="1200" />}
+{ogImage && <meta property="og:image:height" content="630" />}
+{ogImage && ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
+
+<meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+
+{ld && <script type="application/ld+json" set:html={ld} />}

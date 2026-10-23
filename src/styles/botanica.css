@@ -1,0 +1,316 @@
+/*
+ * Botanica motif (theme.motif: botanica): forest green and pale stone, drawn
+ * from Serenity Hills' leaves, meadows and water.
+ *  - window hero with dappled light and drifting leaves (Hero.astro)
+ *  - pill buttons with a sliding arrow disc and a magnetic hover (motion.ts)
+ *  - pebble cards with asymmetric corners and a soft sage wash
+ *  - the enquiry popup as a garden sheet: rounded, blurred forest backdrop, spring entrance
+ *  - images open like a lens (circular reveal), content grows into place
+ *  - a scroll progress line along the top of the page
+ * All motion is off under prefers-reduced-motion.
+ */
+
+html[data-motif="botanica"] {
+  --bone: #eef0e7;
+  --paper: #fafaf4;
+  --ink: #1b2a21;
+  --ink-2: #3a4a40;
+  --stone: #56665b;
+  --hairline: #d2d9cb;
+  --night: #10241a;
+  --focus: #1b2a21;
+  --leaf: linear-gradient(135deg, #3f7a5a 0%, #2f5d46 55%, #234a37 100%);
+  --pebble: 28px 10px 28px 10px;
+}
+
+/* Eyebrows: a small leaf before the label. */
+html[data-motif="botanica"] .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  color: var(--accent-ink);
+  letter-spacing: 0.2em;
+}
+html[data-motif="botanica"] .eyebrow::before {
+  content: "";
+  width: 12px;
+  height: 8px;
+  border-radius: 0 100% 0 100%;
+  background: var(--leaf);
+}
+
+/* Section headings: a vine that grows under the title and ends in a leaf. */
+html[data-motif="botanica"] .section-heading::after {
+  content: "";
+  display: block;
+  width: 7rem;
+  height: 10px;
+  margin-top: var(--space-2);
+  background:
+    radial-gradient(5px 4px at calc(100% - 6px) 50%, #3f7a5a 98%, transparent) no-repeat,
+    linear-gradient(90deg, transparent, var(--accent) 30%) 0 50% / calc(100% - 10px) 1.5px no-repeat;
+  transform-origin: left;
+}
+
+/* Section dividers: a soft wave instead of a straight rule. */
+html[data-motif="botanica"] .section + .section {
+  border-top: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='8' viewBox='0 0 120 8'%3E%3Cpath d='M0 4 Q15 0 30 4 T60 4 T90 4 T120 4' fill='none' stroke='%232f5d46' stroke-opacity='0.25' stroke-width='1.2'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: top;
+  background-size: 120px 8px;
+}
+
+/* Buttons: pills in leaf green; the arrow sits in a disc that slides on hover. */
+html[data-motif="botanica"] .btn {
+  border-radius: 999px;
+  translate: var(--mx, 0) var(--my, 0);
+  transition:
+    translate 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-position 500ms var(--ease),
+    box-shadow 400ms var(--ease),
+    color 200ms var(--ease);
+}
+html[data-motif="botanica"]
+  .btn:not(.btn--ghost, .hero__primary, .hero__secondary, .footer__btn-ghost, .ty__wa) {
+  border-color: transparent;
+  background: var(--leaf);
+  background-size: 160% 100%;
+  color: #f7f4ec;
+  box-shadow: 0 10px 24px -14px rgb(35 74 55 / 0.9);
+}
+html[data-motif="botanica"]
+  .btn:not(.btn--ghost, .hero__primary, .hero__secondary, .footer__btn-ghost, .ty__wa):hover {
+  background-position: 100% 0;
+  box-shadow: 0 16px 30px -14px rgb(35 74 55 / 0.9);
+}
+html[data-motif="botanica"] .hero__primary {
+  border-radius: 999px;
+  padding-right: 0.45rem;
+}
+html[data-motif="botanica"] .hero__primary svg {
+  box-sizing: content-box;
+  padding: 0.45rem;
+  border-radius: 50%;
+  background: #2f5d46;
+  color: #f7f4ec;
+}
+
+/* Cards and boxes: pebble corners on a soft sage wash. */
+html[data-motif="botanica"] .card,
+html[data-motif="botanica"] .sources__card,
+html[data-motif="botanica"] .legal-card,
+html[data-motif="botanica"] .legal-toc,
+html[data-motif="botanica"] .ty__card,
+html[data-motif="botanica"] .ty__step,
+html[data-motif="botanica"] .cf {
+  border-color: var(--hairline);
+  border-radius: var(--pebble);
+  background: linear-gradient(160deg, #fbfbf6 0%, #f0f4ea 100%);
+  box-shadow: 0 22px 44px -34px rgb(16 36 26 / 0.45);
+  transition:
+    transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 500ms var(--ease);
+}
+html[data-motif="botanica"] .card:hover,
+html[data-motif="botanica"] .sources__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 50px -30px rgb(16 36 26 / 0.5);
+}
+html[data-motif="botanica"] .locked,
+html[data-motif="botanica"] .pricing__card,
+html[data-motif="botanica"] .tour,
+html[data-motif="botanica"] .gallery__link,
+html[data-motif="botanica"] .plans__preview,
+html[data-motif="botanica"] .map__frame {
+  border-radius: var(--pebble);
+  overflow: hidden;
+}
+html[data-motif="botanica"] .pricing__card {
+  background: var(--night);
+}
+html[data-motif="botanica"] :is(.section-figure, .figure, .amenities__item) img {
+  border-radius: var(--pebble);
+}
+
+/* Amenities: image tiles with a name chip that rises on hover. */
+html[data-motif="botanica"] .amenities__item {
+  position: relative;
+}
+html[data-motif="botanica"] .amenities__item img {
+  transition: transform 900ms var(--ease);
+}
+html[data-motif="botanica"] .amenities__item:hover img {
+  transform: scale(1.04);
+}
+html[data-motif="botanica"] .amenities__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+html[data-motif="botanica"] .amenities__name::before {
+  content: "";
+  flex: none;
+  width: 10px;
+  height: 7px;
+  border-radius: 0 100% 0 100%;
+  background: var(--leaf);
+}
+
+/* Numerals in leaf green. */
+html[data-motif="botanica"] .facts__value,
+html[data-motif="botanica"] .highlights__num,
+html[data-motif="botanica"] .sources__num {
+  color: var(--accent-ink);
+}
+
+/* CTA band: deep forest with soft light pooling in one corner. */
+html[data-motif="botanica"] .band {
+  background:
+    radial-gradient(40% 90% at 90% 20%, rgb(159 194 141 / 0.22), transparent 70%),
+    radial-gradient(30% 60% at 5% 100%, rgb(159 194 141 / 0.12), transparent 70%), var(--night);
+}
+
+/* Enquiry popup as a garden sheet: rounded panel, blurred forest backdrop. */
+html[data-motif="botanica"] .enquiry::backdrop {
+  background: rgb(16 36 26 / 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+html[data-motif="botanica"] .enquiry__panel,
+html[data-motif="botanica"] .enquiry__shell {
+  border-radius: 32px;
+}
+html[data-motif="botanica"] .enquiry__shell {
+  overflow: hidden;
+  box-shadow: 0 40px 90px -30px rgb(16 36 26 / 0.7);
+}
+html[data-motif="botanica"] .enquiry__close {
+  border-radius: 50%;
+}
+html[data-motif="botanica"] .field input,
+html[data-motif="botanica"] .field select,
+html[data-motif="botanica"] .field textarea {
+  border-radius: 14px;
+}
+
+/* Floating call button: forest disc. */
+html[data-motif="botanica"] .fab__btn--call {
+  background: #1f3d2d;
+  box-shadow:
+    inset 0 0 0 1px rgb(207 227 200 / 0.5),
+    0 10px 24px -8px rgb(16 36 26 / 0.6);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Scroll progress: a leaf-green line that fills as the page scrolls. */
+  @supports (animation-timeline: scroll()) {
+    html[data-motif="botanica"] body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 60;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #9fc28d, #2f5d46);
+      transform-origin: left;
+      animation: bot-progress linear both;
+      animation-timeline: scroll(root);
+      pointer-events: none;
+    }
+  }
+
+  /* Hero: the window opens from a slightly smaller, softer frame. */
+  html[data-motif="botanica"] .hero--window .hero__content {
+    animation: bot-grow 1.1s cubic-bezier(0.34, 1.3, 0.64, 1) 200ms both;
+  }
+
+  /* Reveals: content grows into place out of a soft blur. */
+  html[data-motif="botanica"].reveal-ready [data-reveal] {
+    transition:
+      opacity 800ms var(--ease),
+      transform 900ms cubic-bezier(0.34, 1.35, 0.64, 1),
+      filter 800ms var(--ease);
+  }
+  html[data-motif="botanica"].reveal-ready [data-reveal]:not(.is-revealed) {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(24px) scale(0.97);
+  }
+  html[data-motif="botanica"].reveal-ready [data-reveal]:nth-child(2) {
+    transition-delay: 90ms;
+  }
+  html[data-motif="botanica"].reveal-ready [data-reveal]:nth-child(3) {
+    transition-delay: 180ms;
+  }
+  html[data-motif="botanica"].reveal-ready [data-reveal]:nth-child(4) {
+    transition-delay: 270ms;
+  }
+  /* Images open like a lens (the clip sits on the image, not the observed element). */
+  html[data-motif="botanica"].reveal-ready [data-reveal] img {
+    clip-path: circle(80% at 50% 50%);
+    transition: clip-path 1300ms var(--ease) 120ms;
+  }
+  html[data-motif="botanica"].reveal-ready [data-reveal]:not(.is-revealed) img {
+    clip-path: circle(0% at 50% 50%);
+  }
+  html[data-motif="botanica"].reveal-ready .section-heading::after {
+    transition: transform 1200ms var(--ease) 250ms;
+  }
+  html[data-motif="botanica"].reveal-ready .section-heading:not(.is-revealed)::after {
+    transform: scaleX(0);
+  }
+
+  /* Popup: springs up from below with a slight scale. */
+  html[data-motif="botanica"] .enquiry[open] .enquiry__shell {
+    animation: bot-sheet 650ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  }
+}
+
+@keyframes bot-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes bot-grow {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.94);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+@keyframes bot-sheet {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Window hero: a lighter headline so the glass card stays compact. */
+html[data-motif="botanica"] .hero--window .hero__title {
+  font-size: clamp(2.6rem, 1.6rem + 3.4vw, 5rem);
+}
+html[data-motif="botanica"] .hero--window .hero__content {
+  max-width: 38rem;
+}
+
+/* Small screens: keep the slideshow controls clear of the glass card. */
+@media (max-width: 767.98px) {
+  html[data-motif="botanica"] .hero--window {
+    min-height: 0;
+    padding-top: calc(4.25rem + 4.5rem);
+  }
+}

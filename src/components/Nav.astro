@@ -1,0 +1,346 @@
+---
+/**
+ * Sticky nav. Transparent over the hero, solid (frosted) after 80px of scroll.
+ * Mobile: menu button opens a full-screen sheet (native <dialog>, focus trapped).
+ */
+import type { Asset, FormIntent, Project, SiteSettings } from "~/lib/schemas";
+import Wordmark from "./Wordmark.astro";
+import PartnerLogo from "./PartnerLogo.astro";
+import PartnerWordmark from "./PartnerWordmark.astro";
+
+type Props = {
+  settings: SiteSettings;
+  /** Section links. With an intent, the link opens the enquiry modal (href is the no-JS fallback). */
+  links?: Array<{ href: string; label: string; intent?: FormIntent | undefined }>;
+  /** Starts transparent with light text over a dark hero image. */
+  overHero?: boolean;
+  /** Label for the nav CTA, which opens the enquiry modal. Omit to hide it. */
+  cta?: string | undefined;
+  /** Co-brand with the developer's logo (authorized channel partners only). */
+  partner?: { project: Project; assets: Asset[] } | undefined;
+  /** "company" shows the registered company name/logo (homepage). */
+  variant?: "brand" | "company";
+};
+const { settings, links = [], overHero = false, cta, partner, variant = "brand" } = Astro.props;
+const coBrand = partner?.project.developer.authorizedToUseLogo === true;
+// Until the official logo file is listed, show the authorized text lockup instead.
+const hasLogo =
+  partner?.assets.some(
+    (a) => a.kind === "logo" && a.fromDeveloper && a.license === "authorized",
+  ) === true;
+---
+
+<header class:list={["nav", { "nav--over-hero": overHero }]} data-nav>
+  <div class="container nav__inner">
+    {coBrand && partner ? (
+      <div class="nav__brand">
+        <a
+          href={`/${partner.project.slug}/`}
+          class="nav__partner"
+          aria-label={`${partner.project.name}, home`}
+        >
+          {hasLogo ? (
+            <>
+              <PartnerLogo
+                project={partner.project}
+                assets={partner.assets}
+                on="dark"
+                height={46}
+                class="nav__logo nav__logo--on-dark"
+              />
+              <PartnerLogo
+                project={partner.project}
+                assets={partner.assets}
+                on="light"
+                height={46}
+                class="nav__logo nav__logo--on-light"
+              />
+            </>
+          ) : (
+            <PartnerWordmark project={partner.project} />
+          )}
+        </a>
+      </div>
+    ) : (
+      <Wordmark settings={settings} variant={variant} />
+    )}
+    {links.length > 0 && (
+      <nav class="nav__links" aria-label="Page sections">
+        <ul role="list">
+          {links.map((l) => (
+            <li>
+              <a href={l.href} data-enquire={l.intent}>
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+    <div class="nav__actions">
+      {cta && (
+        <a class="btn nav__cta" href="#contact" data-enquire="nav">
+          {cta}
+        </a>
+      )}
+      {links.length > 0 && (
+        <button
+          class="nav__menu"
+          type="button"
+          aria-haspopup="dialog"
+          aria-controls="nav-sheet"
+          data-nav-open
+        >
+          Menu
+        </button>
+      )}
+    </div>
+  </div>
+
+  {links.length > 0 && (
+    <dialog id="nav-sheet" class="nav-sheet" aria-label="Menu">
+      <div class="nav-sheet__top">
+        <Wordmark settings={settings} variant={variant} />
+        <button type="button" class="nav__menu" data-nav-close>
+          Close
+        </button>
+      </div>
+      <nav aria-label="Page sections (menu)">
+        <ul role="list" class="nav-sheet__links">
+          {links.map((l) => (
+            <li>
+              <a href={l.href} data-nav-link data-enquire={l.intent}>
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      {cta && (
+        <a class="btn nav-sheet__cta" href="#contact" data-enquire="nav" data-nav-link>
+          {cta}
+        </a>
+      )}
+    </dialog>
+  )}
+</header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>("[data-nav]");
+  if (nav) {
+    // Solid background after 80px of scroll.
+    let ticking = false;
+    const update = () => {
+      nav.classList.toggle("is-solid", window.scrollY > 80);
+      ticking = false;
+    };
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true },
+    );
+    update();
+
+    // Mobile sheet: native modal dialog traps focus and handles Esc.
+    const sheet = nav.querySelector<HTMLDialogElement>("#nav-sheet");
+    const opener = nav.querySelector<HTMLButtonElement>("[data-nav-open]");
+    if (sheet && opener) {
+      opener.addEventListener("click", () => sheet.showModal());
+      sheet.querySelector("[data-nav-close]")?.addEventListener("click", () => sheet.close());
+      sheet
+        .querySelectorAll("[data-nav-link]")
+        .forEach((a) => a.addEventListener("click", () => sheet.close()));
+      sheet.addEventListener("close", () => opener.focus());
+    }
+  }
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    color: var(--ink);
+    background: var(--bone);
+    border-bottom: 1px solid var(--hairline);
+    transition:
+      background var(--dur) var(--ease),
+      color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+  .nav--over-hero {
+    color: var(--on-dark);
+    background: transparent;
+    border-color: transparent;
+  }
+  /* The single glass effect on the site. Solid fallback where blur is unsupported. */
+  .nav.is-solid {
+    color: var(--ink);
+    background: var(--bone);
+    border-color: var(--hairline);
+  }
+  @supports (backdrop-filter: blur(12px)) {
+    .nav.is-solid {
+      /* Translucent page color, so it works for light and dark project themes. */
+      background: color-mix(in srgb, var(--bone) 84%, transparent);
+      backdrop-filter: blur(12px);
+    }
+  }
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    min-height: 4.25rem;
+  }
+  .nav__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+  .nav__partner {
+    display: inline-flex;
+    text-decoration: none;
+    flex: none;
+    align-items: center;
+    min-height: var(--tap-min);
+  }
+  .nav__partner :global(img) {
+    flex: none;
+    max-width: none;
+  }
+  @media (max-width: 419.98px) {
+    .nav__partner :global(img) {
+      height: 40px !important;
+      width: auto !important;
+    }
+  }
+  /* White logo over the dark hero, dark logo once the nav turns solid. */
+  .nav :global(.nav__logo--on-light),
+  .nav--over-hero:not(.is-solid) :global(.nav__logo--on-light) {
+    display: none;
+  }
+  .nav--over-hero:not(.is-solid) :global(.nav__logo--on-dark) {
+    display: block;
+  }
+  .nav:not(.nav--over-hero) :global(.nav__logo--on-dark),
+  .nav.is-solid :global(.nav__logo--on-dark) {
+    display: none;
+  }
+  .nav:not(.nav--over-hero) :global(.nav__logo--on-light),
+  .nav.is-solid :global(.nav__logo--on-light) {
+    display: block;
+  }
+  /* Dark-mode pages keep the light logo: the solid nav is dark too. */
+  :global(html[data-mode="dark"]) .nav :global(.nav__logo--on-dark) {
+    display: block;
+  }
+  :global(html[data-mode="dark"]) .nav :global(.nav__logo--on-light) {
+    display: none;
+  }
+  .nav__links {
+    display: none;
+  }
+  .nav__links ul {
+    display: flex;
+    gap: clamp(var(--space-3), 1.4vw, var(--space-5));
+  }
+  .nav__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .nav__links a:hover {
+    text-decoration: underline;
+  }
+  .nav__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .nav__cta {
+    display: none;
+    min-height: 2.75rem;
+    padding-block: var(--space-2);
+    font-size: 0.95rem;
+  }
+  .nav--over-hero:not(.is-solid) .nav__cta {
+    background: var(--on-dark);
+    color: var(--on-light);
+    border-color: var(--on-dark);
+  }
+  .nav__menu {
+    min-height: var(--tap-min);
+    min-width: var(--tap-min);
+    padding: 0 var(--space-4);
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .nav--over-hero:not(.is-solid) :focus-visible {
+    outline-color: var(--on-dark);
+  }
+
+  @media (min-width: 768px) {
+    .nav__cta {
+      display: inline-flex;
+    }
+  }
+  @media (min-width: 1280px) {
+    .nav__links {
+      display: block;
+    }
+    .nav__menu {
+      display: none;
+    }
+  }
+
+  .nav-sheet {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-4) var(--gutter) var(--space-7);
+    border: 0;
+    background: var(--bone);
+    color: var(--ink);
+  }
+  .nav-sheet::backdrop {
+    background: var(--bone);
+  }
+  .nav-sheet__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-7);
+  }
+  .nav-sheet__links {
+    display: grid;
+    border-top: 1px solid var(--hairline);
+  }
+  .nav-sheet__links a {
+    display: block;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--hairline);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--step-2);
+    text-decoration: none;
+  }
+  .nav-sheet__cta {
+    margin-top: var(--space-7);
+    width: 100%;
+  }
+</style>

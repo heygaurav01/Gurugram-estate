@@ -1,0 +1,41 @@
+---
+/**
+ * Project thank-you page (noindex). Reached only after the CRM confirms the
+ * lead. Phase 5 analytics fires generate_lead once per ?ref.
+ */
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Nav from "~/components/Nav.astro";
+import Footer from "~/components/Footer.astro";
+import ThankYou from "~/components/ThankYou.astro";
+import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects({ publishedOnly: true });
+  return projects.map((p) => ({ params: { project: p.slug } }));
+}) satisfies GetStaticPaths;
+
+const { project: slug } = Astro.params;
+const settings = await getSettings();
+const { project, assets, theme } = await getProjectBundle(slug);
+---
+
+<BaseLayout
+  title={`Thank you | ${project.name}`}
+  description={`Your details for ${project.name} have been received.`}
+  path={`/${project.slug}/thank-you/`}
+  theme={theme}
+  noindex
+  contactProject={project}
+>
+  <Nav settings={settings} partner={{ project, assets }} />
+  <main id="main">
+    <ThankYou
+      settings={settings}
+      from={settings.business.brand_name}
+      projectName={project.name}
+      back={{ href: `/${project.slug}/`, label: `Back to ${project.name}` }}
+    />
+  </main>
+  <Footer settings={settings} project={project} assets={assets} />
+</BaseLayout>

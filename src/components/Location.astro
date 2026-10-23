@@ -1,0 +1,99 @@
+---
+/** Location (#location): map facade plus measured, dated connectivity. */
+import type { Project } from "~/lib/schemas";
+import type { ProjectBundle } from "~/lib/data";
+import { formatDate } from "~/lib/format";
+import { buildSources, verifiedView } from "~/lib/view";
+import SectionHeading from "./SectionHeading.astro";
+import SourceRef from "./SourceRef.astro";
+import MapFacade from "./MapFacade.astro";
+
+type Props = { project: Project; asset: ProjectBundle["asset"] };
+const { project, asset } = Astro.props;
+const { location } = project;
+const routes = verifiedView(project).connectivity;
+const { ref } = buildSources(project);
+const exact = location.lat !== undefined && location.lng !== undefined;
+const mapQuery = exact ? `${location.lat},${location.lng}` : location.mapQuery;
+const hasMap = Boolean(mapQuery);
+const mapImage = location.mapImageId ? asset(location.mapImageId) : undefined;
+const MODE: Record<string, string> = { road: "By road", metro: "Metro", rail: "Rail", air: "Air" };
+const place = [location.sector, location.city, location.region].filter(Boolean).join(", ");
+---
+
+<section class="section" id="location" aria-labelledby="location-title">
+  <div class:list={["container", "grid", { "split-5-7": hasMap }]}>
+    <div>
+      <SectionHeading id="location-title" eyebrow="Location" title={place} />
+      {routes.length > 0 ? (
+        <ul class="routes" role="list" data-reveal>
+          {routes.map((r) => (
+            <li class="routes__item">
+              <p class="routes__place">
+                {r.place}
+                <SourceRef n={ref(r.source)} />
+              </p>
+              <p class="routes__meta">
+                {[
+                  r.distanceKm !== undefined ? `${r.distanceKm} km` : undefined,
+                  r.driveMinutesOffPeak !== undefined
+                    ? `about ${r.driveMinutesOffPeak} min off-peak`
+                    : undefined,
+                  MODE[r.mode],
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
+              </p>
+              <p class="routes__verified">Verified {formatDate(r.verifiedOn!)}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="card location__empty" data-reveal>
+          <p>
+            We have not published travel times yet. We add them only after measuring each route
+            ourselves, with the date of measurement.
+          </p>
+        </div>
+      )}
+      <p class="location__cta" data-reveal>
+        <a class="btn btn--ghost" href="#contact" data-enquire="location">
+          Ask about the location
+        </a>
+      </p>
+    </div>
+    {hasMap && (
+      <div data-reveal>
+        <MapFacade project={project} query={mapQuery!} approximate={!exact} image={mapImage} />
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .routes {
+    border-top: 1px solid var(--hairline);
+  }
+  .routes__item {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .routes__place {
+    font-weight: 600;
+  }
+  .routes__meta {
+    color: var(--ink-2);
+  }
+  .routes__verified {
+    font-size: var(--step--1);
+    color: var(--stone);
+  }
+  .location__empty {
+    max-width: 40rem;
+  }
+  .location__cta {
+    margin-top: var(--space-6);
+  }
+</style>

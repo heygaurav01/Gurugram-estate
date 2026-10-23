@@ -1,5 +1,7 @@
 # build output
 dist/
+# copy of dist/ for Hostinger's "Create React App" preset, which serves build/
+build/
 .astro/
 .wrangler/
 

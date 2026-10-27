@@ -40,10 +40,13 @@ if (!is_array($body)) reply(400, ['ok' => false, 'error' => 'body']);
 
 // --- config (outside public_html) -----------------------------------------
 $config = [];
-foreach ([dirname(__DIR__, 2) . '/leadrat-config.php', dirname(__DIR__, 3) . '/leadrat-config.php'] as $f) {
-    if (is_file($f)) { $config = require $f; break; }
+$configLevel = 0; // how many folders above api/ the config file was found (0 = none)
+foreach ([2, 3] as $up) {
+    $f = dirname(__DIR__, $up) . '/leadrat-config.php';
+    if (is_file($f)) { $config = require $f; $configLevel = $up; break; }
 }
-$apiKey = (string)($config['api_key'] ?? getenv('LEADRAT_API_KEY') ?: '');
+$apiKey = trim((string)($config['api_key'] ?? getenv('LEADRAT_API_KEY') ?: ''));
+if (str_contains($apiKey, 'LEADRAT-API-KEY')) reply(503, ['ok' => false, 'error' => 'placeholder_key', 'configLevel' => $configLevel]);
 $apiUrl = (string)($config['api_url'] ?? 'https://connect.leadrat.com/api/v1/integration/Website');
 // Leadrat user every website lead is assigned to (full name). Unassigned leads
 // do not show in "All / My Leads / Team's" in Leadrat.
@@ -145,5 +148,9 @@ curl_exec($ch);
 $status = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
 curl_close($ch);
 
-if ($status < 200 || $status >= 300) reply(502, ['ok' => false, 'error' => 'crm_rejected', 'crmStatus' => $status]);
+// keyId: a short hash, so the key in use can be compared with the expected one without revealing it.
+if ($status < 200 || $status >= 300) reply(502, [
+    'ok' => false, 'error' => 'crm_rejected', 'crmStatus' => $status,
+    'keyId' => substr(hash('sha256', $apiKey), 0, 8), 'configLevel' => $configLevel,
+]);
 reply(200, ['ok' => true, 'id' => $key !== '' ? $key : 'ok']);

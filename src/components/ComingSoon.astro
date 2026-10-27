@@ -86,25 +86,27 @@ const word = (w: string) => Array.from(w);
             </a>
           )}
         </div>
-        {featured.length > 0 && (
-          <ul class="cs__featured-list" role="list" aria-label="Live project pages">
-            {featured.map((f) => (
-              <li>
-                <a class="cs__featured" href={f.href}>
-                  <span class="cs__featured-dot" aria-hidden="true"></span>
-                  <span class="cs__featured-tag">Now live</span>
-                  <span>{f.label}</span>
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M5 12h14M13 6l6 6-6 6"></path>
-                  </svg>
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </div>
   </div>
+
+  {/* Outside the tilting scene so the links stay put and are easy to tap. */}
+  {featured.length > 0 && (
+    <ul class="cs__featured-list" role="list" aria-label="Live project pages">
+      {featured.map((f) => (
+        <li>
+          <a class="cs__featured" href={f.href}>
+            <span class="cs__featured-dot" aria-hidden="true"></span>
+            <span class="cs__featured-tag">Now live</span>
+            <span>{f.label}</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"></path>
+            </svg>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
 
   {background?.asset.caption && <p class="cs__caption">{background.asset.caption}</p>}
 </section>
@@ -120,6 +122,7 @@ const word = (w: string) => Array.from(w);
     isolation: isolate;
     display: grid;
     place-items: center;
+    align-content: center;
     min-height: max(640px, 100svh);
     padding: calc(4.25rem + var(--space-6)) var(--gutter) calc(var(--space-8) + 3rem);
     overflow: hidden;
@@ -255,11 +258,14 @@ const word = (w: string) => Array.from(w);
     backdrop-filter: blur(6px);
   }
   .cs__featured-list {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--space-3);
-    margin-top: var(--space-2);
+    max-width: 1100px;
+    margin-top: var(--space-5);
   }
   .cs__featured {
     display: inline-flex;
@@ -369,6 +375,7 @@ const word = (w: string) => Array.from(w);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--bone);
+    pointer-events: none;
   }
   .cs__chip--1 {
     left: 2%;

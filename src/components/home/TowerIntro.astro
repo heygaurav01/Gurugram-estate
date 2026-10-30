@@ -1,0 +1,463 @@
+---
+/**
+ * Homepage intro: "enter the building". A tall section with a sticky stage.
+ * scripts/home/scene.ts draws the 3D tower on the canvas and flies the camera
+ * in as the visitor scrolls; the chapters below fade in and out over it.
+ *
+ * Without JS, under reduced motion or without WebGL, the still image shows and
+ * the chapters read as ordinary stacked text.
+ */
+import type { Asset } from "~/lib/schemas";
+import Picture from "../Picture.astro";
+
+type Chapter = { eyebrow: string; title: string; body: string };
+type Props = {
+  company: string;
+  /** Still image for the fallback (any listed asset). */
+  poster?: { slug: string; asset: Asset } | undefined;
+  phone?: { href: string; display: string } | undefined;
+  chapters: Chapter[];
+};
+const { company, poster, phone, chapters } = Astro.props;
+
+// Scroll windows (0 to 1 through the intro) for the hero and each chapter.
+const WINDOWS: Array<[number, number]> = [
+  [0.17, 0.36],
+  [0.4, 0.56],
+  [0.6, 0.76],
+  [0.8, 0.95],
+];
+const split = company.match(/^(.*?)\s+(Private Limited)$/i);
+---
+
+<section class="tower" id="lobby" data-tower aria-labelledby="home-title">
+  <div class="tower__stage">
+    {poster && (
+      <Picture slug={poster.slug} asset={poster.asset} sizes="100vw" eager class="tower__poster" />
+    )}
+    <canvas class="tower__canvas" data-tower-canvas aria-hidden="true"></canvas>
+    <div class="tower__veil" aria-hidden="true"></div>
+    {poster?.asset.caption && <p class="tower__caption">{poster.asset.caption}</p>}
+
+    <div class="tower__hero chapter" data-chapter data-from="0" data-to="0.14">
+      <p class="tower__eyebrow">
+        <span class="tower__rule" aria-hidden="true"></span>
+        Real estate advisory, Gurugram
+        <span class="tower__rule" aria-hidden="true"></span>
+      </p>
+      <h1 id="home-title" class="tower__title">
+        {split ? (
+          <>
+            <span class="tower__title-main">{split[1]}</span>
+            <span class="tower__title-sub">{split[2]}</span>
+          </>
+        ) : (
+          company
+        )}
+      </h1>
+      <p class="tower__lead">
+        New homes across Gurugram, chosen with verified facts and RERA-first advice.
+      </p>
+      <div class="tower__ctas">
+        <a class="btn tower__primary" href="#projects" data-magnetic>
+          Explore the projects
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6"></path>
+          </svg>
+        </a>
+        {phone && (
+          <a class="btn tower__secondary" href={phone.href} data-track="call_click" data-magnetic>
+            Call {phone.display}
+          </a>
+        )}
+      </div>
+      <p class="tower__cue" aria-hidden="true">
+        <span class="tower__cue-line"></span>
+        Scroll to enter
+      </p>
+    </div>
+
+    {chapters.map((c, i) => (
+      <article
+        class:list={["chapter", "tower__chapter", `tower__chapter--${i % 2 ? "right" : "left"}`]}
+        data-chapter
+        data-from={WINDOWS[i]?.[0] ?? 0.8}
+        data-to={WINDOWS[i]?.[1] ?? 0.95}
+      >
+        <p class="tower__chapter-num" aria-hidden="true">
+          {String(i + 1).padStart(2, "0")}
+        </p>
+        <p class="eyebrow tower__chapter-eyebrow">{c.eyebrow}</p>
+        <h2 class="tower__chapter-title">{c.title}</h2>
+        <p class="tower__chapter-body">{c.body}</p>
+      </article>
+    ))}
+
+    <div class="tower__meter" data-tower-meter aria-hidden="true">
+      <span></span>
+    </div>
+    <div class="tower__fade" data-tower-fade aria-hidden="true"></div>
+  </div>
+</section>
+
+<style>
+  .tower {
+    position: relative;
+    background: var(--night);
+    color: var(--on-dark);
+  }
+  .tower__stage {
+    position: relative;
+    display: grid;
+    gap: var(--space-6);
+    min-height: 100svh;
+    padding: calc(5rem + var(--space-6)) var(--gutter) var(--space-8);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .tower :global(.tower__poster),
+  .tower__canvas {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tower__canvas {
+    opacity: 0;
+    transition: opacity 1.6s var(--ease);
+  }
+  .tower__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 40%, rgb(11 10 9 / 0.2) 0%, rgb(11 10 9 / 0.8) 75%),
+      linear-gradient(
+        to bottom,
+        rgb(11 10 9 / 0.55),
+        transparent 30%,
+        transparent 70%,
+        rgb(11 10 9 / 0.7)
+      );
+  }
+  .tower__caption {
+    position: absolute;
+    right: var(--gutter);
+    bottom: var(--space-3);
+    font-size: 0.72rem;
+    color: rgb(244 241 234 / 0.8);
+  }
+
+  /* Hero */
+  .tower__hero {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: var(--space-5);
+    min-height: calc(100svh - 10rem);
+    text-align: center;
+  }
+  .tower__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+  }
+  .tower__rule {
+    width: 2.5rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.7;
+  }
+  .tower__title {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3);
+    font-weight: 500;
+    line-height: 0.9;
+  }
+  .tower__title-main {
+    font-size: clamp(3.2rem, 1.2rem + 8.5vw, 9.5rem);
+    letter-spacing: -0.015em;
+    background: linear-gradient(
+      100deg,
+      #f4f1ea 20%,
+      #e4cfa8 45%,
+      #fff8e8 52%,
+      #e4cfa8 60%,
+      #f4f1ea 85%
+    );
+    background-size: 250% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 0 30px 60px rgb(0 0 0 / 0.35);
+  }
+  .tower__title-sub {
+    font-family: var(--font-body);
+    font-size: clamp(0.8rem, 0.7rem + 0.5vw, 1.05rem);
+    font-weight: 600;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+  }
+  .tower__lead {
+    max-width: 36ch;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: rgb(244 241 234 / 0.88);
+  }
+  .tower__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+  .tower__primary {
+    background: var(--accent-soft);
+    color: var(--on-light);
+    border-color: var(--accent-soft);
+  }
+  .tower__primary:hover {
+    background: var(--on-dark-hover);
+  }
+  .tower__primary svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+  }
+  .tower__secondary {
+    background: rgb(244 241 234 / 0.06);
+    color: var(--on-dark);
+    border-color: rgb(244 241 234 / 0.45);
+    backdrop-filter: blur(8px);
+  }
+  .tower__secondary:hover {
+    background: var(--on-dark);
+    color: var(--on-light);
+  }
+  .tower__cue {
+    display: none;
+  }
+
+  /* Chapters: plain stacked text by default. */
+  .tower__chapter {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 34rem;
+    padding: var(--space-6);
+    border: 1px solid rgb(228 207 168 / 0.25);
+    border-radius: 6px;
+    background: rgb(11 10 9 / 0.55);
+    backdrop-filter: blur(14px);
+  }
+  .tower__chapter-num {
+    font-family: var(--font-display);
+    font-size: 3.4rem;
+    line-height: 1;
+    color: rgb(228 207 168 / 0.5);
+  }
+  .tower__chapter-eyebrow {
+    color: var(--accent-soft);
+  }
+  .tower__chapter-title {
+    font-size: var(--step-3);
+    line-height: 1;
+  }
+  .tower__chapter-body {
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: rgb(244 241 234 / 0.85);
+  }
+  .tower__meter,
+  .tower__fade {
+    display: none;
+  }
+  .tower :focus-visible {
+    outline-color: var(--on-dark);
+  }
+
+  /* --- Scroll-driven mode (scripts/home/home.ts adds .is-live) --- */
+  .tower:global(.is-live) {
+    height: 720vh;
+  }
+  .tower:global(.is-live) .tower__stage {
+    position: sticky;
+    top: 0;
+    display: block;
+    height: 100svh;
+    min-height: 0;
+    padding: 0;
+  }
+  .tower:global(.has-3d) .tower__canvas {
+    opacity: 1;
+  }
+  .tower:global(.has-3d) :global(.tower__poster) {
+    opacity: 0;
+    transition: opacity 1.6s var(--ease);
+  }
+  .tower:global(.has-3d) .tower__caption {
+    display: none;
+  }
+  /* Without WebGL the still image slowly pushes in as you scroll. */
+  .tower:global(.is-live:not(.has-3d)) :global(.tower__poster) {
+    transform: scale(calc(1 + var(--p, 0) * 0.35));
+    transform-origin: 50% 60%;
+  }
+  .tower:global(.is-live) .chapter {
+    position: absolute;
+    opacity: var(--a, 0);
+    transform: translate3d(0, var(--y, 0px), 0);
+    will-change: opacity, transform;
+  }
+  .tower:global(.is-live) .tower__hero {
+    inset: 0;
+    min-height: 0;
+    padding: 5rem var(--gutter) 4rem;
+  }
+  .tower:global(.is-live) .tower__chapter {
+    top: 50%;
+    width: min(34rem, calc(100% - 2 * var(--gutter)));
+    margin-top: -9rem;
+  }
+  .tower:global(.is-live) .tower__chapter--left {
+    left: var(--gutter);
+  }
+  .tower:global(.is-live) .tower__chapter--right {
+    right: var(--gutter);
+  }
+  @media (min-width: 1100px) {
+    .tower:global(.is-live) .tower__chapter--left {
+      left: 8vw;
+    }
+    .tower:global(.is-live) .tower__chapter--right {
+      right: 8vw;
+    }
+  }
+  .tower:global(.is-live) .tower__cue {
+    position: absolute;
+    bottom: 2.2rem;
+    left: 50%;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3);
+    translate: -50% 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgb(244 241 234 / 0.7);
+  }
+  .tower__cue-line {
+    width: 1px;
+    height: 3.2rem;
+    background: linear-gradient(to bottom, transparent, var(--accent-soft));
+    animation: cue 2.2s var(--ease) infinite;
+    transform-origin: top;
+  }
+  .tower:global(.is-live) .tower__meter {
+    position: absolute;
+    left: 50%;
+    bottom: 1.2rem;
+    translate: -50% 0;
+    display: block;
+    width: 9rem;
+    height: 1px;
+    background: rgb(244 241 234 / 0.2);
+  }
+  .tower__meter span {
+    display: block;
+    height: 100%;
+    background: var(--accent-soft);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+  }
+  .tower:global(.is-live) .tower__fade {
+    position: absolute;
+    inset: 0;
+    display: block;
+    pointer-events: none;
+    background: radial-gradient(circle at 60% 55%, #2a2216 0%, var(--night) 70%);
+    opacity: var(--a, 0);
+  }
+  /* Shimmer across the gold title. */
+  :global(html.home-live) .tower__title-main {
+    animation: sheen 7s ease-in-out infinite;
+  }
+  :global(html.home-live) .tower__hero > * {
+    animation: rise 1.2s var(--ease) both;
+  }
+  :global(html.home-live) .tower__hero > :nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  :global(html.home-live) .tower__hero > :nth-child(3) {
+    animation-delay: 0.35s;
+  }
+  :global(html.home-live) .tower__hero > :nth-child(4) {
+    animation-delay: 0.5s;
+  }
+  :global(html.home-live) .tower__hero > :nth-child(5) {
+    animation-delay: 0.8s;
+  }
+  @keyframes sheen {
+    0%,
+    100% {
+      background-position: 100% 0;
+    }
+    50% {
+      background-position: 0% 0;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+      filter: blur(6px);
+    }
+  }
+  @keyframes cue {
+    0% {
+      transform: scaleY(0);
+      opacity: 1;
+    }
+    60% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 0;
+    }
+  }
+  @media (max-width: 640px) {
+    .tower__rule {
+      display: none;
+    }
+    .tower:global(.is-live) {
+      height: 620vh;
+    }
+    .tower:global(.is-live) .tower__chapter {
+      top: auto;
+      bottom: 5rem;
+      margin-top: 0;
+      padding: var(--space-5);
+    }
+    .tower:global(.is-live) .tower__chapter--left,
+    .tower:global(.is-live) .tower__chapter--right {
+      left: var(--gutter);
+      right: auto;
+    }
+    .tower__chapter-num {
+      font-size: 2.4rem;
+    }
+  }
+</style>

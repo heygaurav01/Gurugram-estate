@@ -1,83 +1,169 @@
 ---
 /**
- * Homepage: the official website of the registered company, coming soon.
- * Company only, no project content. Projects live at their own paths,
- * e.g. /l-and-t-sector-86-gurgaon/.
+ * Homepage: the company site of Gurugram Estate Private Limited.
+ * A scroll-driven walk into a building (components/home/TowerIntro.astro),
+ * then the floors: the project collection, how we work, and contact.
+ * Company content only; every project fact lives on its own page.
  */
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Nav from "~/components/Nav.astro";
-import ComingSoon from "~/components/ComingSoon.astro";
+import TowerIntro from "~/components/home/TowerIntro.astro";
+import Collection, { type CollectionItem } from "~/components/home/Collection.astro";
 import ContactForm from "~/components/ContactForm.astro";
 import Footer from "~/components/Footer.astro";
 import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
 import { ON_REQUEST, companyName } from "~/lib/compliance";
-import { contactView } from "~/lib/view";
+import { RERA_LABEL, contactView } from "~/lib/view";
 import { graph, realEstateAgentLd } from "~/lib/seo";
 
 const settings = await getSettings();
 const company = companyName(settings);
 const c = contactView(settings);
 
-// Mood image only (no project content): reuse a listed interior if one exists.
 const projects = await getProjects({ publishedOnly: true });
-const [first] = projects;
-let background;
-if (first) {
-  const { asset, project } = await getProjectBundle(first.slug);
-  const id = project.theme.heroImageId;
-  if (id) background = { slug: project.slug, asset: asset(id) };
+const items: CollectionItem[] = [];
+for (const p of projects) {
+  const { asset } = await getProjectBundle(p.slug);
+  const id = p.theme.heroImageIds?.[0] ?? p.theme.heroImageId;
+  items.push({
+    slug: p.slug,
+    name: p.name,
+    place: `${p.location.sector}, ${p.location.city}`,
+    developer: p.developer.authorizedToUseName ? p.developer.name : undefined,
+    tagline: p.tagline,
+    rera: RERA_LABEL[p.rera.status],
+    image: id ? asset(id) : undefined,
+  });
 }
+const poster = items.find((i) => i.image);
+
+// "Sectors 43, 58, 86 and 92", from the project data.
+const sectors = [
+  ...new Set(projects.map((p) => p.location.sector.replace(/^Sector\s+/i, ""))),
+].sort((a, b) => Number(a) - Number(b));
+const sectorText =
+  sectors.length > 1
+    ? `Sectors ${sectors.slice(0, -1).join(", ")} and ${sectors.at(-1)}`
+    : `Sector ${sectors[0] ?? ""}`;
+
+const chapters = [
+  {
+    eyebrow: "The city",
+    title: "Gurugram, after dark.",
+    body: `${projects.length} live project pages across ${sectorText}. Scroll on to step inside.`,
+  },
+  {
+    eyebrow: "The entrance",
+    title: "Verified facts only.",
+    body: "We share what is confirmed, with its source and the date we checked it.",
+  },
+  {
+    eyebrow: "The lobby",
+    title: "RERA first.",
+    body: "No prices or offers before a project is registered with HARERA. We tell you its status plainly.",
+  },
+  {
+    eyebrow: "The advisor",
+    title: "One advisor, start to finish.",
+    body: "Site visits, comparison and paperwork, with one person you can call. The lift goes down to the projects.",
+  },
+];
+
+const steps = [
+  {
+    title: "Tell us what you need",
+    body: "Budget, sector, home type and timeline. One call is enough to start.",
+  },
+  {
+    title: "A shortlist with sources",
+    body: "We compare projects using published, dated facts, not brochure claims.",
+  },
+  {
+    title: "Site visits",
+    body: "We plan the visits to the projects you shortlist and go with you.",
+  },
+  {
+    title: "Paperwork, start to finish",
+    body: "Documents and next steps, explained in plain words by the same advisor.",
+  },
+];
+
+const floors = [
+  { id: "lobby", floor: "L", label: "Lobby" },
+  { id: "projects", floor: "01", label: "The collection" },
+  { id: "approach", floor: "02", label: "How we work" },
+  { id: "contact", floor: "03", label: "Contact" },
+];
 
 const agent = realEstateAgentLd(settings, Astro.site!);
 const jsonLd = graph([{ ...agent, legalName: company }]);
 ---
 
 <BaseLayout
-  title={`${company} | Official website coming soon`}
-  description={`The official website of ${company}, a real estate company in Gurugram, is coming soon. Leave your details to be told when it launches.`}
+  title={`${company} | Real estate in Gurugram`}
+  description={`${company}: real estate advisory in Gurugram. Explore live project pages with verified facts, sources and RERA status.`}
   path="/"
   jsonLd={jsonLd}
 >
-  <Nav settings={settings} overHero variant="company" />
-  <main id="main">
-    <ComingSoon
+  <Nav
+    settings={settings}
+    overHero
+    variant="company"
+    links={[
+      { href: "#projects", label: "Projects" },
+      { href: "#approach", label: "How we work" },
+      { href: "#contact", label: "Contact" },
+    ]}
+  />
+  <main id="main" class="home">
+    <TowerIntro
       company={company}
-      background={background}
+      poster={poster?.image && { slug: poster.slug, asset: poster.image }}
       phone={c.phone}
-      featured={projects.map((p) => ({ href: `/${p.slug}/`, label: p.name }))}
+      chapters={chapters}
     />
 
-    <section class="section hub-about" id="contact" aria-labelledby="about-title">
-      <div class="container hub-about__grid">
-        <div class="hub-about__copy" data-reveal>
-          <p class="eyebrow">About us</p>
-          <h2 id="about-title">{company}</h2>
-          <p class="hub-about__lead">
-            A real estate company in Gurugram. Our full website is being built. Until then, we are
-            one call or message away for anything you need.
+    <Collection items={items} />
+
+    <section class="approach" id="approach" aria-labelledby="approach-title">
+      <div class="container approach__grid">
+        <header class="approach__head" data-reveal>
+          <p class="eyebrow approach__eyebrow">Floor 02 · How we work</p>
+          <h2 id="approach-title" class="approach__title">
+            Four steps, <em>one advisor.</em>
+          </h2>
+          <p class="approach__lead">
+            A calm, factual process. You always know what is confirmed and what is not.
           </p>
-          <ul class="hub-about__points" role="list">
-            <li>
-              <span class="hub-about__num">01</span>
-              <span>
-                <strong>Verified facts only.</strong> We share what is confirmed, with its source.
-              </span>
-            </li>
-            <li>
-              <span class="hub-about__num">02</span>
-              <span>
-                <strong>RERA first.</strong> No prices or offers before a project is registered.
-              </span>
-            </li>
-            <li>
-              <span class="hub-about__num">03</span>
-              <span>
-                <strong>One advisor, start to finish.</strong> Site visits, comparison and
-                paperwork.
-              </span>
-            </li>
-          </ul>
-          <dl class="hub-about__facts">
+        </header>
+        <div class="approach__steps" data-steps>
+          <span class="approach__line" aria-hidden="true">
+            <span></span>
+          </span>
+          <ol class="approach__list" role="list">
+            {steps.map((s, i) => (
+              <li class="approach__step" data-step>
+                <span class="approach__num" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 class="approach__step-title">{s.title}</h3>
+                <p>{s.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section hub-contact" id="contact" aria-labelledby="contact-title">
+      <div class="container hub-contact__grid">
+        <div class="hub-contact__copy" data-reveal>
+          <p class="eyebrow">Floor 03 · Contact</p>
+          <h2 id="contact-title">Talk to an advisor</h2>
+          <p class="hub-contact__lead">
+            Tell us what you are looking for. We reply with facts we can stand behind.
+          </p>
+          <dl class="hub-contact__facts">
             <div>
               <dt>HARERA agent registration</dt>
               <dd>{c.reraNo ?? ON_REQUEST}</dd>
@@ -113,65 +199,426 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
     </section>
   </main>
   <Footer settings={settings} variant="company" />
+
+  <nav class="floors" data-floors aria-label="Floors">
+    <p class="floors__readout" aria-hidden="true">
+      <span class="floors__arrow">▲▼</span>
+      <span data-floor-readout>L</span>
+    </p>
+    <ul role="list">
+      {floors.map((f) => (
+        <li>
+          <a href={`#${f.id}`} data-floor-link data-floor={f.floor}>
+            <span class="floors__btn" aria-hidden="true">
+              {f.floor}
+            </span>
+            <span class="floors__label">{f.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <button type="button" class="sound" data-sound aria-pressed="false" hidden>
+    <span class="sound__bars" aria-hidden="true">
+      <i></i>
+      <i></i>
+      <i></i>
+      <i></i>
+    </span>
+    <span data-sound-label>Sound off</span>
+  </button>
 </BaseLayout>
 
+<script>
+  import { initHome } from "~/scripts/home/home";
+  initHome();
+</script>
+
 <style>
-  .hub-about {
+  /* --- How we work --- */
+  .approach {
+    padding: var(--space-section) 0;
+    background: linear-gradient(to bottom, var(--night), #1a1611);
+    color: var(--on-dark);
+  }
+  .approach__grid {
+    display: grid;
+    gap: var(--space-7) var(--gutter);
+  }
+  .approach__head {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+  .approach__eyebrow {
+    color: var(--accent-soft);
+  }
+  .approach__title {
+    font-size: var(--step-4);
+    line-height: 0.95;
+  }
+  .approach__title em {
+    font-style: italic;
+    color: var(--accent-soft);
+  }
+  .approach__lead {
+    max-width: 32ch;
+    font-size: var(--step-1);
+    color: rgb(244 241 234 / 0.8);
+  }
+  .approach__steps {
+    position: relative;
+    padding-left: 4.5rem;
+  }
+  .approach__list {
+    display: grid;
+    gap: var(--space-7);
+  }
+  .approach__line {
+    position: absolute;
+    top: 0.6rem;
+    bottom: 0.6rem;
+    left: 1.4rem;
+    width: 1px;
+    background: rgb(244 241 234 / 0.15);
+  }
+  .approach__line span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--accent-soft), #b8925d);
+    transform: scaleY(var(--p, 1));
+    transform-origin: top;
+    box-shadow: 0 0 12px rgb(228 207 168 / 0.6);
+  }
+  .approach__step {
+    position: relative;
+    display: grid;
+    gap: var(--space-2);
+    color: rgb(244 241 234 / 0.8);
+  }
+  .approach__num {
+    position: absolute;
+    left: -4.5rem;
+    top: -0.2rem;
+    display: grid;
+    place-items: center;
+    width: 2.8rem;
+    height: 2.8rem;
+    border: 1px solid rgb(228 207 168 / 0.45);
+    border-radius: 50%;
+    background: var(--night);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--accent-soft);
+    transition:
+      background var(--dur) var(--ease),
+      color var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+  .approach__step-title {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--on-dark);
+  }
+  :global(html.home-live) .approach__step {
+    opacity: 0.35;
+    transform: translateX(16px);
+    transition:
+      opacity 0.8s var(--ease),
+      transform 0.8s var(--ease);
+  }
+  :global(html.home-live) .approach__step:global(.is-on) {
+    opacity: 1;
+    transform: none;
+  }
+  .approach__step:global(.is-on) .approach__num {
+    background: var(--accent-soft);
+    color: var(--on-light);
+    box-shadow: 0 0 24px rgb(228 207 168 / 0.5);
+  }
+  @media (min-width: 1024px) {
+    .approach__grid {
+      grid-template-columns: 1fr 1.2fr;
+    }
+    .approach__head {
+      position: sticky;
+      top: 30vh;
+    }
+  }
+
+  /* --- Contact --- */
+  .hub-contact {
     background: var(--paper);
   }
-  .hub-about__grid {
+  .hub-contact__grid {
     display: grid;
     gap: var(--space-7) var(--gutter);
     align-items: start;
   }
-  .hub-about__copy {
+  .hub-contact__copy {
     display: grid;
     gap: var(--space-5);
   }
-  .hub-about__lead {
+  .hub-contact__copy h2 {
+    font-size: var(--step-3);
+  }
+  .hub-contact__lead {
     font-size: var(--step-1);
     line-height: 1.5;
   }
-  .hub-about__points {
-    display: grid;
-    border-top: 1px solid var(--hairline);
-  }
-  .hub-about__points li {
-    display: grid;
-    grid-template-columns: 2.75rem 1fr;
-    gap: var(--space-3);
-    padding: var(--space-4) 0;
-    border-bottom: 1px solid var(--hairline);
-    color: var(--ink-2);
-  }
-  .hub-about__points strong {
-    color: var(--ink);
-  }
-  .hub-about__num {
-    font-family: var(--font-display);
-    font-size: 1.4rem;
-    font-weight: 600;
-    line-height: 1.1;
-    color: var(--accent-ink);
-  }
-  .hub-about__facts {
+  .hub-contact__facts {
     display: grid;
     gap: var(--space-3) var(--gutter);
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--hairline);
   }
-  .hub-about__facts dt {
+  .hub-contact__facts dt {
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--stone);
   }
-  .hub-about__facts dd {
+  .hub-contact__facts dd {
     font-size: 1.05rem;
   }
   @media (min-width: 1024px) {
-    .hub-about__grid {
+    .hub-contact__grid {
       grid-template-columns: 1.1fr 1fr;
     }
+  }
+
+  /* --- Elevator floor panel --- */
+  .floors {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    .floors {
+      position: fixed;
+      right: 1.4rem;
+      top: 50%;
+      z-index: 40;
+      display: grid;
+      gap: var(--space-3);
+      justify-items: end;
+      translate: 0 -50%;
+      mix-blend-mode: difference;
+      color: #f4f1ea;
+    }
+  }
+  .floors__readout {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid rgb(244 241 234 / 0.4);
+    border-radius: 4px;
+    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+  }
+  .floors__arrow {
+    font-size: 0.5rem;
+    opacity: 0.6;
+  }
+  .floors ul {
+    display: grid;
+    gap: 0.45rem;
+    justify-items: end;
+  }
+  .floors a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: inherit;
+    text-decoration: none;
+  }
+  .floors__btn {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid rgb(244 241 234 / 0.45);
+    border-radius: 50%;
+    font-size: 0.68rem;
+    font-weight: 700;
+    transition:
+      background var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+  .floors__label {
+    order: -1;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateX(8px);
+    transition:
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+  .floors a:hover .floors__label,
+  .floors a:focus-visible .floors__label {
+    opacity: 1;
+    transform: none;
+  }
+  .floors a:global(.is-on) .floors__btn {
+    background: #f4f1ea;
+    color: #12110f;
+  }
+
+  /* --- Sound toggle --- */
+  .sound {
+    position: fixed;
+    left: 1.2rem;
+    bottom: 1.2rem;
+    z-index: 45;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: var(--tap-min);
+    padding: 0 0.95rem;
+    border: 1px solid rgb(244 241 234 / 0.35);
+    border-radius: 999px;
+    background: rgb(18 17 15 / 0.6);
+    backdrop-filter: blur(10px);
+    color: var(--on-dark);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .sound[hidden] {
+    display: none;
+  }
+  /* Phones: a compact round button; the label stays for screen readers. */
+  @media (max-width: 640px) {
+    .sound {
+      left: 0.9rem;
+      bottom: 0.9rem;
+      width: var(--tap-min);
+      padding: 0;
+      justify-content: center;
+    }
+    .sound [data-sound-label] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+  .sound:focus-visible {
+    outline: 2px solid var(--on-dark);
+    outline-offset: 3px;
+  }
+  .sound__bars {
+    display: flex;
+    align-items: end;
+    gap: 2px;
+    height: 12px;
+  }
+  .sound__bars i {
+    width: 2px;
+    height: 3px;
+    background: var(--accent-soft);
+  }
+  .sound[aria-pressed="true"] .sound__bars i {
+    animation: eq 0.9s ease-in-out infinite alternate;
+  }
+  .sound[aria-pressed="true"] .sound__bars i:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+  .sound[aria-pressed="true"] .sound__bars i:nth-child(3) {
+    animation-delay: -0.6s;
+  }
+  .sound[aria-pressed="true"] .sound__bars i:nth-child(4) {
+    animation-delay: -0.15s;
+  }
+  @keyframes eq {
+    to {
+      height: 12px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sound[aria-pressed="true"] .sound__bars i {
+      animation: none;
+      height: 8px;
+    }
+  }
+
+  /* --- Page-wide touches for the homepage only --- */
+  :global(html:has(.home)) {
+    background: var(--night);
+  }
+  /* The solid nav turns to dark glass over the night scenes. */
+  :global(html:has(.home) .nav.is-solid) {
+    color: var(--on-dark);
+    background: rgb(12 11 10 / 0.62);
+    border-color: rgb(244 241 234 / 0.08);
+  }
+  :global(html:has(.home) .nav.is-solid .nav__cta) {
+    background: var(--on-dark);
+    color: var(--on-light);
+  }
+  :global(.ripple) {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    background: rgb(255 244 220 / 0.55);
+    pointer-events: none;
+    animation: ripple 0.7s var(--ease) forwards;
+  }
+  :global(.btn),
+  :global([data-ripple]) {
+    position: relative;
+    overflow: hidden;
+  }
+  :global([data-magnetic]) {
+    transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
+    transition: transform 0.35s var(--ease);
+  }
+  @keyframes ripple {
+    to {
+      transform: scale(28);
+      opacity: 0;
+    }
+  }
+  :global(.cursor) {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    width: 34px;
+    height: 34px;
+    margin: -17px 0 0 -17px;
+    border: 1px solid rgb(228 207 168 / 0.9);
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: difference;
+    transition:
+      width 0.3s var(--ease),
+      height 0.3s var(--ease),
+      margin 0.3s var(--ease),
+      background 0.3s var(--ease),
+      opacity 0.3s var(--ease);
+  }
+  :global(.cursor.is-hot) {
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    background: rgb(228 207 168 / 0.18);
+  }
+  :global(.cursor.is-away) {
+    opacity: 0;
   }
 </style>

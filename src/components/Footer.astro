@@ -85,7 +85,7 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
         <h2 class="footer__h">About</h2>
         <p class="footer__about">
           {isCompany
-            ? "A Gurugram real estate company. Our official website is on its way."
+            ? "A Gurugram real estate company. We help buyers compare new projects, visit sites and handle paperwork."
             : "A Gurugram real estate agent. We help buyers compare new projects, visit sites and handle paperwork, and we say clearly what is confirmed."}
         </p>
       </div>
@@ -158,19 +158,15 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
       </div>
     </div>
 
-    {!isCompany && (
-      <div class="footer__disclosure">
-        <Disclosure settings={settings} developer={project?.developer} tone="dark" />
-        {project && <p class="footer__status">{reraStatusLine(project)}</p>}
-      </div>
-    )}
+    <div class="footer__disclosure">
+      <Disclosure settings={settings} developer={project?.developer} tone="dark" />
+      {project && <p class="footer__status">{reraStatusLine(project)}</p>}
+    </div>
 
     <div class="footer__bar">
       <p>
         &copy; {year} {legalLine}.
-        {!isCompany && (
-          <span> Images marked "Representative image" do not show the actual project.</span>
-        )}
+        <span> Images marked "Representative image" do not show the actual project.</span>
       </p>
       <nav aria-label="Legal">
         <ul role="list" class="footer__legal">

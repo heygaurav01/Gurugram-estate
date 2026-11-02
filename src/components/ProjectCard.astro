@@ -26,11 +26,11 @@ const { project, image } = Astro.props;
     <p class="eyebrow">
       {project.location.sector}, {project.location.city}
     </p>
-    <h2 class="pcard__title">
+    <h3 class="pcard__title">
       <a href={`/${project.slug}/`} class="pcard__link">
         {project.name}
       </a>
-    </h2>
+    </h3>
     {project.tagline && <p class="pcard__tagline">{project.tagline}</p>}
     <p class="pcard__chip">RERA: {RERA_LABEL[project.rera.status]}</p>
   </div>
@@ -40,13 +40,30 @@ const { project, image } = Astro.props;
   .pcard {
     position: relative;
     display: grid;
+    grid-template-rows: auto 1fr;
     background: var(--paper);
     border: 1px solid var(--hairline);
     border-radius: var(--radius);
     overflow: hidden;
+    transition:
+      border-color var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+  .pcard:hover {
+    border-color: var(--accent);
+    box-shadow: 0 18px 40px -28px rgb(18 17 15 / 0.55);
   }
   .pcard__media {
     position: relative;
+    overflow: hidden;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pcard__media :global(.pcard__img) {
+      transition: transform 900ms var(--ease);
+    }
+    .pcard:hover :global(.pcard__img) {
+      transform: scale(1.04);
+    }
   }
   .pcard__media :global(.pcard__img),
   .pcard__blank {
@@ -64,10 +81,14 @@ const { project, image } = Astro.props;
   }
   .pcard__body {
     display: grid;
+    align-content: start;
     gap: var(--space-3);
     padding: var(--space-6);
   }
   .pcard__title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.05;
     font-size: var(--step-2);
   }
   .pcard__link {

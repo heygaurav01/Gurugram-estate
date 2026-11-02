@@ -1,19 +1,19 @@
 ---
 /**
  * Homepage: the company site of Gurugram Estate Private Limited.
- * A scroll-driven walk into a building (components/home/TowerIntro.astro),
- * then the floors: the project collection, how we work, and contact.
+ * Hero, about, the live project pages, how we work, contact.
  * Company content only; every project fact lives on its own page.
+ * Motion is CSS plus the shared [data-reveal] fade (scripts/motion.ts).
  */
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Nav from "~/components/Nav.astro";
-import TowerIntro from "~/components/home/TowerIntro.astro";
-import Collection, { type CollectionItem } from "~/components/home/Collection.astro";
+import Picture from "~/components/Picture.astro";
+import ProjectCard from "~/components/ProjectCard.astro";
 import ContactForm from "~/components/ContactForm.astro";
 import Footer from "~/components/Footer.astro";
 import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
 import { ON_REQUEST, companyName } from "~/lib/compliance";
-import { RERA_LABEL, contactView } from "~/lib/view";
+import { contactView } from "~/lib/view";
 import { graph, realEstateAgentLd } from "~/lib/seo";
 
 const settings = await getSettings();
@@ -21,51 +21,29 @@ const company = companyName(settings);
 const c = contactView(settings);
 
 const projects = await getProjects({ publishedOnly: true });
-const items: CollectionItem[] = [];
-for (const p of projects) {
-  const { asset } = await getProjectBundle(p.slug);
-  const id = p.theme.heroImageIds?.[0] ?? p.theme.heroImageId;
-  items.push({
-    slug: p.slug,
-    name: p.name,
-    place: `${p.location.sector}, ${p.location.city}`,
-    developer: p.developer.authorizedToUseName ? p.developer.name : undefined,
-    tagline: p.tagline,
-    rera: RERA_LABEL[p.rera.status],
-    image: id ? asset(id) : undefined,
-  });
-}
-const poster = items.find((i) => i.image);
+const cards = await Promise.all(
+  projects.map(async (project) => {
+    const { asset } = await getProjectBundle(project.slug);
+    const id = project.theme.heroImageIds?.[0] ?? project.theme.heroImageId;
+    return { project, image: id ? asset(id) : undefined };
+  }),
+);
+const hero = cards.find((card) => card.image);
+// "Gurugram Estate Private Limited" -> "Gurugram Estate" + "Private Limited".
+const nameParts = company.match(/^(.*?)\s+(Private Limited)$/i);
 
-// "Sectors 43, 58, 86 and 92", from the project data.
-const sectors = [
-  ...new Set(projects.map((p) => p.location.sector.replace(/^Sector\s+/i, ""))),
-].sort((a, b) => Number(a) - Number(b));
-const sectorText =
-  sectors.length > 1
-    ? `Sectors ${sectors.slice(0, -1).join(", ")} and ${sectors.at(-1)}`
-    : `Sector ${sectors[0] ?? ""}`;
-
-const chapters = [
+const principles = [
   {
-    eyebrow: "The city",
-    title: "Gurugram, after dark.",
-    body: `${projects.length} live project pages across ${sectorText}. Scroll on to step inside.`,
-  },
-  {
-    eyebrow: "The entrance",
     title: "Verified facts only.",
-    body: "We share what is confirmed, with its source and the date we checked it.",
+    body: "We share what is confirmed, with its source.",
   },
   {
-    eyebrow: "The lobby",
     title: "RERA first.",
-    body: "No prices or offers before a project is registered with HARERA. We tell you its status plainly.",
+    body: "No prices or offers before a project is registered.",
   },
   {
-    eyebrow: "The advisor",
     title: "One advisor, start to finish.",
-    body: "Site visits, comparison and paperwork, with one person you can call. The lift goes down to the projects.",
+    body: "Site visits, comparison and paperwork.",
   },
 ];
 
@@ -75,24 +53,17 @@ const steps = [
     body: "Budget, sector, home type and timeline. One call is enough to start.",
   },
   {
-    title: "A shortlist with sources",
-    body: "We compare projects using published, dated facts, not brochure claims.",
+    title: "Get a sourced shortlist",
+    body: "We compare projects using published, dated facts.",
   },
   {
-    title: "Site visits",
-    body: "We plan the visits to the projects you shortlist and go with you.",
+    title: "Visit the sites",
+    body: "We arrange visits to the projects you shortlist.",
   },
   {
-    title: "Paperwork, start to finish",
-    body: "Documents and next steps, explained in plain words by the same advisor.",
+    title: "Finish the paperwork",
+    body: "The same advisor explains the documents and next steps.",
   },
-];
-
-const floors = [
-  { id: "lobby", floor: "L", label: "Lobby" },
-  { id: "projects", floor: "01", label: "The collection" },
-  { id: "approach", floor: "02", label: "How we work" },
-  { id: "contact", floor: "03", label: "Contact" },
 ];
 
 const agent = realEstateAgentLd(settings, Astro.site!);
@@ -101,7 +72,7 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
 
 <BaseLayout
   title={`${company} | Real estate in Gurugram`}
-  description={`${company}: real estate advisory in Gurugram. Explore live project pages with verified facts, sources and RERA status.`}
+  description={`${company} is a real estate company in Gurugram. Explore live project pages with verified facts, sources and RERA status.`}
   path="/"
   jsonLd={jsonLd}
 >
@@ -110,60 +81,117 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
     overHero
     variant="company"
     links={[
+      { href: "#about", label: "About" },
       { href: "#projects", label: "Projects" },
       { href: "#approach", label: "How we work" },
       { href: "#contact", label: "Contact" },
     ]}
   />
-  <main id="main" class="home">
-    <TowerIntro
-      company={company}
-      poster={poster?.image && { slug: poster.slug, asset: poster.image }}
-      phone={c.phone}
-      chapters={chapters}
-    />
-
-    <Collection items={items} />
-
-    <section class="approach" id="approach" aria-labelledby="approach-title">
-      <div class="container approach__grid">
-        <header class="approach__head" data-reveal>
-          <p class="eyebrow approach__eyebrow">Floor 02 · How we work</p>
-          <h2 id="approach-title" class="approach__title">
-            Four steps, <em>one advisor.</em>
-          </h2>
-          <p class="approach__lead">
-            A calm, factual process. You always know what is confirmed and what is not.
-          </p>
-        </header>
-        <div class="approach__steps" data-steps>
-          <span class="approach__line" aria-hidden="true">
-            <span></span>
-          </span>
-          <ol class="approach__list" role="list">
-            {steps.map((s, i) => (
-              <li class="approach__step" data-step>
-                <span class="approach__num" aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 class="approach__step-title">{s.title}</h3>
-                <p>{s.body}</p>
-              </li>
-            ))}
-          </ol>
+  <main id="main">
+    <section class="home-hero" aria-labelledby="home-title">
+      {hero?.image && (
+        <Picture
+          slug={hero.project.slug}
+          asset={hero.image}
+          sizes="(max-aspect-ratio: 1/1) 180vh, 100vw"
+          eager
+          class="home-hero__img"
+        />
+      )}
+      <div class="home-hero__veil" aria-hidden="true"></div>
+      {hero?.image?.caption && <p class="home-hero__caption">{hero.image.caption}</p>}
+      <div class="container home-hero__content">
+        <p class="home-hero__eyebrow">Real estate in Gurugram</p>
+        <h1 id="home-title" class="home-hero__title">
+          {nameParts ? (
+            <>
+              <span>{nameParts[1]}</span>
+              <span class="home-hero__legal">{nameParts[2]}</span>
+            </>
+          ) : (
+            company
+          )}
+        </h1>
+        <p class="home-hero__lead">
+          New homes across Gurugram, with verified facts and clear advice.
+        </p>
+        <div class="home-hero__ctas">
+          <a class="btn home-hero__primary" href="#projects">
+            View projects
+          </a>
+          <a class="btn home-hero__secondary" href="#contact">
+            Talk to an advisor
+          </a>
         </div>
       </div>
     </section>
 
-    <section class="section hub-contact" id="contact" aria-labelledby="contact-title">
-      <div class="container hub-contact__grid">
-        <div class="hub-contact__copy" data-reveal>
-          <p class="eyebrow">Floor 03 · Contact</p>
-          <h2 id="contact-title">Talk to an advisor</h2>
-          <p class="hub-contact__lead">
-            Tell us what you are looking for. We reply with facts we can stand behind.
+    <section class="section home-about" id="about" aria-labelledby="about-title">
+      <div class="container home-about__grid">
+        <div class="home-about__intro" data-reveal>
+          <p class="eyebrow">About us</p>
+          <h2 id="about-title">Real estate advice you can verify.</h2>
+          <p class="home-about__lead">
+            {company} helps buyers in Gurugram compare new projects using facts that can be
+            verified.
           </p>
-          <dl class="hub-contact__facts">
+        </div>
+        <ol class="home-about__points" role="list" data-reveal>
+          {principles.map((p, i) => (
+            <li>
+              <span class="home-about__num" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span>
+                <strong>{p.title}</strong> {p.body}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section home-projects" id="projects" aria-labelledby="projects-title">
+      <div class="container">
+        <header class="home-projects__head" data-reveal>
+          <p class="eyebrow">Our projects</p>
+          <h2 id="projects-title">Explore the live project pages.</h2>
+        </header>
+        <div class="home-projects__grid">
+          {cards.map((card) => (
+            <ProjectCard project={card.project} image={card.image} />
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="home-approach" id="approach" aria-labelledby="approach-title">
+      <div class="container">
+        <header class="home-approach__head" data-reveal>
+          <p class="eyebrow home-approach__eyebrow">How we work</p>
+          <h2 id="approach-title">Four clear steps.</h2>
+        </header>
+        <ol class="home-approach__steps" role="list">
+          {steps.map((s, i) => (
+            <li data-reveal>
+              <span class="home-approach__num" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section home-contact" id="contact" aria-labelledby="contact-title">
+      <div class="container home-contact__grid">
+        <div class="home-contact__copy" data-reveal>
+          <p class="eyebrow">Contact</p>
+          <h2 id="contact-title">Talk to an advisor</h2>
+          <p class="home-contact__lead">Tell us what you are looking for. We will call you back.</p>
+          <dl class="home-contact__facts">
             <div>
               <dt>HARERA agent registration</dt>
               <dd>{c.reraNo ?? ON_REQUEST}</dd>
@@ -199,426 +227,304 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
     </section>
   </main>
   <Footer settings={settings} variant="company" />
-
-  <nav class="floors" data-floors aria-label="Floors">
-    <p class="floors__readout" aria-hidden="true">
-      <span class="floors__arrow">▲▼</span>
-      <span data-floor-readout>L</span>
-    </p>
-    <ul role="list">
-      {floors.map((f) => (
-        <li>
-          <a href={`#${f.id}`} data-floor-link data-floor={f.floor}>
-            <span class="floors__btn" aria-hidden="true">
-              {f.floor}
-            </span>
-            <span class="floors__label">{f.label}</span>
-          </a>
-        </li>
-      ))}
-    </ul>
-  </nav>
-
-  <button type="button" class="sound" data-sound aria-pressed="false" hidden>
-    <span class="sound__bars" aria-hidden="true">
-      <i></i>
-      <i></i>
-      <i></i>
-      <i></i>
-    </span>
-    <span data-sound-label>Sound off</span>
-  </button>
 </BaseLayout>
 
-<script>
-  import { initHome } from "~/scripts/home/home";
-  initHome();
-</script>
-
 <style>
-  /* --- How we work --- */
-  .approach {
-    padding: var(--space-section) 0;
-    background: linear-gradient(to bottom, var(--night), #1a1611);
+  /* Hero */
+  .home-hero {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-items: end;
+    min-height: max(600px, 100svh);
+    overflow: hidden;
+    background: var(--night);
     color: var(--on-dark);
   }
-  .approach__grid {
-    display: grid;
-    gap: var(--space-7) var(--gutter);
+  .home-hero :global(.home-hero__img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
-  .approach__head {
+  .home-hero__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to top, rgb(18 17 15 / 0.88), rgb(18 17 15 / 0.2) 60%),
+      linear-gradient(to bottom, rgb(18 17 15 / 0.55), transparent 22%);
+  }
+  .home-hero__caption {
+    position: absolute;
+    top: calc(4.25rem + var(--space-3));
+    right: var(--gutter);
+    font-size: 0.72rem;
+    color: rgb(244 241 234 / 0.85);
+  }
+  .home-hero__content {
     display: grid;
+    justify-items: start;
     gap: var(--space-4);
-    align-content: start;
+    padding-block: 7rem var(--space-8);
   }
-  .approach__eyebrow {
+  /* Phones: keep the buttons clear of the floating call and WhatsApp buttons. */
+  @media (max-width: 767.98px) {
+    .home-hero__content {
+      padding-bottom: 9.5rem;
+    }
+  }
+  .home-hero__eyebrow {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
     color: var(--accent-soft);
   }
-  .approach__title {
-    font-size: var(--step-4);
+  .home-hero__title {
+    display: grid;
+    gap: var(--space-3);
+    font-size: clamp(3.2rem, 1.6rem + 7vw, 8rem);
+    font-weight: 500;
     line-height: 0.95;
   }
-  .approach__title em {
-    font-style: italic;
+  .home-hero__legal {
+    font-family: var(--font-body);
+    font-size: clamp(0.8rem, 0.72rem + 0.4vw, 1.05rem);
+    font-weight: 600;
+    letter-spacing: 0.42em;
+    line-height: 1.2;
+    text-transform: uppercase;
     color: var(--accent-soft);
   }
-  .approach__lead {
-    max-width: 32ch;
+  .home-hero__lead {
+    max-width: 34ch;
     font-size: var(--step-1);
-    color: rgb(244 241 234 / 0.8);
+    line-height: 1.4;
   }
-  .approach__steps {
-    position: relative;
-    padding-left: 4.5rem;
+  .home-hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
   }
-  .approach__list {
-    display: grid;
-    gap: var(--space-7);
+  .home-hero__primary {
+    background: var(--accent-soft);
+    border-color: var(--accent-soft);
+    color: var(--on-light);
   }
-  .approach__line {
-    position: absolute;
-    top: 0.6rem;
-    bottom: 0.6rem;
-    left: 1.4rem;
-    width: 1px;
-    background: rgb(244 241 234 / 0.15);
+  .home-hero__primary:hover {
+    background: var(--on-dark);
+    border-color: var(--on-dark);
   }
-  .approach__line span {
-    display: block;
-    height: 100%;
-    background: linear-gradient(to bottom, var(--accent-soft), #b8925d);
-    transform: scaleY(var(--p, 1));
-    transform-origin: top;
-    box-shadow: 0 0 12px rgb(228 207 168 / 0.6);
-  }
-  .approach__step {
-    position: relative;
-    display: grid;
-    gap: var(--space-2);
-    color: rgb(244 241 234 / 0.8);
-  }
-  .approach__num {
-    position: absolute;
-    left: -4.5rem;
-    top: -0.2rem;
-    display: grid;
-    place-items: center;
-    width: 2.8rem;
-    height: 2.8rem;
-    border: 1px solid rgb(228 207 168 / 0.45);
-    border-radius: 50%;
-    background: var(--night);
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    color: var(--accent-soft);
-    transition:
-      background var(--dur) var(--ease),
-      color var(--dur) var(--ease),
-      box-shadow var(--dur) var(--ease);
-  }
-  .approach__step-title {
-    font-family: var(--font-display);
-    font-size: var(--step-3);
-    font-weight: 500;
-    line-height: 1;
+  .home-hero__secondary {
+    background: transparent;
+    border-color: rgb(244 241 234 / 0.6);
     color: var(--on-dark);
   }
-  :global(html.home-live) .approach__step {
-    opacity: 0.35;
-    transform: translateX(16px);
-    transition:
-      opacity 0.8s var(--ease),
-      transform 0.8s var(--ease);
-  }
-  :global(html.home-live) .approach__step:global(.is-on) {
-    opacity: 1;
-    transform: none;
-  }
-  .approach__step:global(.is-on) .approach__num {
-    background: var(--accent-soft);
+  .home-hero__secondary:hover {
+    background: var(--on-dark);
     color: var(--on-light);
-    box-shadow: 0 0 24px rgb(228 207 168 / 0.5);
   }
-  @media (min-width: 1024px) {
-    .approach__grid {
-      grid-template-columns: 1fr 1.2fr;
+  .home-hero :focus-visible {
+    outline-color: var(--on-dark);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .home-hero :global(.home-hero__img) {
+      animation: home-settle 2.4s var(--ease) both;
     }
-    .approach__head {
-      position: sticky;
-      top: 30vh;
+    .home-hero__content > * {
+      animation: home-rise 900ms var(--ease) both;
+    }
+    .home-hero__content > :nth-child(2) {
+      animation-delay: 120ms;
+    }
+    .home-hero__content > :nth-child(3) {
+      animation-delay: 240ms;
+    }
+    .home-hero__content > :nth-child(4) {
+      animation-delay: 360ms;
+    }
+  }
+  @keyframes home-settle {
+    from {
+      transform: scale(1.06);
+    }
+  }
+  @keyframes home-rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
     }
   }
 
-  /* --- Contact --- */
-  .hub-contact {
-    background: var(--paper);
+  /* About */
+  .home-about {
+    background: var(--bone);
   }
-  .hub-contact__grid {
+  .home-about__grid {
     display: grid;
     gap: var(--space-7) var(--gutter);
     align-items: start;
   }
-  .hub-contact__copy {
+  .home-about__intro {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .home-about__intro h2,
+  .home-projects__head h2,
+  .home-contact__copy h2 {
+    font-size: var(--step-3);
+  }
+  .home-about__lead {
+    max-width: 44ch;
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .home-about__points {
+    border-top: 1px solid var(--hairline);
+  }
+  .home-about__points li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: var(--space-3);
+    padding: var(--space-5) 0;
+    border-bottom: 1px solid var(--hairline);
+    color: var(--ink-2);
+  }
+  .home-about__points strong {
+    color: var(--ink);
+  }
+  .home-about__num {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    color: var(--accent-ink);
+  }
+
+  /* Projects: three cards over two on wide screens. */
+  .home-projects {
+    background: var(--paper);
+  }
+  .home-projects__head {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-7);
+  }
+  .home-projects__grid {
     display: grid;
     gap: var(--space-5);
   }
-  .hub-contact__copy h2 {
+  @media (min-width: 700px) {
+    .home-projects__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1100px) {
+    .home-projects__grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+    .home-projects__grid > :global(*) {
+      grid-column: span 2;
+    }
+    .home-projects__grid > :global(:nth-last-child(-n + 2)) {
+      grid-column: span 3;
+    }
+  }
+
+  /* How we work */
+  .home-approach {
+    padding-block: var(--space-section);
+    background: var(--night);
+    color: var(--on-dark);
+  }
+  .home-approach__head {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-7);
+  }
+  .home-approach__head h2 {
     font-size: var(--step-3);
   }
-  .hub-contact__lead {
+  .home-approach__eyebrow {
+    color: var(--accent-soft);
+  }
+  .home-approach__steps {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .home-approach__steps li {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgb(228 207 168 / 0.4);
+    color: rgb(244 241 234 / 0.8);
+  }
+  .home-approach__steps h3 {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--on-dark);
+  }
+  .home-approach__num {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--accent-soft);
+  }
+  @media (min-width: 700px) {
+    .home-approach__steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Contact */
+  .home-contact {
+    background: var(--bone);
+  }
+  .home-contact__grid {
+    display: grid;
+    gap: var(--space-7) var(--gutter);
+    align-items: start;
+  }
+  .home-contact__copy {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .home-contact__lead {
     font-size: var(--step-1);
     line-height: 1.5;
   }
-  .hub-contact__facts {
+  .home-contact__facts {
     display: grid;
-    gap: var(--space-3) var(--gutter);
+    gap: var(--space-4) var(--gutter);
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
     padding-top: var(--space-5);
     border-top: 1px solid var(--hairline);
   }
-  .hub-contact__facts dt {
+  .home-contact__facts dt {
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--stone);
   }
-  .hub-contact__facts dd {
+  .home-contact__facts dd {
     font-size: 1.05rem;
   }
+
   @media (min-width: 1024px) {
-    .hub-contact__grid {
-      grid-template-columns: 1.1fr 1fr;
+    .home-about__grid,
+    .home-contact__grid {
+      grid-template-columns: 1fr 1fr;
     }
-  }
-
-  /* --- Elevator floor panel --- */
-  .floors {
-    display: none;
-  }
-  @media (min-width: 900px) {
-    .floors {
-      position: fixed;
-      right: 1.4rem;
-      top: 50%;
-      z-index: 40;
-      display: grid;
-      gap: var(--space-3);
-      justify-items: end;
-      translate: 0 -50%;
-      mix-blend-mode: difference;
-      color: #f4f1ea;
+    .home-approach__steps {
+      grid-template-columns: repeat(4, 1fr);
     }
-  }
-  .floors__readout {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.35rem 0.6rem;
-    border: 1px solid rgb(244 241 234 / 0.4);
-    border-radius: 4px;
-    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
-    font-size: 0.95rem;
-    letter-spacing: 0.1em;
-  }
-  .floors__arrow {
-    font-size: 0.5rem;
-    opacity: 0.6;
-  }
-  .floors ul {
-    display: grid;
-    gap: 0.45rem;
-    justify-items: end;
-  }
-  .floors a {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    color: inherit;
-    text-decoration: none;
-  }
-  .floors__btn {
-    display: grid;
-    place-items: center;
-    width: 2rem;
-    height: 2rem;
-    border: 1px solid rgb(244 241 234 / 0.45);
-    border-radius: 50%;
-    font-size: 0.68rem;
-    font-weight: 700;
-    transition:
-      background var(--dur) var(--ease),
-      color var(--dur) var(--ease);
-  }
-  .floors__label {
-    order: -1;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0;
-    transform: translateX(8px);
-    transition:
-      opacity var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
-  }
-  .floors a:hover .floors__label,
-  .floors a:focus-visible .floors__label {
-    opacity: 1;
-    transform: none;
-  }
-  .floors a:global(.is-on) .floors__btn {
-    background: #f4f1ea;
-    color: #12110f;
-  }
-
-  /* --- Sound toggle --- */
-  .sound {
-    position: fixed;
-    left: 1.2rem;
-    bottom: 1.2rem;
-    z-index: 45;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    min-height: var(--tap-min);
-    padding: 0 0.95rem;
-    border: 1px solid rgb(244 241 234 / 0.35);
-    border-radius: 999px;
-    background: rgb(18 17 15 / 0.6);
-    backdrop-filter: blur(10px);
-    color: var(--on-dark);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-  .sound[hidden] {
-    display: none;
-  }
-  /* Phones: a compact round button; the label stays for screen readers. */
-  @media (max-width: 640px) {
-    .sound {
-      left: 0.9rem;
-      bottom: 0.9rem;
-      width: var(--tap-min);
-      padding: 0;
-      justify-content: center;
-    }
-    .sound [data-sound-label] {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
-    }
-  }
-  .sound:focus-visible {
-    outline: 2px solid var(--on-dark);
-    outline-offset: 3px;
-  }
-  .sound__bars {
-    display: flex;
-    align-items: end;
-    gap: 2px;
-    height: 12px;
-  }
-  .sound__bars i {
-    width: 2px;
-    height: 3px;
-    background: var(--accent-soft);
-  }
-  .sound[aria-pressed="true"] .sound__bars i {
-    animation: eq 0.9s ease-in-out infinite alternate;
-  }
-  .sound[aria-pressed="true"] .sound__bars i:nth-child(2) {
-    animation-delay: -0.3s;
-  }
-  .sound[aria-pressed="true"] .sound__bars i:nth-child(3) {
-    animation-delay: -0.6s;
-  }
-  .sound[aria-pressed="true"] .sound__bars i:nth-child(4) {
-    animation-delay: -0.15s;
-  }
-  @keyframes eq {
-    to {
-      height: 12px;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .sound[aria-pressed="true"] .sound__bars i {
-      animation: none;
-      height: 8px;
-    }
-  }
-
-  /* --- Page-wide touches for the homepage only --- */
-  :global(html:has(.home)) {
-    background: var(--night);
-  }
-  /* The solid nav turns to dark glass over the night scenes. */
-  :global(html:has(.home) .nav.is-solid) {
-    color: var(--on-dark);
-    background: rgb(12 11 10 / 0.62);
-    border-color: rgb(244 241 234 / 0.08);
-  }
-  :global(html:has(.home) .nav.is-solid .nav__cta) {
-    background: var(--on-dark);
-    color: var(--on-light);
-  }
-  :global(.ripple) {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    margin: -6px 0 0 -6px;
-    border-radius: 50%;
-    background: rgb(255 244 220 / 0.55);
-    pointer-events: none;
-    animation: ripple 0.7s var(--ease) forwards;
-  }
-  :global(.btn),
-  :global([data-ripple]) {
-    position: relative;
-    overflow: hidden;
-  }
-  :global([data-magnetic]) {
-    transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
-    transition: transform 0.35s var(--ease);
-  }
-  @keyframes ripple {
-    to {
-      transform: scale(28);
-      opacity: 0;
-    }
-  }
-  :global(.cursor) {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 100;
-    width: 34px;
-    height: 34px;
-    margin: -17px 0 0 -17px;
-    border: 1px solid rgb(228 207 168 / 0.9);
-    border-radius: 50%;
-    pointer-events: none;
-    mix-blend-mode: difference;
-    transition:
-      width 0.3s var(--ease),
-      height 0.3s var(--ease),
-      margin 0.3s var(--ease),
-      background 0.3s var(--ease),
-      opacity 0.3s var(--ease);
-  }
-  :global(.cursor.is-hot) {
-    width: 64px;
-    height: 64px;
-    margin: -32px 0 0 -32px;
-    background: rgb(228 207 168 / 0.18);
-  }
-  :global(.cursor.is-away) {
-    opacity: 0;
   }
 </style>

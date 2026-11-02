@@ -19,7 +19,7 @@ business:
   brand_accent_hex: "#8C6A3F"
 
 site:
-  domain: "TBD" # e.g. gurgaonproperties.in
+  domain: "gurugramestatepvtltd.in"
   hosting: "cloudflare-pages"
   # callback_promise: "within 2 working hours"   # set ONLY if the team can always hit it
 

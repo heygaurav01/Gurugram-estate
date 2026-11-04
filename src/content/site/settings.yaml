@@ -32,7 +32,7 @@ careers:
       summary: "Create and edit content for our website, ads and social media."
     - slug: "sales"
       title: "Sales"
-      summary: "Talk to home buyers, arrange site visits and guide them through the paperwork."
+      summary: "Sell flats and residential units across our real estate projects in Gurugram, from the first client meeting and site visit through to closing the sale."
 
 leads:
   crm: "TBD" # frappe | espocrm | krayin | none

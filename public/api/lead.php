@@ -13,6 +13,9 @@
  *
  * The key is read from that file (or the LEADRAT_API_KEY environment variable).
  * The browser never sees it.
+ *
+ * Job applications from /careers/ do not go to Leadrat: they are emailed to the
+ * business email in settings.yaml.
  */
 
 header('Content-Type: application/json; charset=utf-8');
@@ -92,29 +95,54 @@ $labels = [
     'floor-plan' => 'Floor plan / master plan request', 'gallery' => 'Gallery: official images',
     'location' => 'Location / map', 'footer' => 'Footer enquiry', 'sticky' => 'Sticky bar enquiry',
     'nav' => 'Header enquiry', 'amenities' => 'Amenities', 'virtual-tour' => 'Virtual tour',
-    'general' => 'General enquiry', 'career' => 'Job application',
+    'general' => 'General enquiry',
 ];
 $intentKey = $s('intent') ?: 'general';
 $intent = $labels[$intentKey] ?? $intentKey;
 $page = substr($s('page_path'), 0, 200);
 $consentV = substr($s('consent_version'), 0, 40);
 
-// Job applications ("careers-" slugs) carry a message and are not buyers.
-$isApplication = str_starts_with($slug, 'careers-');
-$message = $isApplication ? mb_substr(preg_replace('/\s+/u', ' ', $s('message')), 0, 1000) : '';
-
 $ist = new DateTime('now', new DateTimeZone('Asia/Kolkata'));
+$key = substr($s('idempotency_key'), 0, 64);
+
+// --- job applications ("careers-" slugs) go by email, never to Leadrat ------
+if (str_starts_with($slug, 'careers-')) {
+    $to = (string)($project['notify_email'] ?? '');
+    if (!filter_var($to, FILTER_VALIDATE_EMAIL) || !function_exists('mail')) {
+        reply(503, ['ok' => false, 'error' => 'mail_not_configured']);
+    }
+    $about = mb_substr($s('message'), 0, 1000);
+    $text = implode("\r\n", array_filter([
+        $project['name'],
+        "Name: {$name}",
+        "Mobile: +91{$digits}",
+        $email !== '' ? "Email: {$email}" : '',
+        'Received: ' . $ist->format('d M Y, H:i') . ' IST',
+        $consentV !== '' ? "Consent {$consentV} given at " . substr($s('consent_at'), 0, 40) : '',
+        $about !== '' ? "\r\nAbout the applicant:\r\n{$about}" : '',
+    ], fn($line) => $line !== ''));
+    $headers = [
+        'From' => "Gurugram Estate Website <{$to}>",
+        'MIME-Version' => '1.0',
+        'Content-Type' => 'text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding' => 'base64',
+    ];
+    if ($email !== '') $headers['Reply-To'] = $email;
+    $subject = '=?UTF-8?B?' . base64_encode("{$project['name']}: {$name}") . '?=';
+    if (!@mail($to, $subject, chunk_split(base64_encode($text)), $headers, '-f' . $to)) {
+        reply(502, ['ok' => false, 'error' => 'mail_failed']);
+    }
+    reply(200, ['ok' => true, 'id' => $key !== '' ? $key : 'ok']);
+}
+
 $notes = trim(implode(' ', array_filter([
-    $isApplication ? "{$project['name']}." : "Website enquiry for {$project['name']}.",
+    "Website enquiry for {$project['name']}.",
     "Form: {$intent}.",
-    $message !== '' ? "Message: {$message}" : '',
     $page !== '' ? "Page: {$page}." : '',
     $consentV !== '' ? "Consent {$consentV} given at " . substr($s('consent_at'), 0, 40) . '.' : '',
 ])));
 
-$extra = ['FormIntent' => $intent, 'LandingPage' => $page, 'ProjectSlug' => $slug];
-if (!$isApplication) $extra['EnquiredFor'] = 'Buy';
-$key = substr($s('idempotency_key'), 0, 64);
+$extra = ['EnquiredFor' => 'Buy', 'FormIntent' => $intent, 'LandingPage' => $page, 'ProjectSlug' => $slug];
 if ($key !== '') $extra['WebsiteLeadId'] = $key;
 foreach (['source', 'medium', 'campaign', 'term', 'content'] as $u) {
     $v = substr($s('utm_' . $u), 0, 150);

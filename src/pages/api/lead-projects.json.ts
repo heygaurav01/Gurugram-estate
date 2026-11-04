@@ -14,7 +14,10 @@ import { getProjects, getSettings } from "~/lib/data";
 const crmName = (name: string) => name.replace(/\s*,\s*/g, " ").trim();
 export const GET: APIRoute = async () => {
   const projects = await getProjects({ publishedOnly: true });
-  const map: Record<string, { name: string; location: string; city: string; state: string }> = {
+  const map: Record<
+    string,
+    { name: string; location: string; city: string; state: string; notify_email?: string }
+  > = {
     general: {
       name: "General enquiry Gurugram Estate website",
       location: "",
@@ -22,14 +25,15 @@ export const GET: APIRoute = async () => {
       state: "Haryana",
     },
   };
-  // Job applications: the relay treats any "careers-" slug as an application.
-  const { careers } = await getSettings();
+  // Job applications: the relay emails any "careers-" slug to notify_email instead of the CRM.
+  const { business, careers } = await getSettings();
   for (const o of careers.openings) {
     map[`careers-${o.slug}`] = {
       name: crmName(`Job application ${o.title}`),
       location: "",
       city: "Gurugram",
       state: "Haryana",
+      notify_email: business.email,
     };
   }
   for (const p of projects) {

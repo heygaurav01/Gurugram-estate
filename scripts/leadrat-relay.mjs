@@ -28,7 +28,6 @@ const INTENT_LABEL = {
   amenities: "Amenities",
   "virtual-tour": "Virtual tour",
   general: "General enquiry",
-  career: "Job application",
 };
 
 /** @param {unknown} v */
@@ -53,13 +52,11 @@ export function validateLead(body, projects) {
   const slug = str(body.project_slug);
   const project = projects[slug];
   if (!project) return { error: "project" };
-  const isApplication = slug.startsWith("careers-");
   return {
     lead: {
       slug,
       project,
-      isApplication,
-      message: isApplication ? str(body.message).replace(/\s+/g, " ").slice(0, 1000) : "",
+      isApplication: slug.startsWith("careers-"),
       name,
       mobile: digits,
       email,
@@ -103,9 +100,8 @@ export function toLeadratPayload(lead, now = new Date(), primaryUser = "") {
   const intent =
     INTENT_LABEL[/** @type {keyof typeof INTENT_LABEL} */ (lead.intent)] ?? lead.intent;
   const notes = [
-    lead.isApplication ? `${lead.project.name}.` : `Website enquiry for ${lead.project.name}.`,
+    `Website enquiry for ${lead.project.name}.`,
     `Form: ${intent}.`,
-    lead.message && `Message: ${lead.message}`,
     lead.pagePath && `Page: ${lead.pagePath}.`,
     lead.consentVersion && `Consent ${lead.consentVersion} given at ${lead.consentAt}.`,
   ]
@@ -113,7 +109,7 @@ export function toLeadratPayload(lead, now = new Date(), primaryUser = "") {
     .join(" ");
   /** @type {Record<string, string>} */
   const extra = {
-    ...(lead.isApplication ? {} : { EnquiredFor: "Buy" }),
+    EnquiredFor: "Buy",
     FormIntent: intent,
     LandingPage: lead.pagePath,
     ProjectSlug: lead.slug,
@@ -153,6 +149,10 @@ export async function relayLead(body, opts) {
   const v = validateLead(body, opts.projects);
   if (v.error === "spam") return { status: 200, json: { ok: true, id: "ok" } }; // silent drop
   if (!v.lead) return { status: 400, json: { ok: false, error: v.error } };
+  // Job applications are emailed by lead.php on Hostinger; the local relay sends nothing.
+  if (v.lead.isApplication) {
+    return { status: 200, json: { ok: true, id: v.lead.idempotencyKey || "ok" } };
+  }
   const res = await (opts.fetchImpl ?? fetch)(opts.url || LEADRAT_DEFAULT_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", "API-Key": opts.apiKey },

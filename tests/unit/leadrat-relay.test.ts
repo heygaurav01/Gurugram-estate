@@ -74,23 +74,18 @@ describe("toLeadratPayload", () => {
 
 describe("job applications", () => {
   const withRole = { ...projects, "careers-sales": { name: "Job application Sales" } };
-  const application = {
-    ...body,
-    project_slug: "careers-sales",
-    intent: "career",
-    message: " Resume\n link here. ",
-  };
-  it("labels the lead as an application and keeps the message", () => {
-    const [p] = toLeadratPayload(validateLead(application, withRole).lead!);
-    expect(p!.project).toBe("Job application Sales");
-    expect(p!.notes).toContain("Job application Sales.");
-    expect(p!.notes).toContain("Form: Job application.");
-    expect(p!.notes).toContain("Message: Resume link here.");
-    expect(p!.additionalProperties).not.toHaveProperty("EnquiredFor");
+  const application = { ...body, project_slug: "careers-sales", intent: "career" };
+  it("never sends an application to Leadrat", async () => {
+    const fetchImpl = vi.fn(async () => new Response("{}", { status: 200 }));
+    const out = await relayLead(application, { apiKey: "k", projects: withRole, fetchImpl });
+    expect(out.status).toBe(200);
+    expect(fetchImpl).not.toHaveBeenCalled();
   });
-  it("ignores the message on buyer enquiries, which stay marked Buy", () => {
-    const [p] = toLeadratPayload(validateLead({ ...body, message: "y" }, projects).lead!);
-    expect(p!.notes).not.toContain("Message:");
+  it("still sends buyer enquiries to Leadrat, marked Buy", async () => {
+    const fetchImpl = vi.fn(async () => new Response("{}", { status: 200 }));
+    await relayLead(body, { apiKey: "k", projects, fetchImpl });
+    expect(fetchImpl).toHaveBeenCalledOnce();
+    const [p] = toLeadratPayload(validateLead(body, projects).lead!);
     expect(p!.additionalProperties).toMatchObject({ EnquiredFor: "Buy" });
   });
 });

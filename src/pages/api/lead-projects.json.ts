@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { getProjects } from "~/lib/data";
+import { getProjects, getSettings } from "~/lib/data";
 
 /**
  * Allowlist for the lead relay (public/api/lead.php and the dev relay): which
@@ -22,6 +22,16 @@ export const GET: APIRoute = async () => {
       state: "Haryana",
     },
   };
+  // Job applications: the relay treats any "careers-" slug as an application.
+  const { careers } = await getSettings();
+  for (const o of careers.openings) {
+    map[`careers-${o.slug}`] = {
+      name: crmName(`Job application ${o.title}`),
+      location: "",
+      city: "Gurugram",
+      state: "Haryana",
+    };
+  }
   for (const p of projects) {
     map[p.slug] = {
       name: crmName(p.name),

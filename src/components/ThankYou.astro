@@ -11,13 +11,15 @@ type Props = {
   /** Project the enquiry was about, if any. */
   projectName?: string | undefined;
   back: { href: string; label: string };
+  /** Replaces the buyer wording (job applications). */
+  copy?: { lead: string; steps: Array<{ title: string; text: string }> } | undefined;
 };
-const { settings, from, projectName, back } = Astro.props;
+const { settings, from, projectName, back, copy } = Astro.props;
 const c = contactView(settings, projectName ? { name: projectName } : undefined);
 const promise = isPlaceholder(settings.site.callback_promise)
   ? undefined
   : settings.site.callback_promise;
-const steps = [
+const steps = copy?.steps ?? [
   {
     title: "We call you",
     text: `An advisor from ${from} calls the number you shared${promise ? `, ${promise}` : ""}.`,
@@ -43,7 +45,8 @@ const steps = [
       {projectName && <p class="ty__eyebrow">{projectName}</p>}
       <h1 class="ty__title">Thank you. We have your details.</h1>
       <p class="ty__lead">
-        Your enquiry has reached {from}. There is nothing more you need to do right now.
+        {copy?.lead ??
+          `Your enquiry has reached ${from}. There is nothing more you need to do right now.`}
       </p>
 
       <ol class="ty__steps" role="list">
@@ -78,10 +81,12 @@ const steps = [
       </div>
       <p class="ty__links">
         <a href={back.href}>&larr; {back.label}</a>
-        <a href={HARERA_URL} rel="noopener" target="_blank">
-          Check a project on haryanarera.gov.in
-          <span class="visually-hidden"> (opens in a new tab)</span>
-        </a>
+        {!copy && (
+          <a href={HARERA_URL} rel="noopener" target="_blank">
+            Check a project on haryanarera.gov.in
+            <span class="visually-hidden"> (opens in a new tab)</span>
+          </a>
+        )}
       </p>
     </div>
   </div>

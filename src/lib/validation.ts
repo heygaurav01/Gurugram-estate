@@ -8,10 +8,12 @@
  * v2: consent is given by pressing Send after a clear notice (no checkbox).
  */
 export const CONSENT_VERSION = "2026-10-v2";
+/** Same notice, worded for a job application. */
+export const APPLICATION_CONSENT_VERSION = "2026-11-application-v1";
 
 /** Exact consent notice shown above the Send button and stored with each lead. */
-export function consentText(brand: string): string {
-  return `By sending this form, you agree to be contacted by ${brand} by call, SMS, WhatsApp or email about this enquiry, and you confirm you have read the Privacy Policy.`;
+export function consentText(brand: string, subject: "enquiry" | "application" = "enquiry"): string {
+  return `By sending this form, you agree to be contacted by ${brand} by call, SMS, WhatsApp or email about this ${subject}, and you confirm you have read the Privacy Policy.`;
 }
 
 export type LeadField = "name" | "phone" | "email";

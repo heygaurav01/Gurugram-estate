@@ -1,6 +1,7 @@
 /**
  * Inline hub enquiry form. Same validation, bot checks and CRM connector as the
  * project modal (enquiry.ts). No personal data is stored in the browser.
+ * With a role field the form is a job application (careers page).
  */
 import { type LeadField, type LeadInput, validateField, validateLead } from "~/lib/validation";
 import { type LeadSubmission, submitLead } from "./api";
@@ -17,6 +18,18 @@ export function initContactForm(): void {
   const label = form.querySelector<HTMLElement>("[data-cf-label]")!;
   const buttons = Array.from(form.querySelectorAll<HTMLButtonElement>('button[type="submit"]'));
   const input = (n: string) => form.elements.namedItem(n) as HTMLInputElement;
+  const role = form.querySelector<HTMLSelectElement>('select[name="role"]');
+  const roleError = form.querySelector<HTMLElement>('[data-error-for="role"]');
+  const sendLabel = label.textContent ?? "Send";
+  const thanksPath = form.dataset.thanksPath ?? "/thank-you/";
+
+  const showRoleError = (msg: string) => {
+    if (!role || !roleError) return;
+    roleError.textContent = msg;
+    if (msg) role.setAttribute("aria-invalid", "true");
+    else role.removeAttribute("aria-invalid");
+  };
+  role?.addEventListener("change", () => showRoleError(""));
 
   // One key per page view; a retry reuses it so the CRM can drop duplicates.
   const idempotencyKey = crypto.randomUUID();
@@ -42,7 +55,7 @@ export function initContactForm(): void {
     submitting = on;
     form.setAttribute("aria-busy", String(on));
     buttons.forEach((b) => (b.disabled = on));
-    label.textContent = on ? "Sending..." : "Send";
+    label.textContent = on ? "Sending..." : sendLabel;
     FIELDS.forEach((f) => (input(f).readOnly = on));
   };
 
@@ -61,21 +74,27 @@ export function initContactForm(): void {
     e.preventDefault();
     if (submitting) return;
     const result = validateLead(values());
-    if (!result.ok) {
-      FIELDS.forEach((f) => {
-        touched.add(f);
-        showError(f, result.errors[f]);
-      });
-      const bad = FIELDS.filter((f) => result.errors[f]);
-      live.textContent = `${bad.length} ${bad.length === 1 ? "field needs" : "fields need"} attention.`;
-      input(bad[0]!).focus();
+    const roleMissing = role !== null && role.value === "";
+    showRoleError(roleMissing ? "Please choose a role." : "");
+    if (!result.ok || roleMissing) {
+      const bad = result.ok ? [] : FIELDS.filter((f) => result.errors[f]);
+      if (!result.ok) {
+        FIELDS.forEach((f) => {
+          touched.add(f);
+          showError(f, result.errors[f]);
+        });
+      }
+      const count = bad.length + (roleMissing ? 1 : 0);
+      live.textContent = `${count} ${count === 1 ? "field needs" : "fields need"} attention.`;
+      if (roleMissing) role.focus();
+      else input(bad[0]!).focus();
       return;
     }
     live.textContent = "";
     failure.hidden = true;
     form.classList.remove("is-failed");
 
-    const thanks = (ref: string) => `/thank-you/?ref=${encodeURIComponent(ref)}`;
+    const thanks = (ref: string) => `${thanksPath}?ref=${encodeURIComponent(ref)}`;
     if (
       input("company_website").value !== "" ||
       !startedAt ||
@@ -85,13 +104,17 @@ export function initContactForm(): void {
       return;
     }
 
+    const message = form.querySelector<HTMLTextAreaElement>('textarea[name="message"]')?.value;
     const lead: LeadSubmission = {
-      projectSlug: "general",
-      projectName: "General enquiry (hub)",
-      intent: "general",
+      projectSlug: role ? `careers-${role.value}` : "general",
+      projectName: role
+        ? `Job application ${role.selectedOptions[0]?.text ?? ""}`
+        : "General enquiry (hub)",
+      intent: role ? "career" : "general",
       name: result.value.name,
       phoneE164: result.value.phoneE164,
       ...(result.value.email ? { email: result.value.email } : {}),
+      ...(message?.trim() ? { message: message.trim() } : {}),
       consent: true,
       consentVersion: form.dataset.consentVersion ?? "",
       consentText: form.dataset.consentText ?? "",
@@ -104,11 +127,14 @@ export function initContactForm(): void {
     setSubmitting(true);
     const res = await submitLead(lead);
     if (res.ok) {
-      window.dispatchEvent(
-        new CustomEvent("gp:generate_lead", {
-          detail: { intent: "general", project: "general", eventId: idempotencyKey },
-        }),
-      );
+      // Job applications are not sales leads, so they never count as ad conversions.
+      if (!role) {
+        window.dispatchEvent(
+          new CustomEvent("gp:generate_lead", {
+            detail: { intent: "general", project: "general", eventId: idempotencyKey },
+          }),
+        );
+      }
       window.location.assign(thanks(res.leadId));
       return;
     }

@@ -23,6 +23,17 @@ site:
   hosting: "cloudflare-pages"
   # callback_promise: "within 2 working hours"   # set ONLY if the team can always hit it
 
+# Job openings on /careers/. Remove an opening here when it is filled; with none
+# left, the homepage hiring strip and button disappear.
+careers:
+  openings:
+    - slug: "digital-editor"
+      title: "Digital editor"
+      summary: "Create and edit content for our website, ads and social media."
+    - slug: "sales"
+      title: "Sales"
+      summary: "Talk to home buyers, arrange site visits and guide them through the paperwork."
+
 leads:
   crm: "TBD" # frappe | espocrm | krayin | none
   notify_email: "TBD"

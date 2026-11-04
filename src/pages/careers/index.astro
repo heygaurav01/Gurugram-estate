@@ -1,0 +1,225 @@
+---
+/**
+ * Careers: the open roles (settings.yaml, careers.openings) and the application form.
+ * An opening's Apply button preselects that role in the form.
+ */
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Nav from "~/components/Nav.astro";
+import ContactForm from "~/components/ContactForm.astro";
+import Footer from "~/components/Footer.astro";
+import { getSettings } from "~/lib/data";
+import { companyName } from "~/lib/compliance";
+import { COMPANY_NAV_LINKS } from "~/lib/nav";
+import { contactView } from "~/lib/view";
+
+const settings = await getSettings();
+const company = companyName(settings);
+const c = contactView(settings);
+const { openings } = settings.careers;
+---
+
+<BaseLayout
+  title={`Careers | ${company}`}
+  description={`Open roles at ${company}, a real estate company in Gurugram. See the openings and apply online.`}
+  path="/careers/"
+>
+  <Nav settings={settings} variant="company" links={COMPANY_NAV_LINKS} />
+  <main id="main">
+    <section class="careers-hero" aria-labelledby="careers-title">
+      <div class="container careers-hero__inner">
+        <p class="careers-hero__eyebrow">Careers</p>
+        <h1 id="careers-title" class="careers-hero__title">
+          Join our team
+        </h1>
+        <p class="careers-hero__lead">
+          {openings.length > 0
+            ? `We are hiring at ${company}. See the openings below and apply.`
+            : "We have no openings right now. Please check back later."}
+        </p>
+      </div>
+    </section>
+
+    {openings.length > 0 && (
+      <>
+        <section class="section careers-roles" aria-labelledby="roles-title">
+          <div class="container">
+            <header class="careers-roles__head" data-reveal>
+              <p class="eyebrow">Openings</p>
+              <h2 id="roles-title">Current openings</h2>
+            </header>
+            <ul class="careers-roles__grid" role="list">
+              {openings.map((o) => (
+                <li class="careers-role" data-reveal>
+                  <h3>{o.title}</h3>
+                  <p>{o.summary}</p>
+                  <a
+                    class="btn careers-role__apply"
+                    href="#apply"
+                    data-apply-role={o.slug}
+                    aria-label={`Apply for ${o.title}`}
+                  >
+                    Apply
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section class="section careers-apply" id="apply" aria-labelledby="apply-title">
+          <div class="container careers-apply__grid">
+            <div class="careers-apply__copy" data-reveal>
+              <p class="eyebrow">Apply</p>
+              <h2 id="apply-title">Tell us about you</h2>
+              <p class="careers-apply__lead">
+                Fill in the form and our team will contact you about your application.
+              </p>
+              <dl class="careers-apply__facts">
+                {c.email && (
+                  <div>
+                    <dt>Email your resume</dt>
+                    <dd>
+                      <a href={`mailto:${c.email}`}>{c.email}</a>
+                    </dd>
+                  </div>
+                )}
+                {c.address && (
+                  <div>
+                    <dt>Office</dt>
+                    <dd>{c.address}</dd>
+                  </div>
+                )}
+              </dl>
+            </div>
+            <div data-reveal>
+              <ContactForm settings={settings} application />
+            </div>
+          </div>
+        </section>
+      </>
+    )}
+  </main>
+  <Footer settings={settings} variant="company" />
+</BaseLayout>
+
+<script>
+  const select = document.querySelector<HTMLSelectElement>('select[name="role"]');
+  document.querySelectorAll<HTMLAnchorElement>("[data-apply-role]").forEach((link) => {
+    link.addEventListener("click", () => {
+      if (!select) return;
+      select.value = link.dataset.applyRole ?? "";
+      select.dispatchEvent(new Event("change"));
+    });
+  });
+</script>
+
+<style>
+  .careers-hero {
+    padding-block: calc(4.25rem + var(--space-8)) var(--space-8);
+    background: var(--night);
+    color: var(--on-dark);
+  }
+  .careers-hero__inner {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-4);
+  }
+  .careers-hero__eyebrow {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+  }
+  .careers-hero__title {
+    font-size: clamp(2.8rem, 1.6rem + 5vw, 5.5rem);
+    font-weight: 500;
+    line-height: 1;
+  }
+  .careers-hero__lead {
+    max-width: 44ch;
+    font-size: var(--step-1);
+    line-height: 1.4;
+  }
+  .careers-roles {
+    background: var(--paper);
+  }
+  .careers-roles__head {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-7);
+  }
+  .careers-roles__head h2,
+  .careers-apply__copy h2 {
+    font-size: var(--step-3);
+  }
+  .careers-roles__grid {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .careers-role {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: var(--space-4);
+    padding: clamp(var(--space-5), 4vw, var(--space-7));
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    background: var(--bone);
+  }
+  .careers-role h3 {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 500;
+    line-height: 1.1;
+  }
+  .careers-role p {
+    color: var(--ink-2);
+  }
+  .careers-role__apply {
+    margin-top: auto;
+  }
+  .careers-apply {
+    background: var(--bone);
+    scroll-margin-top: 4.25rem;
+  }
+  .careers-apply__grid {
+    display: grid;
+    gap: var(--space-7) var(--gutter);
+    align-items: start;
+  }
+  .careers-apply__copy {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .careers-apply__lead {
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  .careers-apply__facts {
+    display: grid;
+    gap: var(--space-4);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--hairline);
+  }
+  .careers-apply__facts dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .careers-apply__facts dd {
+    font-size: 1.05rem;
+  }
+  @media (min-width: 700px) {
+    .careers-roles__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .careers-apply__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

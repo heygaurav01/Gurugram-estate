@@ -52,6 +52,17 @@ export const siteSettingsSchema = z.object({
     /** Only set if the sales team can reliably hit it, e.g. "within 2 working hours". */
     callback_promise: z.string().optional(),
   }),
+  careers: z
+    .object({
+      openings: z.array(
+        z.object({
+          slug: z.string().regex(/^[a-z0-9-]+$/),
+          title: z.string().min(2),
+          summary: z.string().min(2),
+        }),
+      ),
+    })
+    .default({ openings: [] }),
   leads: z.object({
     crm: z.enum(["frappe", "espocrm", "krayin", "none", "TBD"]),
     notify_email: z.string(),

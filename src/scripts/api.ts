@@ -41,11 +41,13 @@ export interface LeadAttribution {
 export interface LeadSubmission {
   projectSlug: string;
   projectName: string;
-  intent: FormIntent;
+  intent: FormIntent | "career";
   name: string;
   /** "+91XXXXXXXXXX" */
   phoneE164: string;
   email?: string;
+  /** Job applications only. */
+  message?: string;
   consent: true;
   /** Version id of the consent wording the person agreed to. */
   consentVersion: string;
@@ -104,6 +106,7 @@ export function toCrmBody(lead: LeadSubmission): CrmLeadBody {
     name: lead.name,
     phone: lead.phoneE164,
     email: lead.email,
+    message: lead.message,
     consent: lead.consent,
     consent_version: lead.consentVersion,
     consent_text: lead.consentText,

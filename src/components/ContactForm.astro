@@ -3,16 +3,17 @@
  * Inline enquiry form (hub About section). Same rules, consent notice and CRM
  * connector as the project modal; logic in scripts/contact-form.ts.
  * Success redirects to /thank-you/ only after the CRM confirms.
+ * With `application`, it becomes the job application form (careers page).
  */
 import type { SiteSettings } from "~/lib/schemas";
-import { CONSENT_VERSION, consentText } from "~/lib/validation";
+import { APPLICATION_CONSENT_VERSION, CONSENT_VERSION, consentText } from "~/lib/validation";
 import { contactView } from "~/lib/view";
 import { companyName } from "~/lib/compliance";
 
-type Props = { settings: SiteSettings };
-const { settings } = Astro.props;
+type Props = { settings: SiteSettings; application?: boolean };
+const { settings, application = false } = Astro.props;
 const brand = companyName(settings);
-const consent = consentText(brand);
+const consent = consentText(brand, application ? "application" : "enquiry");
 const consentLead = consent.replace(/ the Privacy Policy\.$/, "");
 const c = contactView(settings);
 ---
@@ -21,15 +22,33 @@ const c = contactView(settings);
   class="cf"
   novalidate
   data-contact-form
-  data-consent-version={CONSENT_VERSION}
+  data-consent-version={application ? APPLICATION_CONSENT_VERSION : CONSENT_VERSION}
   data-consent-text={consent}
+  data-thanks-path={application ? "/careers/thank-you/" : undefined}
   aria-labelledby="cf-title"
 >
-  <p class="cf__eyebrow">Enquiry</p>
+  <p class="cf__eyebrow">{application ? "Application" : "Enquiry"}</p>
   <h3 id="cf-title" class="cf__title">
-    Send an enquiry
+    {application ? "Send your application" : "Send an enquiry"}
   </h3>
-  <p class="cf__intro">Tell us how to reach you. Free, with no obligation.</p>
+  <p class="cf__intro">
+    {application
+      ? "Choose a role and tell us how to reach you."
+      : "Tell us how to reach you. Free, with no obligation."}
+  </p>
+
+  {application && (
+    <div class="cf__field">
+      <label for="cf-role">Role</label>
+      <select id="cf-role" name="role" required aria-describedby="cf-role-error">
+        <option value="">Choose a role</option>
+        {settings.careers.openings.map((o) => (
+          <option value={o.slug}>{o.title}</option>
+        ))}
+      </select>
+      <p id="cf-role-error" class="cf__error" data-error-for="role"></p>
+    </div>
+  )}
 
   <div class="cf__field">
     <label for="cf-name">Name</label>
@@ -79,6 +98,21 @@ const c = contactView(settings);
     <p id="cf-email-error" class="cf__error" data-error-for="email"></p>
   </div>
 
+  {application && (
+    <div class="cf__field">
+      <label for="cf-message">
+        About you <span class="cf__optional">(optional)</span>
+      </label>
+      <textarea
+        id="cf-message"
+        name="message"
+        rows="4"
+        maxlength="1000"
+        placeholder="A short note, and a link to your resume or portfolio."
+      ></textarea>
+    </div>
+  )}
+
   <div class="cf__hp" aria-hidden="true">
     <label for="cf-company">Company website</label>
     <input id="cf-company" name="company_website" type="text" tabindex="-1" autocomplete="off" />
@@ -94,7 +128,7 @@ const c = contactView(settings);
   </p>
   <button type="submit" class="btn cf__submit" aria-describedby="cf-consent-note" data-cf-submit>
     <span class="cf__spinner" aria-hidden="true"></span>
-    <span data-cf-label>Send</span>
+    <span data-cf-label>{application ? "Send application" : "Send"}</span>
   </button>
 
   <div class="cf__failure" role="alert" hidden data-cf-failure>
@@ -162,7 +196,9 @@ const c = contactView(settings);
     font-weight: 400;
     color: var(--stone);
   }
-  .cf__field input {
+  .cf__field input,
+  .cf__field select,
+  .cf__field textarea {
     width: 100%;
     min-height: 50px;
     padding: 0 var(--space-4);
@@ -172,15 +208,23 @@ const c = contactView(settings);
     border-radius: var(--radius);
     font-size: 1rem;
   }
-  .cf__field input::placeholder {
+  .cf__field textarea {
+    padding-block: var(--space-3);
+    resize: vertical;
+  }
+  .cf__field input::placeholder,
+  .cf__field textarea::placeholder {
     color: #8f8a80;
   }
-  .cf__field input:focus-visible {
+  .cf__field input:focus-visible,
+  .cf__field select:focus-visible,
+  .cf__field textarea:focus-visible {
     outline: none;
     border-color: var(--ink);
     box-shadow: 0 0 0 3px rgb(21 21 21 / 0.12);
   }
-  .cf__field input[aria-invalid="true"] {
+  .cf__field input[aria-invalid="true"],
+  .cf__field select[aria-invalid="true"] {
     border-color: var(--error);
   }
   .cf__phone {

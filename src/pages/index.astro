@@ -11,7 +11,9 @@ import Picture from "~/components/Picture.astro";
 import ProjectCard from "~/components/ProjectCard.astro";
 import ContactForm from "~/components/ContactForm.astro";
 import Footer from "~/components/Footer.astro";
+import HiringStrip from "~/components/HiringStrip.astro";
 import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
+import { COMPANY_NAV_LINKS } from "~/lib/nav";
 import { ON_REQUEST, companyName } from "~/lib/compliance";
 import { contactView } from "~/lib/view";
 import { graph, realEstateAgentLd } from "~/lib/seo";
@@ -82,19 +84,10 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
     name="ahrefs-site-verification"
     content="d5ec3da8952790d3c01b42ac9b60864f63f6fa907ee03f444659f3426f091b95"
   />
-  <Nav
-    settings={settings}
-    overHero
-    variant="company"
-    links={[
-      { href: "#about", label: "About" },
-      { href: "#projects", label: "Projects" },
-      { href: "#approach", label: "How we work" },
-      { href: "#contact", label: "Contact" },
-    ]}
-  />
+  <Nav settings={settings} overHero variant="company" links={COMPANY_NAV_LINKS} />
   <main id="main">
     <section class="home-hero" aria-labelledby="home-title">
+      <HiringStrip settings={settings} />
       {hero?.image && (
         <Picture
           slug={hero.project.slug}
@@ -128,6 +121,11 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
           <a class="btn home-hero__secondary" href="#contact">
             Talk to an advisor
           </a>
+          {settings.careers.openings.length > 0 && (
+            <a class="btn home-hero__secondary" href="/careers/">
+              Join our team
+            </a>
+          )}
         </div>
       </div>
     </section>
@@ -265,7 +263,7 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
   }
   .home-hero__caption {
     position: absolute;
-    top: calc(4.25rem + var(--space-3));
+    top: calc(4.25rem + var(--tap-min) + var(--space-3));
     right: var(--gutter);
     font-size: 0.72rem;
     color: rgb(244 241 234 / 0.85);
@@ -274,7 +272,7 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
     display: grid;
     justify-items: start;
     gap: var(--space-4);
-    padding-block: 7rem var(--space-8);
+    padding-block: 10rem var(--space-8);
   }
   /* Phones: keep the buttons clear of the floating call and WhatsApp buttons. */
   @media (max-width: 767.98px) {

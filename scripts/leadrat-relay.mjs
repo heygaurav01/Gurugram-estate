@@ -28,6 +28,7 @@ const INTENT_LABEL = {
   amenities: "Amenities",
   "virtual-tour": "Virtual tour",
   general: "General enquiry",
+  career: "Job application",
 };
 
 /** @param {unknown} v */
@@ -52,10 +53,13 @@ export function validateLead(body, projects) {
   const slug = str(body.project_slug);
   const project = projects[slug];
   if (!project) return { error: "project" };
+  const isApplication = slug.startsWith("careers-");
   return {
     lead: {
       slug,
       project,
+      isApplication,
+      message: isApplication ? str(body.message).replace(/\s+/g, " ").slice(0, 1000) : "",
       name,
       mobile: digits,
       email,
@@ -99,8 +103,9 @@ export function toLeadratPayload(lead, now = new Date(), primaryUser = "") {
   const intent =
     INTENT_LABEL[/** @type {keyof typeof INTENT_LABEL} */ (lead.intent)] ?? lead.intent;
   const notes = [
-    `Website enquiry for ${lead.project.name}.`,
+    lead.isApplication ? `${lead.project.name}.` : `Website enquiry for ${lead.project.name}.`,
     `Form: ${intent}.`,
+    lead.message && `Message: ${lead.message}`,
     lead.pagePath && `Page: ${lead.pagePath}.`,
     lead.consentVersion && `Consent ${lead.consentVersion} given at ${lead.consentAt}.`,
   ]
@@ -108,7 +113,7 @@ export function toLeadratPayload(lead, now = new Date(), primaryUser = "") {
     .join(" ");
   /** @type {Record<string, string>} */
   const extra = {
-    EnquiredFor: "Buy",
+    ...(lead.isApplication ? {} : { EnquiredFor: "Buy" }),
     FormIntent: intent,
     LandingPage: lead.pagePath,
     ProjectSlug: lead.slug,

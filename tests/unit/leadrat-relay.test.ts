@@ -72,6 +72,29 @@ describe("toLeadratPayload", () => {
   });
 });
 
+describe("job applications", () => {
+  const withRole = { ...projects, "careers-sales": { name: "Job application Sales" } };
+  const application = {
+    ...body,
+    project_slug: "careers-sales",
+    intent: "career",
+    message: " Resume\n link here. ",
+  };
+  it("labels the lead as an application and keeps the message", () => {
+    const [p] = toLeadratPayload(validateLead(application, withRole).lead!);
+    expect(p!.project).toBe("Job application Sales");
+    expect(p!.notes).toContain("Job application Sales.");
+    expect(p!.notes).toContain("Form: Job application.");
+    expect(p!.notes).toContain("Message: Resume link here.");
+    expect(p!.additionalProperties).not.toHaveProperty("EnquiredFor");
+  });
+  it("ignores the message on buyer enquiries, which stay marked Buy", () => {
+    const [p] = toLeadratPayload(validateLead({ ...body, message: "y" }, projects).lead!);
+    expect(p!.notes).not.toContain("Message:");
+    expect(p!.additionalProperties).toMatchObject({ EnquiredFor: "Buy" });
+  });
+});
+
 describe("assignment", () => {
   it("adds primaryUser only when one is configured", () => {
     const lead = validateLead(body, projects).lead!;

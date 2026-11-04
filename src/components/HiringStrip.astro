@@ -1,0 +1,106 @@
+---
+/**
+ * Sliding "We are hiring" strip under the homepage header; the whole strip links
+ * to /careers/. Renders nothing without openings. Under reduced motion it is
+ * static and shows the list once.
+ */
+import type { SiteSettings } from "~/lib/schemas";
+
+type Props = { settings: SiteSettings };
+const { openings } = Astro.props.settings.careers;
+const items = ["We are hiring", ...openings.map((o) => o.title), "Apply now"];
+// Each half holds the list several times so it is always wider than the widest screen.
+const repeats = Array.from({ length: 6 });
+const roles = openings.map((o) => o.title).join(" and ");
+---
+
+{openings.length > 0 && (
+  <a class="hiring" href="/careers/" aria-label={`We are hiring: ${roles}. View careers.`}>
+    <span class="hiring__track" aria-hidden="true">
+      {[0, 1].map((half) => (
+        <span class:list={["hiring__half", { "hiring__half--dup": half === 1 }]}>
+          {repeats.map((_, r) => (
+            <span class:list={["hiring__group", { "hiring__group--extra": r > 0 }]}>
+              {items.map((t) => (
+                <span class="hiring__item">
+                  <span class="hiring__gem"></span>
+                  {t}
+                </span>
+              ))}
+            </span>
+          ))}
+        </span>
+      ))}
+    </span>
+  </a>
+)}
+
+<style>
+  .hiring {
+    position: absolute;
+    top: 4.25rem;
+    inset-inline: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    overflow: hidden;
+    background: var(--accent-soft);
+    color: var(--on-light);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .hiring:focus-visible {
+    outline-offset: -3px;
+    outline-color: var(--on-light);
+  }
+  .hiring__track,
+  .hiring__half,
+  .hiring__group {
+    display: flex;
+    flex: none;
+    align-items: center;
+  }
+  .hiring__track {
+    width: max-content;
+  }
+  .hiring__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-5);
+    padding-inline-end: var(--space-5);
+  }
+  .hiring__gem {
+    width: 6px;
+    height: 6px;
+    transform: rotate(45deg);
+    background: currentColor;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hiring__track {
+      width: 100%;
+      justify-content: center;
+    }
+    .hiring__half--dup,
+    .hiring__group--extra {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hiring__track {
+      animation: hiring-slide 60s linear infinite;
+    }
+    .hiring:hover .hiring__track,
+    .hiring:focus-visible .hiring__track {
+      animation-play-state: paused;
+    }
+  }
+  @keyframes hiring-slide {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

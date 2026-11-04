@@ -92,22 +92,28 @@ $labels = [
     'floor-plan' => 'Floor plan / master plan request', 'gallery' => 'Gallery: official images',
     'location' => 'Location / map', 'footer' => 'Footer enquiry', 'sticky' => 'Sticky bar enquiry',
     'nav' => 'Header enquiry', 'amenities' => 'Amenities', 'virtual-tour' => 'Virtual tour',
-    'general' => 'General enquiry',
+    'general' => 'General enquiry', 'career' => 'Job application',
 ];
 $intentKey = $s('intent') ?: 'general';
 $intent = $labels[$intentKey] ?? $intentKey;
 $page = substr($s('page_path'), 0, 200);
 $consentV = substr($s('consent_version'), 0, 40);
 
+// Job applications ("careers-" slugs) carry a message and are not buyers.
+$isApplication = str_starts_with($slug, 'careers-');
+$message = $isApplication ? mb_substr(preg_replace('/\s+/u', ' ', $s('message')), 0, 1000) : '';
+
 $ist = new DateTime('now', new DateTimeZone('Asia/Kolkata'));
 $notes = trim(implode(' ', array_filter([
-    "Website enquiry for {$project['name']}.",
+    $isApplication ? "{$project['name']}." : "Website enquiry for {$project['name']}.",
     "Form: {$intent}.",
+    $message !== '' ? "Message: {$message}" : '',
     $page !== '' ? "Page: {$page}." : '',
     $consentV !== '' ? "Consent {$consentV} given at " . substr($s('consent_at'), 0, 40) . '.' : '',
 ])));
 
-$extra = ['EnquiredFor' => 'Buy', 'FormIntent' => $intent, 'LandingPage' => $page, 'ProjectSlug' => $slug];
+$extra = ['FormIntent' => $intent, 'LandingPage' => $page, 'ProjectSlug' => $slug];
+if (!$isApplication) $extra['EnquiredFor'] = 'Buy';
 $key = substr($s('idempotency_key'), 0, 64);
 if ($key !== '') $extra['WebsiteLeadId'] = $key;
 foreach (['source', 'medium', 'campaign', 'term', 'content'] as $u) {

@@ -16,7 +16,7 @@ import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
 import { COMPANY_NAV_LINKS } from "~/lib/nav";
 import { ON_REQUEST, companyName } from "~/lib/compliance";
 import { contactView } from "~/lib/view";
-import { graph, realEstateAgentLd } from "~/lib/seo";
+import { graph, realEstateAgentLd, websiteLd } from "~/lib/seo";
 
 const settings = await getSettings();
 const company = companyName(settings);
@@ -69,12 +69,12 @@ const steps = [
 ];
 
 const agent = realEstateAgentLd(settings, Astro.site!);
-const jsonLd = graph([{ ...agent, legalName: company }]);
+const jsonLd = graph([{ ...agent, legalName: company }, websiteLd(settings, Astro.site!)]);
 ---
 
 <BaseLayout
-  title={`${company} | Real estate in Gurugram`}
-  description={`${company} is a real estate company in Gurugram. Explore live project pages with verified facts, sources and RERA status.`}
+  title="Real Estate Company in Gurugram | Gurugram Estate Pvt Ltd"
+  description="Gurugram Estate Pvt Ltd is a real estate company in Gurugram since 2019. Compare new residential projects, arrange site visits and get RERA-first advice."
   path="/"
   jsonLd={jsonLd}
 >
@@ -138,6 +138,11 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
           <p class="home-about__lead">
             {company} helps buyers in Gurugram compare new projects using facts that can be
             verified.
+          </p>
+          <p class="home-about__areas">
+            A real estate company based at DLF Corporate Greens, Sector 74A, since 2019. We advise
+            on new residential projects across Golf Course Road, Golf Course Extension Road, Dwarka
+            Expressway and New Gurugram.
           </p>
         </div>
         <ol class="home-about__points" role="list" data-reveal>
@@ -386,6 +391,10 @@ const jsonLd = graph([{ ...agent, legalName: company }]);
     max-width: 44ch;
     font-size: var(--step-1);
     line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .home-about__areas {
+    max-width: 52ch;
     color: var(--ink-2);
   }
   .home-about__points {

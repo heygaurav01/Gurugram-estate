@@ -84,12 +84,18 @@ const motif = theme?.motif && theme.motif !== "none" ? theme.motif : undefined;
       description={description}
       path={path}
       noindex={noindex}
-      ogImage={ogImage}
-      ogImageAlt={ogImageAlt}
+      ogImage={ogImage ?? new URL("/brand/og-default.png", Astro.site).href}
+      ogImageAlt={
+        ogImage ? ogImageAlt : `${settings.business.brand_name}, real estate company in Gurugram`
+      }
       siteName={settings.business.brand_name}
       jsonLd={ld}
     />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon-48x48.png" type="image/png" sizes="48x48" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <Fonts />
     <script
       is:inline

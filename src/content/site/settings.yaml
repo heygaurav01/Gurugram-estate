@@ -12,7 +12,18 @@ business:
   phone_e164: "+919958833329"
   whatsapp_e164: "+919958833329"
   email: "support@gurugramestatepvtltd.in" # owner, 2026-11-04; job applications are emailed here
-  office_address: "DLF Corporate Greens, Sector 74A, Gurugram, Haryana 122004" # owner, 2026-11-03
+  office_address: "Office No. 2018, Tower A, DLF Corporate Greens, Sector 74A, Gurugram, Haryana 122004" # owner's visiting card, 2026-11-06
+  # Search engine details (structured data). Keep identical to the Google Business Profile.
+  office_address_parts:
+    street: "Office No. 2018, Tower A, DLF Corporate Greens, Sector 74A"
+    locality: "Gurugram"
+    region: "Haryana"
+    postal_code: "122004"
+  founding_date: "2019-11-01" # incorporation date, MCA records (CIN U70103HR2019PTC083367)
+  # Official profiles of the company. Add Instagram/YouTube only if they are company accounts.
+  same_as:
+    - "https://www.facebook.com/gurugramestatepvtlimited/"
+    - "https://in.linkedin.com/company/gurugram-estates-pvt-ltd"
   grievance_officer_name: "TBD" # privacy policy (DPDP Act)
   grievance_officer_email: "TBD"
   logo_file: "TBD" # path to SVG/PNG in public/, or TBD for text wordmark

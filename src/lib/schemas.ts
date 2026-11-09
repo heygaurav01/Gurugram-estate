@@ -41,6 +41,22 @@ export const siteSettingsSchema = z.object({
     whatsapp_e164: z.string(),
     email: z.string(),
     office_address: z.string(),
+    /** Structured office address for search engines; must match office_address. */
+    office_address_parts: z
+      .object({
+        street: z.string(),
+        locality: z.string(),
+        region: z.string(),
+        postal_code: z.string(),
+      })
+      .optional(),
+    /** Incorporation date (YYYY-MM-DD), for structured data. */
+    founding_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/)
+      .optional(),
+    /** The company's own official profile URLs. */
+    same_as: z.array(z.url()).default([]),
     grievance_officer_name: z.string(),
     grievance_officer_email: z.string(),
     logo_file: z.string(),

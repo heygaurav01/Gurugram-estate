@@ -15,11 +15,26 @@ export function realEstateAgentLd(settings: SiteSettings, site: URL): Json {
     "@id": new URL("/#agent", site).href,
     name: b.brand_name,
     url: new URL("/", site).href,
+    logo: new URL("/icon-512.png", site).href,
+    image: new URL("/brand/og-default.png", site).href,
     areaServed: { "@type": "City", name: "Gurugram" },
   };
+  if (b.legal_name && !isPlaceholder(b.legal_name)) ld.legalName = b.legal_name;
+  if (b.founding_date) ld.foundingDate = b.founding_date;
+  if (b.same_as.length > 0) ld.sameAs = b.same_as;
   if (isRealIndianMobileE164(b.phone_e164)) ld.telephone = b.phone_e164;
   if (!isPlaceholder(b.email)) ld.email = b.email;
-  if (!isPlaceholder(b.office_address)) {
+  const parts = b.office_address_parts;
+  if (parts) {
+    ld.address = {
+      "@type": "PostalAddress",
+      streetAddress: parts.street,
+      addressLocality: parts.locality,
+      addressRegion: parts.region,
+      postalCode: parts.postal_code,
+      addressCountry: "IN",
+    };
+  } else if (!isPlaceholder(b.office_address)) {
     ld.address = {
       "@type": "PostalAddress",
       streetAddress: b.office_address,
@@ -34,6 +49,21 @@ export function realEstateAgentLd(settings: SiteSettings, site: URL): Json {
     };
   }
   return ld;
+}
+
+/** WebSite node: gives Google the site name shown above search results. */
+export function websiteLd(settings: SiteSettings, site: URL): Json {
+  return {
+    "@type": "WebSite",
+    "@id": new URL("/#website", site).href,
+    name: settings.business.brand_name,
+    alternateName: [settings.business.legal_name, "Gurugram Estate"].filter(
+      (n): n is string => Boolean(n) && n !== settings.business.brand_name,
+    ),
+    url: new URL("/", site).href,
+    inLanguage: "en-IN",
+    publisher: { "@id": new URL("/#agent", site).href },
+  };
 }
 
 export function breadcrumbLd(items: Array<{ name: string; path: string }>, site: URL): Json {

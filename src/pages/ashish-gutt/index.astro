@@ -24,10 +24,17 @@ const site = Astro.site!;
 const statement =
   "Ashish Gutt leads a Gurugram real estate company built on one idea: every buyer deserves verified facts, clear advice and one advisor from the first call to the final paperwork.";
 
+// His own words, from his Threads bio (@ashish_gutt) and the company's Internshala profile.
+const quote = {
+  text: "15 years of real estate excellence. Proudly tagging along in Gurgaon's growth.",
+  source: "Ashish Gutt, on Threads",
+  promise: "Top-grade residential properties, delivered with out-and-out honesty and transparency.",
+};
+
 const stats = [
+  { value: "15", label: "Years in real estate", note: "In Gurgaon's property market" },
   { value: "2019", label: "Company founded", note: "Incorporated in Haryana" },
   { value: "4", label: "Corridors covered", note: "Across Gurugram" },
-  { value: "3", label: "Services", note: "Real estate, investments, property solutions" },
   { value: "1", label: "Advisor per client", note: "From first call to final paperwork" },
 ];
 
@@ -47,6 +54,11 @@ const principles = [
 ];
 
 const journey = [
+  {
+    tag: "15 years",
+    title: "A career in Gurgaon real estate",
+    body: "Ashish Gutt builds 15 years of experience in residential property, growing with Gurgaon.",
+  },
   {
     tag: "1 Nov 2019",
     title: "The company is founded",
@@ -70,7 +82,7 @@ const journey = [
   {
     tag: "Next",
     title: "Growing the team",
-    body: "New openings in sales and digital, as the company grows.",
+    body: "Hiring since 2021, with new openings in sales and digital as the company grows.",
     link: { href: "/careers/", label: "See careers" },
   },
 ];
@@ -84,8 +96,8 @@ const socials = [
   },
   {
     name: "YouTube",
-    handle: "@ashishgutt",
-    href: "https://www.youtube.com/c/AshishGutt",
+    handle: "@Ashishgutt",
+    href: "https://www.youtube.com/@Ashishgutt",
     icon: "yt",
   },
   {
@@ -93,6 +105,12 @@ const socials = [
     handle: "/gutt.ashish",
     href: "https://www.facebook.com/gutt.ashish/",
     icon: "fb",
+  },
+  {
+    name: "Threads",
+    handle: "@ashish_gutt",
+    href: "https://www.threads.com/@ashish_gutt",
+    icon: "th",
   },
 ];
 
@@ -102,6 +120,8 @@ const person = {
   name: "Ashish Gutt",
   jobTitle: "Director",
   worksFor: { "@id": new URL("/#agent", site).href },
+  description:
+    "Director and promoter of Gurugram Estate Private Limited, with 15 years in Gurgaon real estate.",
   image: new URL(portrait.src, site).href,
   url: new URL("/ashish-gutt/", site).href,
   sameAs: socials.map((s) => s.href),
@@ -112,7 +132,7 @@ const marquee = ["Real estate", "Investments", "Property solutions", "Gurugram",
 
 <BaseLayout
   title="Ashish Gutt, Director | Gurugram Estate Pvt Ltd"
-  description="Meet Ashish Gutt, director and promoter of Gurugram Estate Private Limited, a Gurugram real estate company since 2019. His approach, journey and contact."
+  description="Meet Ashish Gutt, director of Gurugram Estate Private Limited, with 15 years in Gurgaon real estate. His story, approach, journey and contact."
   path="/ashish-gutt/"
   jsonLd={jsonLd}
 >
@@ -148,7 +168,8 @@ const marquee = ["Real estate", "Investments", "Property solutions", "Gurugram",
             Director and promoter, {company}
           </p>
           <p class="dr-hero__lead dr-in" style="--d:8">
-            Ashish Gutt has led {company} since it was incorporated in Haryana on 1 November 2019.
+            With 15 years in Gurgaon real estate, Ashish Gutt has led {company} since it was
+            incorporated in Haryana on 1 November 2019.
           </p>
           <div class="dr-hero__ctas dr-in" style="--d:9">
             <a class="dr-btn dr-btn--gold" href="#dr-contact" data-dr-magnetic>
@@ -190,7 +211,7 @@ const marquee = ["Real estate", "Investments", "Property solutions", "Gurugram",
               <b>2019</b> Director since
             </span>
             <span class="dr-chip dr-chip--b" aria-hidden="true">
-              <b>Gurugram</b> DLF Corporate Greens
+              <b>15 years</b> In real estate
             </span>
           </button>
         </div>
@@ -229,6 +250,26 @@ const marquee = ["Real estate", "Investments", "Property solutions", "Gurugram",
           {statement.split(" ").map((w) => (
             <span data-w>{w} </span>
           ))}
+        </p>
+      </div>
+    </section>
+
+    <!-- IN HIS WORDS -->
+    <section class="dr-quote" aria-labelledby="dr-quote-title">
+      <div class="container dr-quote__inner" data-dr-reveal>
+        <h2 id="dr-quote-title" class="dr-eyebrow">
+          In his words
+        </h2>
+        <span class="dr-quote__mark" aria-hidden="true">
+          &ldquo;
+        </span>
+        <blockquote class="dr-quote__text">
+          <p>{quote.text}</p>
+        </blockquote>
+        <p class="dr-quote__source">{quote.source}</p>
+        <p class="dr-quote__promise">
+          <span aria-hidden="true"></span>
+          {quote.promise}
         </p>
       </div>
     </section>
@@ -331,6 +372,11 @@ const marquee = ["Real estate", "Investments", "Property solutions", "Gurugram",
                       <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
                       <circle cx="12" cy="12" r="4" />
                       <circle cx="17.2" cy="6.8" r=".8" />
+                    </svg>
+                  )}
+                  {s.icon === "th" && (
+                    <svg viewBox="0 0 24 24">
+                      <path d="M16.6 11.2c-.3-2.6-2-4-4.4-4-2 0-3.4 1-4 2.6m8.4 1.4c.2 1.6-.4 3-1.8 3.5-1.6.6-3.4-.2-3.4-1.8 0-1.4 1.2-2.2 3-2.2 3 0 4.8 1.4 4.8 3.8 0 2.8-2.4 4.7-5.6 4.7-3.8 0-6.4-2.8-6.4-7.2S8.4 4.8 12.2 4.8c3.2 0 5.4 1.8 6 4.6" />
                     </svg>
                   )}
                   {s.icon === "yt" && (
@@ -828,6 +874,72 @@ const marquee = ["Real estate", "Investments", "Property solutions", "Gurugram",
       opacity 0.4s;
   }
 
+  /* ---------- In his words ---------- */
+  .dr-quote {
+    position: relative;
+    padding-block: var(--space-section);
+    background:
+      radial-gradient(40rem 22rem at 50% 50%, rgb(233 185 58 / 0.12), transparent 70%),
+      linear-gradient(180deg, var(--dr-navy), #0a2161 50%, var(--dr-navy));
+    border-block: 1px solid rgb(246 215 126 / 0.25);
+  }
+  .dr-quote__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 1.2rem;
+    text-align: center;
+  }
+  .dr-quote__inner h2 {
+    font-family: var(--font-body);
+  }
+  .dr-quote__mark {
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 5rem + 8vw, 12rem);
+    line-height: 0.5;
+    margin-top: 2.5rem;
+    background: linear-gradient(180deg, var(--dr-gold-2), var(--dr-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dr-quote__text p {
+    max-width: 22ch;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(2.2rem, 1.4rem + 3.4vw, 4.4rem);
+    line-height: 1.1;
+    color: #fff;
+  }
+  .dr-quote__source {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--dr-gold-2);
+  }
+  .dr-quote__promise {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    max-width: 46ch;
+    margin-top: 1rem;
+    padding: 1rem 1.4rem;
+    border-radius: 999px;
+    border: 1px solid rgb(246 215 126 / 0.35);
+    background: rgb(255 255 255 / 0.04);
+    color: var(--dr-muted);
+    text-align: left;
+  }
+  .dr-quote__promise span {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    transform: rotate(45deg);
+    background: var(--dr-gold);
+  }
+
   /* ---------- Stats ---------- */
   .dr-stats {
     padding-bottom: var(--space-section);
@@ -1177,9 +1289,14 @@ const marquee = ["Real estate", "Investments", "Property solutions", "Gurugram",
   .dr-soc:hover .dr-soc__arrow {
     transform: translate(4px, -4px);
   }
-  @media (min-width: 800px) {
+  @media (min-width: 640px) {
     .dr-social__grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1200px) {
+    .dr-social__grid {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 

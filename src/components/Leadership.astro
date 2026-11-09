@@ -1,0 +1,1098 @@
+---
+/**
+ * Homepage leadership section and full-screen profile pop-up for Ashish Gutt.
+ * Facts: MCA records (appointment, CIN, DIN), his Threads bio and the company's
+ * Internshala profile. Motion in scripts/leadership.ts.
+ */
+import { Picture } from "astro:assets";
+import portrait from "~/assets/team/ashish-gutt.png";
+import { LEADER_SOCIALS } from "~/lib/leader";
+
+type Props = { company: string };
+const { company } = Astro.props;
+
+const stats = [
+  { value: "15", label: "Years in real estate" },
+  { value: "2019", label: "Company founded" },
+  { value: "4", label: "Corridors covered" },
+];
+const approach = [
+  {
+    title: "Verified facts only",
+    body: "Every detail shared with a client comes with its source and date. If something is not confirmed, the team says so.",
+  },
+  {
+    title: "RERA first",
+    body: "No prices or offers before a project is registered with Haryana RERA.",
+  },
+  {
+    title: "One advisor, start to finish",
+    body: "Site visits, comparisons and paperwork are handled by the same person.",
+  },
+];
+const journey = [
+  {
+    tag: "15 years",
+    title: "A career in Gurgaon real estate",
+    body: "Ashish Gutt builds 15 years of experience in residential property, growing with Gurgaon.",
+  },
+  {
+    tag: "1 Nov 2019",
+    title: "The company is founded",
+    body: `${company} is incorporated in Haryana, with Ashish Gutt as director and promoter.`,
+  },
+  {
+    tag: "2021",
+    title: "Building the team",
+    body: "The company starts hiring and grows its sales team.",
+  },
+  {
+    tag: "Sector 74A",
+    title: "DLF Corporate Greens",
+    body: "The team works from Office No. 2018, Tower A, DLF Corporate Greens, Gurugram.",
+  },
+  {
+    tag: "2026",
+    title: "Verified information online",
+    body: "gurugramestatepvtltd.in brings sourced project facts and RERA status to every buyer.",
+  },
+];
+const marquee = "Ashish Gutt";
+const icons: Record<string, string> = {
+  Instagram:
+    '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".8"/>',
+  YouTube:
+    '<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.2 9.2v5.6l4.8-2.8z"/>',
+  Facebook:
+    '<path d="M14 8.2h2.4V4.8H14c-2.3 0-3.7 1.5-3.7 3.8V10.4H8v3.4h2.3V20H14v-6.2h2.4l.5-3.4H14V8.9c0-.4.3-.7.7-.7z"/>',
+  Threads:
+    '<path d="M16.6 11.2c-.3-2.6-2-4-4.4-4-2 0-3.4 1-4 2.6m8.4 1.4c.2 1.6-.4 3-1.8 3.5-1.6.6-3.4-.2-3.4-1.8 0-1.4 1.2-2.2 3-2.2 3 0 4.8 1.4 4.8 3.8 0 2.8-2.4 4.7-5.6 4.7-3.8 0-6.4-2.8-6.4-7.2S8.4 4.8 12.2 4.8c3.2 0 5.4 1.8 6 4.6"/>',
+};
+---
+
+<section class="ld" id="leadership" data-ld aria-labelledby="ld-title">
+  <div class="ld-marquee" aria-hidden="true">
+    {[0, 1].map((i) => (
+      <div class="ld-marquee__row" data-ld-row>
+        {Array.from({ length: 4 }).map(() => (
+          <span class:list={["ld-marquee__word", { "ld-marquee__word--solid": i === 1 }]}>
+            {marquee}
+            <i></i>
+          </span>
+        ))}
+      </div>
+    ))}
+  </div>
+
+  <div class="container ld-grid">
+    <div class="ld-copy" data-ld-in>
+      <p class="ld-eyebrow ld-up" style="--k:0">
+        Leadership
+      </p>
+      <h2 id="ld-title" class="ld-name">
+        <span class="ld-mask">
+          <span class="ld-up" style="--k:1">
+            Ashish
+          </span>
+        </span>
+        <span class="ld-mask">
+          <em class="ld-up" style="--k:2">
+            Gutt
+          </em>
+        </span>
+      </h2>
+      <p class="ld-role ld-up" style="--k:3">
+        Director and promoter, {company}
+      </p>
+      <p class="ld-quote ld-up" style="--k:4">
+        &ldquo;15 years of real estate excellence. Proudly tagging along in Gurgaon's growth.&rdquo;
+      </p>
+      <ul class="ld-stats ld-up" style="--k:5" role="list">
+        {stats.map((s) => (
+          <li>
+            <b data-ld-count={s.value}>{s.value}</b>
+            <span>{s.label}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="ld-actions ld-up" style="--k:6">
+        <button type="button" class="ld-btn ld-btn--gold" data-ld-open data-ld-magnetic>
+          View full profile
+          <span class="ld-btn__dot" aria-hidden="true">
+            &#8599;
+          </span>
+        </button>
+        <ul class="ld-socials" role="list">
+          {LEADER_SOCIALS.map((s) => (
+            <li>
+              <a href={s.href} target="_blank" rel="noopener me" class="ld-social" data-ld-magnetic>
+                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[s.name]} />
+                <span class="visually-hidden">Ashish Gutt on {s.name} (opens in a new tab)</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="ld-visual" data-ld-visual data-ld-in>
+      <span class="ld-orbit" aria-hidden="true"></span>
+      <button
+        type="button"
+        class="ld-portrait"
+        data-ld-open
+        aria-label="View the full profile of Ashish Gutt"
+      >
+        <span class="ld-portrait__clip">
+          <Picture
+            src={portrait}
+            alt=""
+            formats={["avif", "webp"]}
+            widths={[441]}
+            sizes="(max-width: 900px) 78vw, 441px"
+            class="ld-portrait__img"
+          />
+        </span>
+        <span class="ld-portrait__ring" aria-hidden="true"></span>
+      </button>
+      <span class="ld-badge ld-badge--a" style="--z:1.4" aria-hidden="true">
+        <b>15</b>years in real estate
+      </span>
+      <span class="ld-badge ld-badge--b" style="--z:-1.1" aria-hidden="true">
+        <b>2019</b>Director since
+      </span>
+      <span class="ld-badge ld-badge--c" style="--z:0.8" aria-hidden="true">
+        <b>Gurugram</b>DLF Corporate Greens
+      </span>
+      <span class="ld-bubble" data-ld-bubble aria-hidden="true">
+        View
+        <br />
+        profile
+      </span>
+    </div>
+  </div>
+</section>
+
+<dialog class="ld-pop" data-ld-pop aria-labelledby="ld-pop-title">
+  <div class="ld-pop__panel" data-ld-panel>
+    <button type="button" class="ld-pop__close" data-ld-close aria-label="Close profile">
+      <span></span>
+      <span></span>
+    </button>
+    <div class="ld-pop__grid">
+      <aside class="ld-pop__side">
+        <div class="ld-pop__photo ld-pop-in" style="--k:0">
+          <Picture src={portrait} alt="Ashish Gutt" formats={["avif", "webp"]} widths={[441]} />
+        </div>
+        <p class="ld-eyebrow ld-pop-in" style="--k:1">
+          Director
+        </p>
+        <h2 id="ld-pop-title" class="ld-pop__name ld-pop-in" style="--k:2">
+          Ashish <em>Gutt</em>
+        </h2>
+        <p class="ld-pop__role ld-pop-in" style="--k:3">
+          Director and promoter, {company}
+        </p>
+        <ul class="ld-socials ld-pop-in" style="--k:4" role="list">
+          {LEADER_SOCIALS.map((s) => (
+            <li>
+              <a href={s.href} target="_blank" rel="noopener me" class="ld-social">
+                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[s.name]} />
+                <span class="visually-hidden">{s.name} (opens in a new tab)</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+
+      <div class="ld-pop__main">
+        <section class="ld-pop__block ld-pop-in" style="--k:2">
+          <p class="ld-eyebrow">Introduction</p>
+          <p class="ld-pop__lead">
+            With 15 years in Gurgaon real estate, Ashish Gutt has led {company} since it was
+            incorporated in Haryana on 1 November 2019. His aim: top-grade residential properties,
+            delivered with out-and-out honesty and transparency.
+          </p>
+        </section>
+
+        <section class="ld-pop__block ld-pop__quote ld-pop-in" style="--k:3">
+          <span aria-hidden="true">&ldquo;</span>
+          <blockquote>
+            <p>15 years of real estate excellence. Proudly tagging along in Gurgaon's growth.</p>
+          </blockquote>
+          <p class="ld-pop__cite">Ashish Gutt, on Threads</p>
+        </section>
+
+        <section class="ld-pop__block ld-pop-in" style="--k:4">
+          <ul class="ld-pop__stats" role="list">
+            {[...stats, { value: "1", label: "Advisor per client" }].map((s) => (
+              <li>
+                <b>{s.value}</b>
+                <span>{s.label}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="ld-pop__block">
+          <p class="ld-eyebrow">His approach</p>
+          <ol class="ld-pop__cards" role="list">
+            {approach.map((a, i) => (
+              <li>
+                <span>{String(i + 1).padStart(2, "0")}</span>
+                <h3>{a.title}</h3>
+                <p>{a.body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section class="ld-pop__block">
+          <p class="ld-eyebrow">Journey</p>
+          <ol class="ld-pop__timeline" data-ld-timeline role="list">
+            {journey.map((j) => (
+              <li>
+                <span class="ld-pop__tag">{j.tag}</span>
+                <h3>{j.title}</h3>
+                <p>{j.body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section class="ld-pop__block">
+          <p class="ld-eyebrow">Company record (MCA)</p>
+          <dl class="ld-pop__record">
+            <div>
+              <dt>Company</dt>
+              <dd>{company}</dd>
+            </div>
+            <div>
+              <dt>CIN</dt>
+              <dd>U70103HR2019PTC083367</dd>
+            </div>
+            <div>
+              <dt>Role</dt>
+              <dd>Director and individual promoter</dd>
+            </div>
+            <div>
+              <dt>DIN</dt>
+              <dd>08599984</dd>
+            </div>
+            <div>
+              <dt>Appointed</dt>
+              <dd>1 November 2019</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="ld-pop__block ld-pop__cta">
+          <h3>Talk to Ashish Gutt's team.</h3>
+          <a class="ld-btn ld-btn--gold" href="#contact">
+            Send an enquiry
+          </a>
+        </section>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  import { initLeadership } from "~/scripts/leadership";
+  initLeadership();
+</script>
+
+<style>
+  .ld {
+    --navy: #06163f;
+    --navy-2: #0a2363;
+    --gold: #e9b93a;
+    --gold-2: #f6d77e;
+    --text: #eef1f8;
+    --muted: rgb(238 241 248 / 0.72);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: var(--space-section);
+    background:
+      radial-gradient(50rem 32rem at 75% 40%, rgb(26 86 196 / 0.45), transparent 70%),
+      linear-gradient(170deg, #0b2b78, var(--navy-2) 40%, var(--navy));
+    color: var(--text);
+  }
+  .ld :focus-visible {
+    outline: 2px solid var(--gold-2);
+    outline-offset: 3px;
+  }
+
+  /* Giant moving name behind everything */
+  .ld-marquee {
+    position: absolute;
+    inset: 50% 0 auto;
+    z-index: -1;
+    display: grid;
+    gap: 0.5rem;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .ld-marquee__row {
+    display: flex;
+    width: max-content;
+    margin-left: -20vw;
+    will-change: transform;
+  }
+  .ld-marquee__word {
+    display: inline-flex;
+    align-items: center;
+    gap: 3vw;
+    padding-right: 3vw;
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 2rem + 13vw, 15rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(246 215 126 / 0.15);
+  }
+  .ld-marquee__word--solid {
+    color: rgb(246 215 126 / 0.05);
+    -webkit-text-stroke: 0;
+    font-style: italic;
+  }
+  .ld-marquee__word i {
+    width: 0.12em;
+    height: 0.12em;
+    transform: rotate(45deg);
+    background: rgb(246 215 126 / 0.25);
+  }
+
+  .ld-grid {
+    display: grid;
+    gap: 3.5rem;
+    align-items: center;
+  }
+  .ld-copy {
+    display: grid;
+    justify-items: start;
+    gap: 1.1rem;
+  }
+  .ld-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .ld-name {
+    display: grid;
+    font-family: var(--font-display);
+    font-size: clamp(3.6rem, 2rem + 6.5vw, 7.5rem);
+    font-weight: 500;
+    line-height: 0.9;
+    color: #fff;
+  }
+  .ld-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+  }
+  .ld-mask > * {
+    display: inline-block;
+  }
+  .ld-name em {
+    background: linear-gradient(180deg, #fff6d2, var(--gold-2) 40%, var(--gold) 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .ld-role {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-2);
+  }
+  .ld-quote {
+    max-width: 30ch;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-style: italic;
+    line-height: 1.2;
+    color: #fff;
+  }
+  .ld-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6rem 2.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgb(246 215 126 / 0.25);
+  }
+  .ld-stats li {
+    display: grid;
+    gap: 0.2rem;
+  }
+  .ld-stats b {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 600;
+    line-height: 1;
+    background: linear-gradient(180deg, #fff6d2, var(--gold-2) 45%, var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .ld-stats span {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .ld-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.4rem;
+    margin-top: 0.6rem;
+  }
+  .ld-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-height: 3.4rem;
+    padding: 0 0.6rem 0 1.6rem;
+    border-radius: 999px;
+    border: 0;
+    font: 600 1rem var(--font-body);
+    text-decoration: none;
+    cursor: pointer;
+    transform: translate(var(--bx, 0), var(--by, 0));
+    transition:
+      transform 0.25s var(--ease),
+      box-shadow 0.3s;
+  }
+  .ld-btn--gold {
+    background: linear-gradient(120deg, var(--gold-2), var(--gold));
+    color: #1b1407;
+    box-shadow: 0 12px 34px -12px rgb(233 185 58 / 0.7);
+  }
+  .ld-btn--gold:hover {
+    box-shadow: 0 16px 44px -10px rgb(233 185 58 / 0.95);
+  }
+  .ld-btn__dot {
+    display: grid;
+    place-items: center;
+    width: 2.3rem;
+    height: 2.3rem;
+    border-radius: 50%;
+    background: #1b1407;
+    color: var(--gold-2);
+    transition: transform 0.4s var(--ease);
+  }
+  .ld-btn:hover .ld-btn__dot {
+    transform: rotate(45deg);
+  }
+  .ld-socials {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .ld-social {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    border-radius: 50%;
+    border: 1px solid rgb(246 215 126 / 0.45);
+    background: rgb(255 255 255 / 0.04);
+    transform: translate(var(--bx, 0), var(--by, 0));
+    transition:
+      transform 0.25s var(--ease),
+      background 0.3s,
+      border-color 0.3s;
+  }
+  .ld-social:hover {
+    background: rgb(246 215 126 / 0.16);
+    border-color: var(--gold-2);
+  }
+  .ld-social svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: none;
+    stroke: var(--gold-2);
+    stroke-width: 1.7;
+    stroke-linejoin: round;
+  }
+
+  /* Portrait */
+  .ld-visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 30rem;
+  }
+  .ld-orbit {
+    position: absolute;
+    width: min(34rem, 92%);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px dashed rgb(246 215 126 / 0.25);
+  }
+  .ld-portrait {
+    position: relative;
+    width: min(22rem, 78%);
+    aspect-ratio: 441 / 540;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    transform: translate3d(
+      calc(var(--mx, 0) * 14px),
+      calc(var(--drift, 0) * 0.4px + var(--my, 0) * 14px),
+      0
+    );
+    transition: transform 0.6s var(--ease);
+  }
+  .ld-portrait__clip {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 999px 999px 22px 22px;
+    background: #0b1f5e;
+    box-shadow:
+      0 50px 90px -40px rgb(0 0 0 / 0.85),
+      0 0 0 1px rgb(246 215 126 / 0.45);
+  }
+  .ld-portrait__clip :global(picture) {
+    display: block;
+    height: 100%;
+  }
+  .ld-portrait :global(.ld-portrait__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 18%;
+    transition: transform 0.8s var(--ease);
+  }
+  .ld-portrait:hover :global(.ld-portrait__img) {
+    transform: scale(1.06);
+  }
+  .ld-portrait__ring {
+    position: absolute;
+    inset: -12px;
+    border-radius: 999px 999px 28px 28px;
+    border: 1.5px solid rgb(246 215 126 / 0.6);
+    pointer-events: none;
+  }
+  .ld-badge {
+    position: absolute;
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.75rem 1.05rem;
+    border-radius: 16px;
+    background: rgb(6 22 63 / 0.7);
+    border: 1px solid rgb(246 215 126 / 0.45);
+    backdrop-filter: blur(12px);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    box-shadow: 0 20px 44px -18px rgb(0 0 0 / 0.8);
+    transform: translate3d(
+      calc(var(--mx, 0) * var(--z) * 36px),
+      calc(var(--my, 0) * var(--z) * 36px),
+      0
+    );
+    transition: transform 0.5s var(--ease);
+    pointer-events: none;
+  }
+  .ld-badge b {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--gold-2);
+    line-height: 1;
+  }
+  .ld-badge--a {
+    left: 2%;
+    top: 22%;
+  }
+  .ld-badge--b {
+    right: 2%;
+    top: 12%;
+  }
+  .ld-badge--c {
+    right: 0;
+    bottom: 12%;
+  }
+  .ld-bubble {
+    position: absolute;
+    left: -3.5rem;
+    top: -3.5rem;
+    display: grid;
+    place-items: center;
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    background: var(--gold-2);
+    color: #1b1407;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+    text-align: center;
+    text-transform: uppercase;
+    pointer-events: none;
+    opacity: 0;
+    scale: 0.3;
+    transition:
+      opacity 0.3s,
+      scale 0.45s var(--ease);
+    z-index: 3;
+  }
+  .ld-visual.is-hover .ld-bubble {
+    opacity: 1;
+    scale: 1;
+  }
+  .ld-visual.is-hover .ld-portrait {
+    cursor: none;
+  }
+  @media (min-width: 960px) {
+    .ld-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .ld-visual {
+      min-height: 38rem;
+    }
+  }
+  /* Phones and tablets: the portrait leads. */
+  @media (max-width: 959.98px) {
+    .ld-visual {
+      order: -1;
+      min-height: 27rem;
+    }
+  }
+  @media (max-width: 599.98px) {
+    .ld-badge {
+      font-size: 0.62rem;
+      padding: 0.55rem 0.8rem;
+    }
+    .ld-badge b {
+      font-size: 1.3rem;
+    }
+    .ld-bubble {
+      display: none;
+    }
+  }
+
+  /* Motion (added by leadership.ts) */
+  .ld--motion .ld-up {
+    opacity: 0;
+    transform: translateY(105%);
+    transition:
+      opacity 0.9s var(--ease),
+      transform 1.1s var(--ease);
+    transition-delay: calc(var(--k) * 0.09s);
+  }
+  .ld--motion .ld-copy:not(.ld-mask) > .ld-up {
+    transform: translateY(28px);
+  }
+  .ld--motion .ld-copy.is-in .ld-up {
+    opacity: 1;
+    transform: none;
+  }
+  .ld--motion .ld-portrait__clip {
+    clip-path: inset(calc((1 - var(--reveal, 0)) * 100%) 0 0 0 round 999px 999px 22px 22px);
+  }
+  .ld--motion .ld-portrait :global(.ld-portrait__img) {
+    scale: calc(1.25 - var(--reveal, 0) * 0.25);
+  }
+  .ld--motion .ld-portrait__ring,
+  .ld--motion .ld-orbit {
+    opacity: var(--reveal, 0);
+  }
+  .ld--motion .ld-orbit {
+    animation: ld-spin 40s linear infinite;
+  }
+  .ld--motion .ld-badge {
+    opacity: 0;
+    translate: 0 30px;
+    transition:
+      opacity 0.8s var(--ease),
+      translate 1s var(--ease),
+      transform 0.5s var(--ease);
+  }
+  .ld--motion .ld-visual.is-in .ld-badge {
+    opacity: 1;
+    translate: 0 0;
+  }
+  .ld--motion .ld-visual.is-in .ld-badge--a {
+    transition-delay: 0.5s, 0.5s, 0s;
+  }
+  .ld--motion .ld-visual.is-in .ld-badge--b {
+    transition-delay: 0.7s, 0.7s, 0s;
+  }
+  .ld--motion .ld-visual.is-in .ld-badge--c {
+    transition-delay: 0.9s, 0.9s, 0s;
+  }
+  @keyframes ld-spin {
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  /* ---------- Pop-up ---------- */
+  .ld-pop {
+    --navy: #06163f;
+    --gold: #e9b93a;
+    --gold-2: #f6d77e;
+    --muted: rgb(238 241 248 / 0.72);
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #eef1f8;
+    overflow: hidden;
+  }
+  .ld-pop::backdrop {
+    background: transparent;
+  }
+  .ld-pop__panel {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background:
+      radial-gradient(50rem 40rem at 20% 0%, rgb(26 86 196 / 0.45), transparent 70%),
+      linear-gradient(165deg, #0b2b78, #0a2363 40%, var(--navy));
+  }
+  .ld-pop__close {
+    position: fixed;
+    right: clamp(1rem, 3vw, 2.5rem);
+    top: clamp(1rem, 3vw, 2rem);
+    z-index: 2;
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 50%;
+    border: 1px solid rgb(246 215 126 / 0.6);
+    background: rgb(6 22 63 / 0.7);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    transition: transform 0.4s var(--ease);
+  }
+  .ld-pop__close:hover {
+    transform: rotate(90deg);
+  }
+  .ld-pop__close span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1.3rem;
+    height: 2px;
+    margin: -1px 0 0 -0.65rem;
+    background: var(--gold-2);
+    rotate: 45deg;
+  }
+  .ld-pop__close span + span {
+    rotate: -45deg;
+  }
+  .ld-pop__grid {
+    display: grid;
+    gap: 3rem;
+    width: min(100%, 76rem);
+    margin-inline: auto;
+    padding: clamp(5rem, 8vw, 7rem) var(--gutter) 5rem;
+  }
+  .ld-pop__side {
+    display: grid;
+    justify-items: start;
+    gap: 0.9rem;
+    align-content: start;
+  }
+  .ld-pop__photo {
+    width: min(100%, 20rem);
+    overflow: hidden;
+    border-radius: 999px 999px 20px 20px;
+    border: 1px solid rgb(246 215 126 / 0.55);
+    margin-bottom: 0.8rem;
+  }
+  .ld-pop__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .ld-pop__name {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 2rem + 3vw, 4.4rem);
+    font-weight: 500;
+    line-height: 0.95;
+    color: #fff;
+  }
+  .ld-pop__name em {
+    color: var(--gold-2);
+  }
+  .ld-pop__role {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-2);
+  }
+  .ld-pop__main {
+    display: grid;
+    gap: 3.2rem;
+  }
+  .ld-pop__block {
+    display: grid;
+    gap: 1.1rem;
+  }
+  .ld-pop__lead {
+    font-size: var(--step-1);
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .ld-pop__quote {
+    position: relative;
+    padding: 2.4rem 2rem 2rem;
+    border-radius: 24px;
+    border: 1px solid rgb(246 215 126 / 0.35);
+    background: rgb(255 255 255 / 0.03);
+  }
+  .ld-pop__quote > span {
+    position: absolute;
+    left: 1.4rem;
+    top: -2.2rem;
+    font-family: var(--font-display);
+    font-size: 7rem;
+    line-height: 1;
+    color: var(--gold);
+  }
+  .ld-pop__quote blockquote p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    line-height: 1.2;
+    color: #fff;
+  }
+  .ld-pop__cite {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-2);
+  }
+  .ld-pop__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .ld-pop__stats li {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.4rem;
+    border-radius: 18px;
+    background:
+      linear-gradient(#0c2468, #0c2468) padding-box,
+      linear-gradient(140deg, rgb(246 215 126 / 0.8), transparent 55%, rgb(246 215 126 / 0.5))
+        border-box;
+    border: 1px solid transparent;
+  }
+  .ld-pop__stats b {
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--gold-2);
+  }
+  .ld-pop__stats span {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .ld-pop__cards {
+    display: grid;
+    gap: 1rem;
+  }
+  .ld-pop__cards li {
+    position: relative;
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.6rem 1.6rem 1.6rem 4.6rem;
+    border-radius: 18px;
+    border: 1px solid rgb(246 215 126 / 0.25);
+    background: rgb(255 255 255 / 0.03);
+    transition:
+      border-color 0.3s,
+      background 0.3s,
+      transform 0.4s var(--ease);
+  }
+  .ld-pop__cards li:hover {
+    border-color: var(--gold-2);
+    background: rgb(246 215 126 / 0.06);
+    transform: translateX(6px);
+  }
+  .ld-pop__cards span {
+    position: absolute;
+    left: 1.5rem;
+    top: 1.4rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--gold);
+  }
+  .ld-pop__cards h3,
+  .ld-pop__timeline h3,
+  .ld-pop__cta h3 {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .ld-pop__cards p,
+  .ld-pop__timeline p {
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .ld-pop__timeline {
+    position: relative;
+    display: grid;
+    gap: 1.8rem;
+    padding-left: 2.2rem;
+  }
+  .ld-pop__timeline::before,
+  .ld-pop__timeline::after {
+    content: "";
+    position: absolute;
+    left: 0.45rem;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 2px;
+    background: rgb(246 215 126 / 0.2);
+  }
+  .ld-pop__timeline::after {
+    background: linear-gradient(var(--gold-2), var(--gold));
+    transform: scaleY(var(--line, 0));
+    transform-origin: top;
+  }
+  .ld-pop__timeline li {
+    position: relative;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .ld-pop__timeline li::before {
+    content: "";
+    position: absolute;
+    left: -2.2rem;
+    top: 0.25rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--navy);
+    border: 2px solid var(--gold-2);
+    z-index: 1;
+  }
+  .ld-pop__tag {
+    justify-self: start;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: rgb(246 215 126 / 0.14);
+    color: var(--gold-2);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .ld-pop__record {
+    border-top: 1px solid rgb(246 215 126 / 0.3);
+  }
+  .ld-pop__record div {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  }
+  .ld-pop__record dt {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .ld-pop__record dd {
+    color: #fff;
+  }
+  .ld-pop__cta {
+    justify-items: start;
+    padding: 2rem;
+    border-radius: 24px;
+    background: linear-gradient(120deg, rgb(246 215 126 / 0.16), rgb(246 215 126 / 0.04));
+    border: 1px solid rgb(246 215 126 / 0.4);
+  }
+  .ld-pop__cta .ld-btn {
+    padding-right: 1.6rem;
+  }
+  @media (min-width: 960px) {
+    .ld-pop__grid {
+      grid-template-columns: 22rem 1fr;
+      gap: 5rem;
+    }
+    .ld-pop__side {
+      position: sticky;
+      top: 6rem;
+      align-self: start;
+    }
+    .ld-pop__stats {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* Pop-up motion: circle grows from the click point; contents rise in. */
+  @media (prefers-reduced-motion: no-preference) {
+    .ld-pop[open] .ld-pop__panel {
+      animation: ld-grow 0.85s cubic-bezier(0.7, 0, 0.2, 1) both;
+    }
+    .ld-pop.is-closing .ld-pop__panel {
+      animation: ld-shrink 0.65s cubic-bezier(0.7, 0, 0.2, 1) both;
+    }
+    .ld-pop .ld-pop-in,
+    .ld-pop .ld-pop__cards li,
+    .ld-pop .ld-pop__timeline li {
+      opacity: 0;
+      transform: translateY(30px);
+      transition:
+        opacity 0.8s var(--ease),
+        transform 0.9s var(--ease);
+    }
+    .ld-pop.is-open .ld-pop-in {
+      opacity: 1;
+      transform: none;
+      transition-delay: calc(0.35s + var(--k) * 0.08s);
+    }
+    .ld-pop.is-open .ld-pop__cards li,
+    .ld-pop.is-open .ld-pop__timeline li {
+      opacity: 1;
+      transform: none;
+      transition-delay: 0.8s;
+    }
+  }
+  @keyframes ld-grow {
+    from {
+      clip-path: circle(0 at var(--ox, 50%) var(--oy, 50%));
+    }
+    to {
+      clip-path: circle(150vmax at var(--ox, 50%) var(--oy, 50%));
+    }
+  }
+  @keyframes ld-shrink {
+    from {
+      clip-path: circle(150vmax at var(--ox, 50%) var(--oy, 50%));
+    }
+    to {
+      clip-path: circle(0 at var(--ox, 50%) var(--oy, 50%));
+    }
+  }
+</style>

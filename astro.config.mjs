@@ -74,7 +74,8 @@ export default defineConfig({
   build: { format: "directory" },
   integrations: [
     sitemap({
-      filter: (page) => !/\/thank-you\/$/.test(page) && !/\/404\/?$/.test(page),
+      filter: (page) =>
+        !/\/thank-you\/$/.test(page) && !/\/404\/?$/.test(page) && !/\/ashish-gutt\/$/.test(page),
     }),
   ],
 });

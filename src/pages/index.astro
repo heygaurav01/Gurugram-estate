@@ -12,6 +12,9 @@ import ProjectCard from "~/components/ProjectCard.astro";
 import ContactForm from "~/components/ContactForm.astro";
 import Footer from "~/components/Footer.astro";
 import HiringStrip from "~/components/HiringStrip.astro";
+import Leadership from "~/components/Leadership.astro";
+import { LEADER_SOCIALS } from "~/lib/leader";
+import portrait from "~/assets/team/ashish-gutt.png";
 import { getProjectBundle, getProjects, getSettings } from "~/lib/data";
 import { COMPANY_NAV_LINKS } from "~/lib/nav";
 import { ON_REQUEST, companyName } from "~/lib/compliance";
@@ -69,7 +72,22 @@ const steps = [
 ];
 
 const agent = realEstateAgentLd(settings, Astro.site!);
-const jsonLd = graph([{ ...agent, legalName: company }, websiteLd(settings, Astro.site!)]);
+const person = {
+  "@type": "Person",
+  "@id": new URL("/#ashish-gutt", Astro.site).href,
+  name: "Ashish Gutt",
+  jobTitle: "Director",
+  description: `Director and promoter of ${company}, with 15 years in Gurgaon real estate.`,
+  worksFor: { "@id": agent["@id"] },
+  image: new URL(portrait.src, Astro.site).href,
+  url: new URL("/#leadership", Astro.site).href,
+  sameAs: LEADER_SOCIALS.map((s) => s.href),
+};
+const jsonLd = graph([
+  { ...agent, legalName: company, founder: { "@id": person["@id"] } },
+  websiteLd(settings, Astro.site!),
+  person,
+]);
 ---
 
 <BaseLayout
@@ -159,6 +177,8 @@ const jsonLd = graph([{ ...agent, legalName: company }, websiteLd(settings, Astr
         </ol>
       </div>
     </section>
+
+    <Leadership company={company} />
 
     <section class="section home-projects" id="projects" aria-labelledby="projects-title">
       <div class="container">

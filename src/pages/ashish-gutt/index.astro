@@ -1,0 +1,1433 @@
+---
+/**
+ * Director profile: Ashish Gutt, Director and promoter of Gurugram Estate
+ * Private Limited. Facts come from MCA records (appointment, CIN, DIN) and the
+ * company's own site; nothing else is claimed. Motion in scripts/director.ts.
+ */
+import { Picture } from "astro:assets";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Nav from "~/components/Nav.astro";
+import ContactForm from "~/components/ContactForm.astro";
+import Footer from "~/components/Footer.astro";
+import { getSettings } from "~/lib/data";
+import { companyName } from "~/lib/compliance";
+import { COMPANY_NAV_LINKS } from "~/lib/nav";
+import { contactView } from "~/lib/view";
+import { graph, realEstateAgentLd } from "~/lib/seo";
+import portrait from "~/assets/team/ashish-gutt.png";
+
+const settings = await getSettings();
+const company = companyName(settings);
+const c = contactView(settings);
+const site = Astro.site!;
+
+const statement =
+  "Ashish Gutt leads a Gurugram real estate company built on one idea: every buyer deserves verified facts, clear advice and one advisor from the first call to the final paperwork.";
+
+const stats = [
+  { value: "2019", label: "Company founded", note: "Incorporated in Haryana" },
+  { value: "4", label: "Corridors covered", note: "Across Gurugram" },
+  { value: "3", label: "Services", note: "Real estate, investments, property solutions" },
+  { value: "1", label: "Advisor per client", note: "From first call to final paperwork" },
+];
+
+const principles = [
+  {
+    title: "Verified facts only",
+    body: "Every detail shared with a client comes with its source and date. If something is not confirmed, the team says so.",
+  },
+  {
+    title: "RERA first",
+    body: "No prices or offers before a project is registered with Haryana RERA. Clients can check every project on haryanarera.gov.in.",
+  },
+  {
+    title: "One advisor, start to finish",
+    body: "Site visits, comparisons and paperwork are handled by the same person, so nothing is lost along the way.",
+  },
+];
+
+const journey = [
+  {
+    tag: "1 Nov 2019",
+    title: "The company is founded",
+    body: "Gurugram Estate Private Limited is incorporated in Haryana, with Ashish Gutt as director and promoter.",
+  },
+  {
+    tag: "Sector 74A",
+    title: "A home in DLF Corporate Greens",
+    body: "The team works from Office No. 2018, Tower A, DLF Corporate Greens, Gurugram.",
+  },
+  {
+    tag: "4 corridors",
+    title: "Focused on Gurugram",
+    body: "Advising buyers across Golf Course Road, Golf Course Extension Road, Dwarka Expressway and New Gurugram.",
+  },
+  {
+    tag: "2026",
+    title: "Verified information online",
+    body: "gurugramestatepvtltd.in brings sourced project facts and RERA status to every buyer.",
+  },
+  {
+    tag: "Next",
+    title: "Growing the team",
+    body: "New openings in sales and digital, as the company grows.",
+    link: { href: "/careers/", label: "See careers" },
+  },
+];
+
+const socials = [
+  {
+    name: "Instagram",
+    handle: "@ashish_gutt",
+    href: "https://www.instagram.com/ashish_gutt/",
+    icon: "ig",
+  },
+  {
+    name: "YouTube",
+    handle: "@ashishgutt",
+    href: "https://www.youtube.com/c/AshishGutt",
+    icon: "yt",
+  },
+  {
+    name: "Facebook",
+    handle: "/gutt.ashish",
+    href: "https://www.facebook.com/gutt.ashish/",
+    icon: "fb",
+  },
+];
+
+const person = {
+  "@type": "Person",
+  "@id": new URL("/ashish-gutt/#person", site).href,
+  name: "Ashish Gutt",
+  jobTitle: "Director",
+  worksFor: { "@id": new URL("/#agent", site).href },
+  image: new URL(portrait.src, site).href,
+  url: new URL("/ashish-gutt/", site).href,
+  sameAs: socials.map((s) => s.href),
+};
+const jsonLd = graph([person, realEstateAgentLd(settings, site)]);
+const marquee = ["Real estate", "Investments", "Property solutions", "Gurugram", "Since 2019"];
+---
+
+<BaseLayout
+  title="Ashish Gutt, Director | Gurugram Estate Pvt Ltd"
+  description="Meet Ashish Gutt, director and promoter of Gurugram Estate Private Limited, a Gurugram real estate company since 2019. His approach, journey and contact."
+  path="/ashish-gutt/"
+  jsonLd={jsonLd}
+>
+  <Nav settings={settings} overHero variant="company" links={COMPANY_NAV_LINKS} />
+  <main id="main" class="dr">
+    <!-- HERO -->
+    <section class="dr-hero" data-dr-hero aria-labelledby="dr-title">
+      <div class="dr-hero__grid" aria-hidden="true"></div>
+      <div class="dr-hero__glow" aria-hidden="true"></div>
+      <div class="container dr-hero__inner">
+        <div class="dr-hero__copy">
+          <p class="dr-eyebrow dr-in" style="--d:0">
+            Meet the director
+          </p>
+          <h1 id="dr-title" class="dr-hero__name">
+            <span class="dr-line">
+              {[..."Ashish"].map((ch, i) => (
+                <span class="dr-char" style={`--i:${i}`}>
+                  {ch}
+                </span>
+              ))}
+            </span>
+            <span class="dr-line dr-line--gold">
+              {[..."Gutt"].map((ch, i) => (
+                <span class="dr-char" style={`--i:${i + 6}`}>
+                  {ch}
+                </span>
+              ))}
+            </span>
+          </h1>
+          <span class="dr-rule dr-in" style="--d:6" aria-hidden="true"></span>
+          <p class="dr-hero__role dr-in" style="--d:7">
+            Director and promoter, {company}
+          </p>
+          <p class="dr-hero__lead dr-in" style="--d:8">
+            Ashish Gutt has led {company} since it was incorporated in Haryana on 1 November 2019.
+          </p>
+          <div class="dr-hero__ctas dr-in" style="--d:9">
+            <a class="dr-btn dr-btn--gold" href="#dr-contact" data-dr-magnetic>
+              Talk to his team
+            </a>
+            <button
+              type="button"
+              class="dr-btn dr-btn--ghost"
+              data-dr-open="dr-record"
+              data-dr-magnetic
+            >
+              View company record
+            </button>
+          </div>
+        </div>
+
+        <div class="dr-hero__visual">
+          <button
+            type="button"
+            class="dr-portrait"
+            data-dr-portrait
+            data-dr-open="dr-photo"
+            aria-label="Open a larger photo of Ashish Gutt"
+          >
+            <span class="dr-portrait__frame" aria-hidden="true"></span>
+            <span class="dr-portrait__clip">
+              <Picture
+                src={portrait}
+                alt="Ashish Gutt, Director of Gurugram Estate Private Limited"
+                formats={["avif", "webp"]}
+                widths={[441]}
+                sizes="(max-width: 900px) 80vw, 441px"
+                loading="eager"
+                fetchpriority="high"
+                class="dr-portrait__img"
+              />
+            </span>
+            <span class="dr-chip dr-chip--a" aria-hidden="true">
+              <b>2019</b> Director since
+            </span>
+            <span class="dr-chip dr-chip--b" aria-hidden="true">
+              <b>Gurugram</b> DLF Corporate Greens
+            </span>
+          </button>
+        </div>
+      </div>
+      <a class="dr-scroll" href="#dr-statement" aria-label="Scroll to read more">
+        <span></span>
+      </a>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="dr-marquee" aria-hidden="true">
+      <div class="dr-marquee__track">
+        {[0, 1].map(() => (
+          <span class="dr-marquee__half">
+            {[...marquee, ...marquee].map((t) => (
+              <span class="dr-marquee__item">
+                <i></i>
+                {t}
+              </span>
+            ))}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <!-- STATEMENT -->
+    <section
+      class="dr-statement"
+      id="dr-statement"
+      data-dr-statement
+      aria-label="About Ashish Gutt"
+    >
+      <div class="container">
+        <p class="dr-eyebrow">Introduction</p>
+        <p class="dr-statement__text">
+          {statement.split(" ").map((w) => (
+            <span data-w>{w} </span>
+          ))}
+        </p>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="dr-stats" aria-labelledby="dr-stats-title">
+      <div class="container">
+        <h2 id="dr-stats-title" class="visually-hidden">
+          At a glance
+        </h2>
+        <ul class="dr-stats__grid" role="list">
+          {stats.map((s, i) => (
+            <li class="dr-stat" data-dr-reveal style={`--d:${i}`}>
+              <span class="dr-stat__value" data-dr-count={s.value}>
+                {s.value}
+              </span>
+              <span class="dr-stat__label">{s.label}</span>
+              <span class="dr-stat__note">{s.note}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- PRINCIPLES (stacked cards) -->
+    <section class="dr-principles" aria-labelledby="dr-principles-title">
+      <div class="container dr-principles__inner">
+        <header class="dr-principles__head" data-dr-reveal>
+          <p class="dr-eyebrow">His approach</p>
+          <h2 id="dr-principles-title" class="dr-h2">
+            How he runs the company.
+          </h2>
+          <p class="dr-muted">Three rules that shape every conversation with a buyer.</p>
+        </header>
+        <ol class="dr-stack" role="list">
+          {principles.map((p, i) => (
+            <li class="dr-card" data-dr-card style={`--i:${i}`}>
+              <span class="dr-card__num">{String(i + 1).padStart(2, "0")}</span>
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+              <span class="dr-card__shine" aria-hidden="true"></span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- JOURNEY (pinned horizontal scroll) -->
+    <section class="dr-journey" data-dr-journey aria-labelledby="dr-journey-title">
+      <div class="dr-journey__sticky">
+        <div class="container dr-journey__head">
+          <p class="dr-eyebrow">Journey</p>
+          <h2 id="dr-journey-title" class="dr-h2">
+            From 2019 to today.
+          </h2>
+          <span class="dr-journey__bar" aria-hidden="true">
+            <span></span>
+          </span>
+        </div>
+        <ol class="dr-journey__track" data-dr-track role="list">
+          {journey.map((j, i) => (
+            <li class="dr-step">
+              <span class="dr-step__index">{String(i + 1).padStart(2, "0")}</span>
+              <span class="dr-step__tag">{j.tag}</span>
+              <h3>{j.title}</h3>
+              <p>{j.body}</p>
+              {j.link && (
+                <a class="dr-step__link" href={j.link.href}>
+                  {j.link.label} &rarr;
+                </a>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- SOCIAL -->
+    <section class="dr-social" aria-labelledby="dr-social-title">
+      <div class="container">
+        <header class="dr-social__head" data-dr-reveal>
+          <p class="dr-eyebrow">Follow</p>
+          <h2 id="dr-social-title" class="dr-h2">
+            Follow Ashish Gutt.
+          </h2>
+        </header>
+        <ul class="dr-social__grid" role="list">
+          {socials.map((s, i) => (
+            <li data-dr-reveal style={`--d:${i}`}>
+              <a
+                class={`dr-soc dr-soc--${s.icon}`}
+                href={s.href}
+                target="_blank"
+                rel="noopener me"
+                data-dr-magnetic
+              >
+                <span class="dr-soc__icon" aria-hidden="true">
+                  {s.icon === "ig" && (
+                    <svg viewBox="0 0 24 24">
+                      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+                      <circle cx="12" cy="12" r="4" />
+                      <circle cx="17.2" cy="6.8" r=".8" />
+                    </svg>
+                  )}
+                  {s.icon === "yt" && (
+                    <svg viewBox="0 0 24 24">
+                      <rect x="2.5" y="5.5" width="19" height="13" rx="4" />
+                      <path d="M10.2 9.2v5.6l4.8-2.8z" />
+                    </svg>
+                  )}
+                  {s.icon === "fb" && (
+                    <svg viewBox="0 0 24 24">
+                      <path d="M14 8.2h2.4V4.8H14c-2.3 0-3.7 1.5-3.7 3.8V10.4H8v3.4h2.3V20H14v-6.2h2.4l.5-3.4H14V8.9c0-.4.3-.7.7-.7z" />
+                    </svg>
+                  )}
+                </span>
+                <span class="dr-soc__name">{s.name}</span>
+                <span class="dr-soc__handle">{s.handle}</span>
+                <span class="dr-soc__arrow" aria-hidden="true">
+                  &#8599;
+                </span>
+                <span class="visually-hidden"> (opens in a new tab)</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="dr-contact" id="dr-contact" aria-labelledby="dr-contact-title">
+      <div class="container dr-contact__grid">
+        <div class="dr-contact__copy" data-dr-reveal>
+          <p class="dr-eyebrow">Contact</p>
+          <h2 id="dr-contact-title" class="dr-h2">
+            Talk to Ashish Gutt's team.
+          </h2>
+          <p class="dr-muted">
+            Tell us what you are looking for in Gurugram. We will call you back.
+          </p>
+          <dl class="dr-facts">
+            {c.phone && (
+              <div>
+                <dt>Phone and WhatsApp</dt>
+                <dd>
+                  <a href={c.phone.href}>{c.phone.display}</a>
+                </dd>
+              </div>
+            )}
+            {c.email && (
+              <div>
+                <dt>Email</dt>
+                <dd>
+                  <a href={`mailto:${c.email}`}>{c.email}</a>
+                </dd>
+              </div>
+            )}
+            {c.address && (
+              <div>
+                <dt>Office</dt>
+                <dd>{c.address}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+        <div data-dr-reveal style="--d:1">
+          <ContactForm settings={settings} />
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer settings={settings} variant="company" />
+
+  <!-- POP-UPS -->
+  <dialog id="dr-photo" class="dr-dialog dr-dialog--photo" aria-label="Ashish Gutt">
+    <div class="dr-dialog__panel">
+      <button type="button" class="dr-dialog__close" data-dr-close aria-label="Close">
+        &times;
+      </button>
+      <Picture
+        src={portrait}
+        alt=""
+        formats={["avif", "webp"]}
+        widths={[441]}
+        class="dr-dialog__img"
+      />
+      <p class="dr-dialog__name">Ashish Gutt</p>
+      <p class="dr-dialog__role">Director and promoter, {company}</p>
+    </div>
+  </dialog>
+
+  <dialog id="dr-record" class="dr-dialog" aria-labelledby="dr-record-title">
+    <div class="dr-dialog__panel">
+      <button type="button" class="dr-dialog__close" data-dr-close aria-label="Close">
+        &times;
+      </button>
+      <p class="dr-eyebrow">Ministry of Corporate Affairs records</p>
+      <h2 id="dr-record-title" class="dr-dialog__title">
+        Company record
+      </h2>
+      <dl class="dr-record">
+        <div>
+          <dt>Company</dt>
+          <dd>{company}</dd>
+        </div>
+        <div>
+          <dt>CIN</dt>
+          <dd>U70103HR2019PTC083367</dd>
+        </div>
+        <div>
+          <dt>Incorporated</dt>
+          <dd>1 November 2019, Haryana</dd>
+        </div>
+        <div>
+          <dt>Ashish Gutt</dt>
+          <dd>Director and individual promoter</dd>
+        </div>
+        <div>
+          <dt>DIN</dt>
+          <dd>08599984</dd>
+        </div>
+        <div>
+          <dt>Appointed</dt>
+          <dd>1 November 2019</dd>
+        </div>
+      </dl>
+      <p class="dr-dialog__note">
+        You can check these details on the MCA portal at{" "}
+        <a href="https://www.mca.gov.in/" target="_blank" rel="noopener">
+          mca.gov.in<span class="visually-hidden"> (opens in a new tab)</span>
+        </a>
+        .
+      </p>
+    </div>
+  </dialog>
+</BaseLayout>
+
+<script>
+  import { initDirector } from "~/scripts/director";
+  initDirector();
+</script>
+
+<style>
+  .dr {
+    --dr-navy: #06163f;
+    --dr-navy-2: #0a2363;
+    --dr-royal: #0d3b8e;
+    --dr-gold: #e9b93a;
+    --dr-gold-2: #f6d77e;
+    --dr-text: #eef1f8;
+    --dr-muted: rgb(238 241 248 / 0.72);
+    background: var(--dr-navy);
+    color: var(--dr-text);
+    overflow-x: clip;
+  }
+  .dr-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dr-gold);
+  }
+  .dr-h2 {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    font-weight: 500;
+    line-height: 1.05;
+    color: #fff;
+  }
+  .dr-muted {
+    color: var(--dr-muted);
+    font-size: var(--step-1);
+    line-height: 1.5;
+    max-width: 40ch;
+  }
+
+  /* Buttons */
+  .dr-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.25rem;
+    padding: 0 1.6rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font: 600 1rem var(--font-body);
+    text-decoration: none;
+    cursor: pointer;
+    transform: translate(var(--mx, 0), var(--my, 0));
+    transition:
+      transform 0.25s var(--ease),
+      background 0.3s,
+      color 0.3s,
+      box-shadow 0.3s;
+  }
+  .dr-btn--gold {
+    background: linear-gradient(120deg, var(--dr-gold-2), var(--dr-gold));
+    color: #1b1407;
+    box-shadow: 0 10px 30px -10px rgb(233 185 58 / 0.6);
+  }
+  .dr-btn--gold:hover {
+    box-shadow: 0 14px 40px -8px rgb(233 185 58 / 0.85);
+  }
+  .dr-btn--ghost {
+    background: rgb(255 255 255 / 0.04);
+    border-color: rgb(246 215 126 / 0.5);
+    color: #fff;
+  }
+  .dr-btn--ghost:hover {
+    background: rgb(246 215 126 / 0.12);
+  }
+  .dr :focus-visible {
+    outline: 2px solid var(--dr-gold-2);
+    outline-offset: 3px;
+  }
+
+  /* ---------- Hero ---------- */
+  .dr-hero {
+    position: relative;
+    isolation: isolate;
+    min-height: max(680px, 100svh);
+    display: grid;
+    align-items: center;
+    padding-block: 7.5rem 5rem;
+    background:
+      radial-gradient(60rem 40rem at 80% 10%, rgb(26 86 196 / 0.45), transparent 70%),
+      linear-gradient(160deg, #0b2b78, var(--dr-navy-2) 45%, var(--dr-navy));
+    overflow: hidden;
+  }
+  .dr-hero__grid {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image:
+      linear-gradient(rgb(246 215 126 / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(246 215 126 / 0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at 60% 40%, #000 30%, transparent 75%);
+  }
+  .dr-hero__glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      26rem 26rem at var(--gx, 70%) var(--gy, 40%),
+      rgb(246 190 80 / 0.16),
+      transparent 70%
+    );
+    transition: background 0.2s;
+  }
+  .dr-hero__inner {
+    display: grid;
+    gap: 3.5rem;
+    align-items: center;
+  }
+  .dr-hero__copy {
+    display: grid;
+    justify-items: start;
+    gap: 1.1rem;
+  }
+  .dr-hero__name {
+    display: grid;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(4rem, 2rem + 9vw, 9.5rem);
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+  .dr-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+  }
+  .dr-line--gold {
+    font-style: italic;
+    background: linear-gradient(180deg, #fff6d2, var(--dr-gold-2) 40%, var(--dr-gold) 75%, #fbe2a0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dr-char {
+    display: inline-block;
+  }
+  .dr-line--gold .dr-char {
+    background: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .dr-rule {
+    width: 7rem;
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--dr-gold), var(--dr-gold-2));
+    transform-origin: left;
+  }
+  .dr-hero__role {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--dr-gold-2);
+  }
+  .dr-hero__lead {
+    max-width: 36ch;
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--dr-muted);
+  }
+  .dr-hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 0.6rem;
+  }
+
+  .dr-hero__visual {
+    display: grid;
+    place-items: center;
+    perspective: 1200px;
+  }
+  .dr-portrait {
+    position: relative;
+    width: min(100%, 25rem);
+    aspect-ratio: 441 / 520;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transform-style: preserve-3d;
+    transition: transform 0.35s var(--ease);
+  }
+  .dr-portrait__frame {
+    position: absolute;
+    inset: -14px;
+    border: 1.5px solid rgb(246 215 126 / 0.7);
+    border-radius: 999px 999px 18px 18px;
+    transform: translateZ(-30px);
+  }
+  .dr-portrait__frame::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgb(246 215 126 / 0.3);
+    border-radius: inherit;
+  }
+  .dr-portrait__clip {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 999px 999px 14px 14px;
+    background: #0b1f5e;
+    box-shadow:
+      0 40px 80px -30px rgb(0 0 0 / 0.7),
+      0 0 0 1px rgb(246 215 126 / 0.4);
+  }
+  .dr-portrait__clip::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgb(6 22 63 / 0.55));
+  }
+  .dr-portrait__clip :global(picture) {
+    display: block;
+    height: 100%;
+  }
+  .dr-portrait :global(.dr-portrait__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 20%;
+  }
+  .dr-chip {
+    position: absolute;
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.7rem 1rem;
+    border-radius: 14px;
+    background: rgb(6 22 63 / 0.72);
+    border: 1px solid rgb(246 215 126 / 0.45);
+    backdrop-filter: blur(10px);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dr-muted);
+    text-align: left;
+    transform: translateZ(40px);
+    box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.7);
+  }
+  .dr-chip b {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--dr-gold-2);
+  }
+  /* Badges sit over the background and the jacket, never the face. */
+  .dr-chip--a {
+    left: -1.5rem;
+    top: 34%;
+  }
+  .dr-chip--b {
+    right: -1.5rem;
+    bottom: 9%;
+  }
+  .dr-scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 1.6rem;
+    width: 26px;
+    height: 42px;
+    margin-left: -13px;
+    border: 1.5px solid rgb(246 215 126 / 0.6);
+    border-radius: 14px;
+  }
+  .dr-scroll span {
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    width: 4px;
+    height: 8px;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: var(--dr-gold-2);
+  }
+  @media (min-width: 900px) {
+    .dr-hero__inner {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+  @media (max-width: 899.98px) {
+    .dr-scroll {
+      display: none;
+    }
+    .dr-chip--a {
+      left: -0.5rem;
+    }
+    .dr-chip--b {
+      right: -0.5rem;
+    }
+  }
+
+  /* ---------- Marquee ---------- */
+  .dr-marquee {
+    overflow: hidden;
+    background: linear-gradient(90deg, var(--dr-gold), var(--dr-gold-2), var(--dr-gold));
+    color: #1b1407;
+  }
+  .dr-marquee__track {
+    display: flex;
+    width: max-content;
+  }
+  .dr-marquee__half {
+    display: flex;
+    flex: none;
+  }
+  .dr-marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.6rem;
+    padding: 1rem 1.6rem 1rem 0;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-style: italic;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .dr-marquee__item i {
+    width: 7px;
+    height: 7px;
+    transform: rotate(45deg);
+    background: #1b1407;
+  }
+
+  /* ---------- Statement ---------- */
+  .dr-statement {
+    padding-block: var(--space-section);
+    background: var(--dr-navy);
+  }
+  .dr-statement .container {
+    display: grid;
+    gap: 1.6rem;
+  }
+  .dr-statement__text {
+    max-width: 24ch;
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 1.3rem + 3.6vw, 4.6rem);
+    font-weight: 500;
+    line-height: 1.12;
+    color: #fff;
+  }
+  .dr-statement__text [data-w] {
+    transition:
+      color 0.4s,
+      opacity 0.4s;
+  }
+
+  /* ---------- Stats ---------- */
+  .dr-stats {
+    padding-bottom: var(--space-section);
+    background: var(--dr-navy);
+  }
+  .dr-stats__grid {
+    display: grid;
+    gap: 1rem;
+  }
+  .dr-stat {
+    position: relative;
+    display: grid;
+    gap: 0.35rem;
+    padding: 2rem 1.6rem;
+    border-radius: 20px;
+    background:
+      linear-gradient(var(--dr-navy-2), var(--dr-navy-2)) padding-box,
+      linear-gradient(
+          140deg,
+          rgb(246 215 126 / 0.8),
+          rgb(246 215 126 / 0.05) 50%,
+          rgb(246 215 126 / 0.6)
+        )
+        border-box;
+    border: 1px solid transparent;
+    overflow: hidden;
+    transition: transform 0.4s var(--ease);
+  }
+  .dr-stat::before {
+    content: "";
+    position: absolute;
+    inset: auto -30% -60% auto;
+    width: 70%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(rgb(233 185 58 / 0.22), transparent 70%);
+    transition: transform 0.6s var(--ease);
+  }
+  .dr-stat:hover {
+    transform: translateY(-6px);
+  }
+  .dr-stat:hover::before {
+    transform: scale(1.4);
+  }
+  .dr-stat__value {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 2rem + 3vw, 4.6rem);
+    font-weight: 600;
+    line-height: 1;
+    background: linear-gradient(180deg, #fff6d2, var(--dr-gold-2) 45%, var(--dr-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dr-stat__label {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+  }
+  .dr-stat__note {
+    font-size: 0.9rem;
+    color: var(--dr-muted);
+  }
+  @media (min-width: 640px) {
+    .dr-stats__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1100px) {
+    .dr-stats__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* ---------- Principles ---------- */
+  .dr-principles {
+    padding-block: var(--space-section);
+    background: linear-gradient(180deg, var(--dr-navy), #081a4d);
+  }
+  .dr-principles__inner {
+    display: grid;
+    gap: 3rem;
+    align-items: start;
+  }
+  .dr-principles__head {
+    display: grid;
+    gap: 1rem;
+  }
+  .dr-stack {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .dr-card {
+    position: sticky;
+    top: calc(6rem + var(--i) * 1.4rem);
+    display: grid;
+    gap: 0.8rem;
+    min-height: 15rem;
+    padding: 2.2rem 2rem;
+    border-radius: 24px;
+    background: linear-gradient(150deg, #123190, #0b2163 60%, #081a4d);
+    border: 1px solid rgb(246 215 126 / 0.35);
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.8);
+    overflow: hidden;
+    transform: scale(calc(1 - var(--stack, 0) * 0.06));
+    filter: brightness(calc(1 - var(--stack, 0) * 0.35));
+    transform-origin: top center;
+  }
+  .dr-card__num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 3.2rem;
+    line-height: 1;
+    color: rgb(246 215 126 / 0.9);
+  }
+  .dr-card h3 {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 600;
+    color: #fff;
+  }
+  .dr-card p {
+    max-width: 44ch;
+    color: var(--dr-muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  .dr-card__shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 35%,
+      rgb(255 255 255 / 0.08) 50%,
+      transparent 65%
+    );
+    transform: translateX(-100%);
+    transition: transform 1.1s var(--ease);
+  }
+  .dr-card:hover .dr-card__shine {
+    transform: translateX(100%);
+  }
+  @media (min-width: 1000px) {
+    .dr-principles__inner {
+      grid-template-columns: 0.8fr 1.2fr;
+    }
+    .dr-principles__head {
+      position: sticky;
+      top: 7rem;
+    }
+  }
+
+  /* ---------- Journey ---------- */
+  .dr-journey {
+    position: relative;
+    background: #081a4d;
+  }
+  .dr-journey__sticky {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: var(--space-section);
+  }
+  .dr-journey__head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .dr-journey__bar {
+    display: block;
+    width: min(100%, 22rem);
+    height: 2px;
+    background: rgb(246 215 126 / 0.2);
+  }
+  .dr-journey__bar span {
+    display: block;
+    height: 100%;
+    background: var(--dr-gold-2);
+    transform: scaleX(var(--progress, 1));
+    transform-origin: left;
+  }
+  .dr-journey__track {
+    display: flex;
+    gap: 1.2rem;
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .dr-journey__track::-webkit-scrollbar {
+    display: none;
+  }
+  .dr-step {
+    position: relative;
+    flex: none;
+    display: grid;
+    align-content: start;
+    gap: 0.9rem;
+    width: min(82vw, 24rem);
+    min-height: 22rem;
+    padding: 2.2rem 2rem;
+    border-radius: 24px;
+    background: rgb(255 255 255 / 0.03);
+    border: 1px solid rgb(246 215 126 / 0.28);
+    scroll-snap-align: start;
+    transition:
+      border-color 0.3s,
+      background 0.3s,
+      transform 0.4s var(--ease);
+  }
+  .dr-step:hover {
+    border-color: rgb(246 215 126 / 0.8);
+    background: rgb(246 215 126 / 0.06);
+    transform: translateY(-6px);
+  }
+  .dr-step__index {
+    font-family: var(--font-display);
+    font-size: 5rem;
+    line-height: 0.8;
+    color: rgb(246 215 126 / 0.14);
+    position: absolute;
+    right: 1.4rem;
+    top: 1.4rem;
+  }
+  .dr-step__tag {
+    justify-self: start;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    background: rgb(246 215 126 / 0.14);
+    color: var(--dr-gold-2);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .dr-step h3 {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.05;
+    color: #fff;
+  }
+  .dr-step p {
+    color: var(--dr-muted);
+    line-height: 1.6;
+  }
+  .dr-step__link {
+    color: var(--dr-gold-2);
+    font-weight: 700;
+  }
+  /* Wide screens: the section is pinned and the track moves with scroll (director.ts). */
+  @media (min-width: 900px) {
+    :global(.dr-motion) .dr-journey__sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: grid;
+      align-content: center;
+      padding-block: 4rem;
+      overflow: hidden;
+    }
+    :global(.dr-motion) .dr-journey__track {
+      overflow: visible;
+      width: max-content;
+      padding-inline: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter))) 20vw;
+      will-change: transform;
+    }
+    .dr-step {
+      width: 26rem;
+    }
+  }
+
+  /* ---------- Social ---------- */
+  .dr-social {
+    padding-block: var(--space-section);
+    background: var(--dr-navy);
+  }
+  .dr-social__head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .dr-social__grid {
+    display: grid;
+    gap: 1rem;
+  }
+  .dr-soc {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 1rem;
+    align-items: center;
+    padding: 1.4rem 1.5rem;
+    border-radius: 20px;
+    background: rgb(255 255 255 / 0.03);
+    border: 1px solid rgb(246 215 126 / 0.3);
+    color: #fff;
+    text-decoration: none;
+    overflow: hidden;
+    transform: translate(var(--mx, 0), var(--my, 0));
+    transition:
+      transform 0.3s var(--ease),
+      border-color 0.3s,
+      background 0.3s;
+  }
+  .dr-soc:hover {
+    border-color: var(--dr-gold-2);
+    background: rgb(246 215 126 / 0.07);
+  }
+  .dr-soc__icon {
+    grid-row: span 2;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgb(246 215 126 / 0.12);
+  }
+  .dr-soc__icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: none;
+    stroke: var(--dr-gold-2);
+    stroke-width: 1.7;
+    stroke-linejoin: round;
+  }
+  .dr-soc__name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dr-gold);
+  }
+  .dr-soc__handle {
+    grid-column: 2;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+  .dr-soc__arrow {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    font-size: 1.4rem;
+    color: var(--dr-gold-2);
+    transition: transform 0.3s var(--ease);
+  }
+  .dr-soc:hover .dr-soc__arrow {
+    transform: translate(4px, -4px);
+  }
+  @media (min-width: 800px) {
+    .dr-social__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* ---------- Contact ---------- */
+  .dr-contact {
+    padding-block: var(--space-section);
+    background: linear-gradient(180deg, var(--dr-navy), #040d29);
+  }
+  .dr-contact__grid {
+    display: grid;
+    gap: 3rem;
+    align-items: start;
+  }
+  .dr-contact__copy {
+    display: grid;
+    gap: 1.2rem;
+  }
+  .dr-facts {
+    display: grid;
+    gap: 1.1rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid rgb(246 215 126 / 0.3);
+  }
+  .dr-facts dt {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dr-gold);
+  }
+  .dr-facts dd,
+  .dr-facts a {
+    color: #fff;
+    font-size: 1.05rem;
+  }
+  .dr-contact :global(.cf) {
+    color: var(--ink, #151515);
+  }
+  @media (min-width: 1000px) {
+    .dr-contact__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---------- Dialogs ---------- */
+  .dr-dialog {
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--dr-text, #eef1f8);
+    max-width: min(92vw, 34rem);
+    width: 100%;
+  }
+  .dr-dialog::backdrop {
+    background: rgb(3 8 26 / 0.78);
+    backdrop-filter: blur(6px);
+  }
+  .dr-dialog__panel {
+    position: relative;
+    display: grid;
+    gap: 0.9rem;
+    padding: 2.2rem;
+    border-radius: 24px;
+    background: linear-gradient(160deg, #0f2a78, #06163f);
+    border: 1px solid rgb(246 215 126 / 0.5);
+    box-shadow: 0 40px 100px -30px rgb(0 0 0 / 0.9);
+  }
+  .dr-dialog[open] .dr-dialog__panel {
+    animation: dr-pop 0.45s var(--ease);
+  }
+  .dr-dialog__close {
+    position: absolute;
+    right: 0.9rem;
+    top: 0.9rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: 1px solid rgb(246 215 126 / 0.5);
+    background: rgb(255 255 255 / 0.04);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .dr-dialog--photo .dr-dialog__panel {
+    justify-items: center;
+    text-align: center;
+  }
+  .dr-dialog :global(.dr-dialog__img) {
+    width: min(100%, 22rem);
+    height: auto;
+    border-radius: 999px 999px 16px 16px;
+    border: 1px solid rgb(246 215 126 / 0.5);
+  }
+  .dr-dialog__name {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: #fff;
+  }
+  .dr-dialog__role {
+    color: var(--dr-gold-2, #f6d77e);
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .dr-dialog__title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: #fff;
+  }
+  .dr-record {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid rgb(246 215 126 / 0.3);
+  }
+  .dr-record div {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  }
+  .dr-record dt {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #e9b93a;
+  }
+  .dr-record dd {
+    color: #fff;
+  }
+  .dr-dialog__note {
+    font-size: 0.85rem;
+    color: rgb(238 241 248 / 0.7);
+  }
+  .dr-dialog__note a {
+    color: #f6d77e;
+  }
+  @keyframes dr-pop {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.96);
+    }
+  }
+
+  /* ---------- Motion (only when director.ts runs) ---------- */
+  :global(.dr-motion) .dr-char {
+    transform: translateY(110%);
+    transition: transform 1s var(--ease);
+    transition-delay: calc(0.25s + var(--i) * 0.05s);
+  }
+  :global(.dr-motion) .dr-in {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.9s var(--ease),
+      transform 0.9s var(--ease);
+    transition-delay: calc(0.2s + var(--d) * 0.09s);
+  }
+  :global(.dr-motion) .dr-rule {
+    transform: scaleX(0);
+    transition: transform 1s var(--ease) 0.75s;
+  }
+  :global(.dr-motion) .dr-portrait__clip {
+    clip-path: inset(100% 0 0 0 round 999px 999px 14px 14px);
+    transition: clip-path 1.4s var(--ease) 0.35s;
+  }
+  :global(.dr-motion) .dr-portrait :global(.dr-portrait__img) {
+    transform: scale(1.18) translateY(var(--py, 0));
+    transition: transform 1.8s var(--ease) 0.35s;
+  }
+  :global(.dr-motion) .dr-portrait__frame,
+  :global(.dr-motion) .dr-chip {
+    opacity: 0;
+    transition: opacity 1s var(--ease) 1.1s;
+  }
+  :global(.dr-motion) .dr-hero.is-in .dr-char,
+  :global(.dr-motion) .dr-hero.is-in .dr-in {
+    opacity: 1;
+    transform: none;
+  }
+  :global(.dr-motion) .dr-hero.is-in .dr-rule {
+    transform: scaleX(1);
+  }
+  :global(.dr-motion) .dr-hero.is-in .dr-portrait__clip {
+    clip-path: inset(0 0 0 0 round 999px 999px 14px 14px);
+  }
+  :global(.dr-motion) .dr-hero.is-in .dr-portrait :global(.dr-portrait__img) {
+    transform: scale(1.04);
+  }
+  :global(.dr-motion) .dr-hero.is-in .dr-portrait__frame,
+  :global(.dr-motion) .dr-hero.is-in .dr-chip {
+    opacity: 1;
+  }
+  :global(.dr-motion) .dr-hero.is-in .dr-chip--a {
+    animation: dr-float 6s ease-in-out 2s infinite;
+  }
+  :global(.dr-motion) .dr-hero.is-in .dr-chip--b {
+    animation: dr-float 7s ease-in-out 2.4s infinite reverse;
+  }
+  :global(.dr-motion) .dr-scroll span {
+    animation: dr-wheel 1.8s ease-in-out infinite;
+  }
+  :global(.dr-motion) .dr-marquee__track {
+    animation: dr-marquee 38s linear infinite;
+  }
+  :global(.dr-motion) .dr-statement__text [data-w] {
+    opacity: 0.18;
+  }
+  :global(.dr-motion) .dr-statement__text [data-w].is-lit {
+    opacity: 1;
+  }
+  :global(.dr-motion) [data-dr-reveal] {
+    opacity: 0;
+    transform: translateY(36px);
+    transition:
+      opacity 0.9s var(--ease),
+      transform 0.9s var(--ease);
+    transition-delay: calc(var(--d, 0) * 0.1s);
+  }
+  :global(.dr-motion) [data-dr-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+  @keyframes dr-float {
+    50% {
+      transform: translateZ(40px) translateY(-10px);
+    }
+  }
+  @keyframes dr-wheel {
+    0% {
+      opacity: 0;
+      transform: translateY(0);
+    }
+    40% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+  @keyframes dr-marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

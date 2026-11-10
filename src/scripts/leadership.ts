@@ -178,16 +178,161 @@ function initPopup(dialog: HTMLDialogElement): void {
     .querySelectorAll<HTMLAnchorElement>("a[href^='#']")
     .forEach((a) => a.addEventListener("click", () => finish()));
 
-  if (panel && timeline) {
-    panel.addEventListener(
-      "scroll",
-      () => {
-        const pr = panel.getBoundingClientRect();
-        const tr = timeline.getBoundingClientRect();
-        const p = clamp((pr.bottom - tr.top - pr.height * 0.3) / tr.height);
-        timeline.style.setProperty("--line", p.toFixed(3));
-      },
-      { passive: true },
+  initCarousel(dialog);
+  if (!panel || reduce()) return;
+  dialog.classList.add("ld-pop--motion");
+
+  // Scroll reveals and count-ups inside the pop-up's own scroller.
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        e.target.classList.add("is-in");
+        e.target.querySelectorAll<HTMLElement>("[data-ld-count]").forEach(countUp);
+        if ((e.target as HTMLElement).dataset.ldCount !== undefined)
+          countUp(e.target as HTMLElement);
+        io.unobserve(e.target);
+      }
+    },
+    { root: panel, threshold: 0.2 },
+  );
+  dialog.querySelectorAll("[data-pop-reveal]").forEach((el) => io.observe(el));
+
+  // Progress bar, background parallax, word-by-word intro and timeline line.
+  const words = Array.from(dialog.querySelectorAll<HTMLElement>("[data-ld-words] [data-w]"));
+  const wordsBox = dialog.querySelector<HTMLElement>("[data-ld-words]");
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    if (panel.scrollLeft) panel.scrollLeft = 0;
+    const max = panel.scrollHeight - panel.clientHeight;
+    dialog.style.setProperty("--pp", (max > 0 ? panel.scrollTop / max : 0).toFixed(4));
+    const pr = panel.getBoundingClientRect();
+    if (wordsBox) {
+      const wr = wordsBox.getBoundingClientRect();
+      const p = clamp((pr.bottom - wr.top - pr.height * 0.15) / (wr.height + pr.height * 0.35));
+      const lit =
+        Math.round(p * words.length * 1.2) + (dialog.classList.contains("is-open") ? 6 : 0);
+      words.forEach((w, i) => w.classList.toggle("is-lit", i < lit));
+    }
+    if (timeline) {
+      const tr = timeline.getBoundingClientRect();
+      timeline.style.setProperty(
+        "--line",
+        clamp((pr.bottom - tr.top - pr.height * 0.3) / tr.height).toFixed(3),
+      );
+    }
+  };
+  const request = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+  panel.addEventListener("scroll", request, { passive: true });
+  dialog.addEventListener("transitionend", request);
+  new MutationObserver(request).observe(dialog, { attributes: true, attributeFilter: ["class"] });
+
+  if (!fine()) return;
+  // 3D portrait: tilts toward the pointer with a moving glare.
+  const card = dialog.querySelector<HTMLElement>("[data-ld-tilt]");
+  card?.addEventListener("pointermove", (e) => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    card.style.setProperty("--ry", `${((x - 0.5) * 18).toFixed(2)}deg`);
+    card.style.setProperty("--rx", `${((0.5 - y) * 14).toFixed(2)}deg`);
+    card.style.setProperty("--gx", `${(x * 100).toFixed(1)}%`);
+    card.style.setProperty("--gy", `${(y * 100).toFixed(1)}%`);
+    card.style.setProperty("--glare", "1");
+  });
+  card?.addEventListener("pointerleave", () => {
+    card.style.setProperty("--ry", "0deg");
+    card.style.setProperty("--rx", "0deg");
+    card.style.setProperty("--glare", "0");
+  });
+  // Quote card: gold spotlight follows the pointer, with a slight tilt.
+  const spot = dialog.querySelector<HTMLElement>("[data-ld-spot]");
+  spot?.addEventListener("pointermove", (e) => {
+    const r = spot.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    spot.style.setProperty("--sx", `${(x * 100).toFixed(1)}%`);
+    spot.style.setProperty("--sy", `${(y * 100).toFixed(1)}%`);
+    spot.style.setProperty("--qy", `${((x - 0.5) * 6).toFixed(2)}deg`);
+    spot.style.setProperty("--qx", `${((0.5 - y) * 6).toFixed(2)}deg`);
+    spot.style.setProperty("--spot", "1");
+  });
+  spot?.addEventListener("pointerleave", () => {
+    spot.style.setProperty("--qx", "0deg");
+    spot.style.setProperty("--qy", "0deg");
+    spot.style.setProperty("--spot", "0");
+  });
+}
+
+/** Coverflow carousel: native swipe on touch, drag with a mouse, arrows and dots. */
+function initCarousel(root: HTMLElement): void {
+  const track = root.querySelector<HTMLElement>("[data-ld-track]");
+  if (!track) return;
+  const cards = Array.from(track.children) as HTMLElement[];
+  const dots = Array.from(root.querySelectorAll<HTMLElement>(".ld-car__dots span"));
+  const step = () => (cards[0]?.offsetWidth ?? 300) + 19;
+
+  const paint = () => {
+    const mid = track.scrollLeft + track.clientWidth / 2;
+    let active = 0;
+    let best = Infinity;
+    cards.forEach((c, i) => {
+      const off = (c.offsetLeft + c.offsetWidth / 2 - mid) / c.offsetWidth;
+      const o = Math.max(-1, Math.min(1, off));
+      if (!reduce()) {
+        c.style.setProperty("--off", o.toFixed(3));
+        c.style.setProperty("--abs", Math.abs(o).toFixed(3));
+      }
+      if (Math.abs(off) < best) {
+        best = Math.abs(off);
+        active = i;
+      }
+    });
+    dots.forEach((d, i) => d.classList.toggle("is-on", i === active));
+  };
+  track.addEventListener("scroll", () => requestAnimationFrame(paint), { passive: true });
+  root
+    .querySelector("[data-ld-prev]")
+    ?.addEventListener("click", () =>
+      track.scrollBy({ left: -step(), behavior: reduce() ? "auto" : "smooth" }),
     );
-  }
+  root
+    .querySelector("[data-ld-next]")
+    ?.addEventListener("click", () =>
+      track.scrollBy({ left: step(), behavior: reduce() ? "auto" : "smooth" }),
+    );
+
+  // Mouse drag (touch already swipes natively).
+  let startX = 0;
+  let startLeft = 0;
+  let dragging = false;
+  track.addEventListener("pointerdown", (e) => {
+    if (e.pointerType !== "mouse") return;
+    dragging = true;
+    startX = e.clientX;
+    startLeft = track.scrollLeft;
+    track.classList.add("is-drag");
+    track.setPointerCapture(e.pointerId);
+  });
+  track.addEventListener("pointermove", (e) => {
+    if (dragging) track.scrollLeft = startLeft - (e.clientX - startX);
+  });
+  const end = () => {
+    if (!dragging) return;
+    dragging = false;
+    track.classList.remove("is-drag");
+    // Snap to the nearest card once the drag ends.
+    const i = Math.round(track.scrollLeft / step());
+    track.scrollTo({ left: i * step(), behavior: reduce() ? "auto" : "smooth" });
+  };
+  track.addEventListener("pointerup", end);
+  track.addEventListener("pointercancel", end);
+  root.addEventListener("transitionend", paint, { once: true });
+  new ResizeObserver(paint).observe(track);
 }

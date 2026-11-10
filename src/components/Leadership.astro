@@ -175,20 +175,48 @@ const icons: Record<string, string> = {
 
 <dialog class="ld-pop" data-ld-pop aria-labelledby="ld-pop-title">
   <div class="ld-pop__panel" data-ld-panel>
+    <div class="ld-pop__progress" aria-hidden="true">
+      <span></span>
+    </div>
+    <div class="ld-pop__blobs" aria-hidden="true">
+      <i></i>
+      <i></i>
+      <i></i>
+    </div>
     <button type="button" class="ld-pop__close" data-ld-close aria-label="Close profile">
       <span></span>
       <span></span>
     </button>
     <div class="ld-pop__grid">
       <aside class="ld-pop__side">
-        <div class="ld-pop__photo ld-pop-in" style="--k:0">
-          <Picture src={portrait} alt="Ashish Gutt" formats={["avif", "webp"]} widths={[441]} />
+        <div class="ld-pop__card3d ld-pop-in" data-ld-tilt style="--k:0">
+          <span class="ld-pop__halo" aria-hidden="true"></span>
+          <div class="ld-pop__photo">
+            <Picture src={portrait} alt="Ashish Gutt" formats={["avif", "webp"]} widths={[441]} />
+            <span class="ld-pop__glare" aria-hidden="true"></span>
+          </div>
+          <span class="ld-pop__chip" aria-hidden="true">
+            <b>15</b> years
+          </span>
         </div>
         <p class="ld-eyebrow ld-pop-in" style="--k:1">
           Director
         </p>
-        <h2 id="ld-pop-title" class="ld-pop__name ld-pop-in" style="--k:2">
-          Ashish <em>Gutt</em>
+        <h2 id="ld-pop-title" class="ld-pop__name" aria-label="Ashish Gutt">
+          <span aria-hidden="true">
+            {[..."Ashish"].map((ch, i) => (
+              <span class="ld-pop__char" style={`--c:${i}`}>
+                {ch}
+              </span>
+            ))}
+          </span>{" "}
+          <em aria-hidden="true">
+            {[..."Gutt"].map((ch, i) => (
+              <span class="ld-pop__char" style={`--c:${i + 7}`}>
+                {ch}
+              </span>
+            ))}
+          </em>
         </h2>
         <p class="ld-pop__role ld-pop-in" style="--k:3">
           Director and promoter, {company}
@@ -208,50 +236,94 @@ const icons: Record<string, string> = {
       <div class="ld-pop__main">
         <section class="ld-pop__block ld-pop-in" style="--k:2">
           <p class="ld-eyebrow">Introduction</p>
-          <p class="ld-pop__lead">
-            With 15 years in Gurgaon real estate, Ashish Gutt has led {company} since it was
-            incorporated in Haryana on 1 November 2019. His aim: top-grade residential properties,
-            delivered with out-and-out honesty and transparency.
+          <p class="ld-pop__lead" data-ld-words>
+            {`With 15 years in Gurgaon real estate, Ashish Gutt has led ${company} since it was incorporated in Haryana on 1 November 2019. His aim: top-grade residential properties, delivered with out-and-out honesty and transparency.`
+              .split(" ")
+              .map((w) => (
+                <span data-w>{w} </span>
+              ))}
           </p>
         </section>
 
-        <section class="ld-pop__block ld-pop__quote ld-pop-in" style="--k:3">
-          <span aria-hidden="true">&ldquo;</span>
+        <section class="ld-pop__block ld-pop__quote" data-ld-spot data-pop-reveal>
+          <span class="ld-pop__qmark" aria-hidden="true">
+            &ldquo;
+          </span>
           <blockquote>
             <p>15 years of real estate excellence. Proudly tagging along in Gurgaon's growth.</p>
           </blockquote>
           <p class="ld-pop__cite">Ashish Gutt, on Threads</p>
         </section>
 
-        <section class="ld-pop__block ld-pop-in" style="--k:4">
+        <section class="ld-pop__block">
           <ul class="ld-pop__stats" role="list">
-            {[...stats, { value: "1", label: "Advisor per client" }].map((s) => (
-              <li>
-                <b>{s.value}</b>
+            {[...stats, { value: "1", label: "Advisor per client" }].map((s, i) => (
+              <li data-pop-reveal style={`--k:${i}`}>
+                <b data-ld-count={s.value}>{s.value}</b>
                 <span>{s.label}</span>
               </li>
             ))}
           </ul>
         </section>
 
-        <section class="ld-pop__block">
-          <p class="ld-eyebrow">His approach</p>
-          <ol class="ld-pop__cards" role="list">
-            {approach.map((a, i) => (
-              <li>
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                <h3>{a.title}</h3>
-                <p>{a.body}</p>
-              </li>
+        <div class="ld-pop__ribbon" aria-hidden="true">
+          <div class="ld-pop__ribbon-track">
+            {[0, 1].map(() => (
+              <span>
+                {["Real estate", "Investments", "Property solutions", "Gurugram", "Since 2019"].map(
+                  (t) => (
+                    <em>
+                      {t}
+                      <i></i>
+                    </em>
+                  ),
+                )}
+              </span>
             ))}
-          </ol>
+          </div>
+        </div>
+
+        <section class="ld-pop__block" aria-labelledby="ld-approach-title">
+          <div class="ld-car__head">
+            <p id="ld-approach-title" class="ld-eyebrow">
+              His approach
+            </p>
+            <div class="ld-car__nav">
+              <button type="button" class="ld-car__btn" data-ld-prev aria-label="Previous card">
+                &larr;
+              </button>
+              <button type="button" class="ld-car__btn" data-ld-next aria-label="Next card">
+                &rarr;
+              </button>
+            </div>
+          </div>
+          <div class="ld-car" data-ld-car>
+            <ol class="ld-car__track" data-ld-track role="list">
+              {approach.map((a, i) => (
+                <li class="ld-car__card">
+                  <span class="ld-car__num">{String(i + 1).padStart(2, "0")}</span>
+                  <h3>{a.title}</h3>
+                  <p>{a.body}</p>
+                  <span class="ld-car__shine" aria-hidden="true"></span>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div class="ld-car__dots" aria-hidden="true">
+            {approach.map((_, i) => (
+              <span class:list={{ "is-on": i === 0 }}></span>
+            ))}
+          </div>
+          <p class="ld-car__hint" aria-hidden="true">
+            Swipe or drag
+          </p>
         </section>
 
         <section class="ld-pop__block">
           <p class="ld-eyebrow">Journey</p>
           <ol class="ld-pop__timeline" data-ld-timeline role="list">
-            {journey.map((j) => (
-              <li>
+            {journey.map((j, i) => (
+              <li data-pop-reveal style={`--side:${i % 2 ? 1 : -1}`}>
                 <span class="ld-pop__tag">{j.tag}</span>
                 <h3>{j.title}</h3>
                 <p>{j.body}</p>
@@ -260,7 +332,7 @@ const icons: Record<string, string> = {
           </ol>
         </section>
 
-        <section class="ld-pop__block">
+        <section class="ld-pop__block" data-pop-reveal>
           <p class="ld-eyebrow">Company record (MCA)</p>
           <dl class="ld-pop__record">
             <div>
@@ -286,7 +358,7 @@ const icons: Record<string, string> = {
           </dl>
         </section>
 
-        <section class="ld-pop__block ld-pop__cta">
+        <section class="ld-pop__block ld-pop__cta" data-pop-reveal>
           <h3>Talk to Ashish Gutt's team.</h3>
           <a class="ld-btn ld-btn--gold" href="#contact">
             Send an enquiry
@@ -764,6 +836,7 @@ const icons: Record<string, string> = {
     position: absolute;
     inset: 0;
     overflow-y: auto;
+    overflow-x: hidden;
     overscroll-behavior: contain;
     background:
       radial-gradient(50rem 40rem at 20% 0%, rgb(26 86 196 / 0.45), transparent 70%),
@@ -843,10 +916,14 @@ const icons: Record<string, string> = {
   }
   .ld-pop__main {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
     gap: 3.2rem;
   }
   .ld-pop__block {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
     gap: 1.1rem;
   }
   .ld-pop__lead {
@@ -1037,7 +1114,7 @@ const icons: Record<string, string> = {
   }
   @media (min-width: 960px) {
     .ld-pop__grid {
-      grid-template-columns: 22rem 1fr;
+      grid-template-columns: 22rem minmax(0, 1fr);
       gap: 5rem;
     }
     .ld-pop__side {
@@ -1050,7 +1127,346 @@ const icons: Record<string, string> = {
     }
   }
 
-  /* Pop-up motion: circle grows from the click point; contents rise in. */
+  /* ---------- Pop-up extras ---------- */
+  .ld-pop__progress {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    height: 3px;
+    background: rgb(246 215 126 / 0.12);
+  }
+  .ld-pop__progress span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-2));
+    transform: scaleX(var(--pp, 0));
+    transform-origin: left;
+    box-shadow: 0 0 12px rgb(246 215 126 / 0.8);
+  }
+  .ld-pop__blobs {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .ld-pop__blobs i {
+    position: absolute;
+    width: 36rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.45;
+    transform: translateY(calc(var(--pp, 0) * var(--sp) * -1px));
+  }
+  .ld-pop__blobs i:nth-child(1) {
+    --sp: 260;
+    left: -10rem;
+    top: -8rem;
+    background: radial-gradient(#1f5fd6, transparent 65%);
+  }
+  .ld-pop__blobs i:nth-child(2) {
+    --sp: 520;
+    right: -12rem;
+    top: 30%;
+    background: radial-gradient(rgb(233 185 58 / 0.55), transparent 65%);
+  }
+  .ld-pop__blobs i:nth-child(3) {
+    --sp: 380;
+    left: 30%;
+    top: 90%;
+    background: radial-gradient(#12348f, transparent 65%);
+  }
+  .ld-pop__grid {
+    position: relative;
+    z-index: 1;
+    /* Wide carousel and ribbon never widen the scroller (clip is not a scroll container). */
+    overflow-x: clip;
+  }
+
+  /* 3D portrait card */
+  .ld-pop__card3d {
+    position: relative;
+    width: min(100%, 20rem);
+    margin-bottom: 1.2rem;
+    perspective: 900px;
+  }
+  .ld-pop__card3d .ld-pop__photo {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transform-style: preserve-3d;
+    transition: transform 0.5s var(--ease);
+    box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.85);
+  }
+  .ld-pop__glare {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at var(--gx, 50%) var(--gy, 30%),
+      rgb(255 255 255 / 0.28),
+      transparent 45%
+    );
+    mix-blend-mode: overlay;
+    opacity: var(--glare, 0);
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .ld-pop__halo {
+    position: absolute;
+    inset: -18px;
+    border-radius: 999px 999px 30px 30px;
+    background: conic-gradient(
+      from var(--spin, 0deg),
+      transparent,
+      var(--gold-2),
+      transparent 30%,
+      transparent 55%,
+      var(--gold),
+      transparent 80%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 2px;
+    opacity: 0.9;
+  }
+  .ld-pop__chip {
+    position: absolute;
+    right: -1rem;
+    bottom: 1.4rem;
+    display: grid;
+    padding: 0.6rem 0.9rem;
+    border-radius: 14px;
+    background: rgb(6 22 63 / 0.75);
+    border: 1px solid rgb(246 215 126 / 0.5);
+    backdrop-filter: blur(10px);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transform: translateZ(60px) translate(calc(var(--ry, 0deg) * -1.4), calc(var(--rx, 0deg) * 1.4));
+  }
+  .ld-pop__chip b {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--gold-2);
+  }
+  .ld-pop__char {
+    display: inline-block;
+  }
+
+  /* Quote spotlight */
+  .ld-pop__quote {
+    overflow: hidden;
+    transform: perspective(900px) rotateX(var(--qx, 0deg)) rotateY(var(--qy, 0deg));
+    transition: transform 0.5s var(--ease);
+  }
+  .ld-pop__quote::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      22rem circle at var(--sx, 50%) var(--sy, 50%),
+      rgb(246 215 126 / 0.18),
+      transparent 60%
+    );
+    opacity: var(--spot, 0);
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .ld-pop__qmark {
+    position: absolute;
+    left: auto !important;
+    right: 1.4rem;
+    top: -1.2rem;
+    font-family: var(--font-display);
+    font-size: 9rem;
+    line-height: 1;
+    color: rgb(233 185 58 / 0.25);
+  }
+  .ld-pop__stats li {
+    transition: transform 0.4s var(--ease);
+  }
+  .ld-pop__stats li:hover {
+    transform: translateY(-6px) rotateX(8deg);
+  }
+
+  /* Ribbon */
+  .ld-pop__ribbon {
+    overflow: hidden;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-block: 0.9rem;
+    background: linear-gradient(90deg, var(--gold), var(--gold-2), var(--gold));
+    color: #1b1407;
+    transform: rotate(-2deg);
+  }
+  .ld-pop__ribbon-track {
+    display: flex;
+    width: max-content;
+  }
+  .ld-pop__ribbon-track > span {
+    display: flex;
+    flex: none;
+  }
+  .ld-pop__ribbon em {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.4rem;
+    padding-right: 1.4rem;
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .ld-pop__ribbon i {
+    width: 7px;
+    height: 7px;
+    transform: rotate(45deg);
+    background: #1b1407;
+  }
+
+  /* Approach carousel (swipe, drag, arrows) */
+  .ld-car__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .ld-car__nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+  /* Keep the arrows clear of the fixed close button on phones. */
+  @media (max-width: 959.98px) {
+    .ld-car__head {
+      padding-right: 4.4rem;
+    }
+  }
+  .ld-car__btn {
+    width: 2.9rem;
+    height: 2.9rem;
+    border-radius: 50%;
+    border: 1px solid rgb(246 215 126 / 0.55);
+    background: rgb(255 255 255 / 0.04);
+    color: var(--gold-2);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition:
+      background 0.3s,
+      transform 0.3s var(--ease);
+  }
+  .ld-car__btn:hover {
+    background: rgb(246 215 126 / 0.16);
+    transform: scale(1.08);
+  }
+  .ld-car {
+    perspective: 1100px;
+    margin-inline: calc(var(--gutter) * -1);
+  }
+  .ld-car__track {
+    display: flex;
+    gap: 1.2rem;
+    /* Side padding lets the first and last cards sit in the center. */
+    padding: 1.4rem max(var(--gutter), calc(50% - min(39vw, 11rem))) 1.6rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    cursor: grab;
+    transform-style: preserve-3d;
+  }
+  .ld-car__track::-webkit-scrollbar {
+    display: none;
+  }
+  .ld-car__track.is-drag {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    user-select: none;
+  }
+  .ld-car__card {
+    position: relative;
+    flex: none;
+    display: grid;
+    align-content: start;
+    gap: 0.8rem;
+    width: min(78vw, 22rem);
+    min-height: 16rem;
+    padding: 2rem 1.8rem;
+    border-radius: 24px;
+    scroll-snap-align: center;
+    background: linear-gradient(150deg, #133497, #0b2163 60%, #081a4d);
+    border: 1px solid rgb(246 215 126 / 0.4);
+    box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.85);
+    overflow: hidden;
+    transform: rotateY(calc(var(--off, 0) * -28deg)) scale(calc(1 - var(--abs, 0) * 0.12));
+    opacity: calc(1 - var(--abs, 0) * 0.45);
+    transition:
+      transform 0.25s ease-out,
+      opacity 0.25s;
+  }
+  .ld-car__num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--gold-2);
+  }
+  .ld-car__card h3 {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    line-height: 1.1;
+    color: #fff;
+  }
+  .ld-car__card p {
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .ld-car__shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 35%,
+      rgb(255 255 255 / 0.09) 50%,
+      transparent 65%
+    );
+    transform: translateX(calc(var(--off, 0) * 120%));
+    pointer-events: none;
+  }
+  .ld-car__dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .ld-car__dots span {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: rgb(246 215 126 / 0.3);
+    transition:
+      width 0.4s var(--ease),
+      background 0.4s;
+  }
+  .ld-car__dots span.is-on {
+    width: 1.8rem;
+    background: var(--gold-2);
+  }
+  .ld-car__hint {
+    text-align: center;
+    font-size: 0.72rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgb(246 215 126 / 0.6);
+  }
+
+  /* Pop-up motion: circle grows from the click point; contents animate in. */
   @media (prefers-reduced-motion: no-preference) {
     .ld-pop[open] .ld-pop__panel {
       animation: ld-grow 0.85s cubic-bezier(0.7, 0, 0.2, 1) both;
@@ -1058,9 +1474,7 @@ const icons: Record<string, string> = {
     .ld-pop.is-closing .ld-pop__panel {
       animation: ld-shrink 0.65s cubic-bezier(0.7, 0, 0.2, 1) both;
     }
-    .ld-pop .ld-pop-in,
-    .ld-pop .ld-pop__cards li,
-    .ld-pop .ld-pop__timeline li {
+    .ld-pop .ld-pop-in {
       opacity: 0;
       transform: translateY(30px);
       transition:
@@ -1072,11 +1486,73 @@ const icons: Record<string, string> = {
       transform: none;
       transition-delay: calc(0.35s + var(--k) * 0.08s);
     }
-    .ld-pop.is-open .ld-pop__cards li,
-    .ld-pop.is-open .ld-pop__timeline li {
+    .ld-pop .ld-pop__card3d.ld-pop-in {
+      transform: translateY(60px) rotateY(-25deg) scale(0.9);
+      transition-duration: 1.2s;
+    }
+    .ld-pop.is-open .ld-pop__card3d.ld-pop-in {
+      transform: none;
+    }
+    .ld-pop .ld-pop__char {
+      opacity: 0;
+      transform: translateY(0.6em) rotateX(-90deg);
+      transform-origin: bottom;
+      transition:
+        opacity 0.6s var(--ease),
+        transform 0.9s var(--ease);
+    }
+    .ld-pop.is-open .ld-pop__char {
       opacity: 1;
       transform: none;
-      transition-delay: 0.8s;
+      transition-delay: calc(0.5s + var(--c) * 0.05s);
+    }
+    .ld-pop__halo {
+      animation: ld-halo 6s linear infinite;
+    }
+    .ld-pop__ribbon-track {
+      animation: ld-ribbon 26s linear infinite;
+    }
+    .ld-pop--motion [data-ld-words] [data-w] {
+      opacity: 0.2;
+      transition: opacity 0.35s;
+    }
+    .ld-pop--motion [data-ld-words] [data-w].is-lit {
+      opacity: 1;
+    }
+    .ld-pop--motion [data-pop-reveal] {
+      opacity: 0;
+      transform: perspective(900px) translateY(50px) rotateX(18deg);
+      transition:
+        opacity 0.9s var(--ease),
+        transform 1s var(--ease);
+      transition-delay: calc(var(--k, 0) * 0.1s);
+    }
+    .ld-pop--motion .ld-pop__timeline [data-pop-reveal] {
+      transform: perspective(900px) translateX(calc(var(--side) * 60px))
+        rotateY(calc(var(--side) * -20deg));
+    }
+    .ld-pop--motion [data-pop-reveal].is-in,
+    .ld-pop--motion .ld-pop__timeline [data-pop-reveal].is-in {
+      opacity: 1;
+      transform: none;
+    }
+    .ld-pop--motion .ld-pop__quote.is-in {
+      transform: perspective(900px) rotateX(var(--qx, 0deg)) rotateY(var(--qy, 0deg));
+    }
+  }
+  @property --spin {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+  @keyframes ld-halo {
+    to {
+      --spin: 360deg;
+    }
+  }
+  @keyframes ld-ribbon {
+    to {
+      transform: translateX(-50%);
     }
   }
   @keyframes ld-grow {

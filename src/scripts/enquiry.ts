@@ -215,7 +215,12 @@ export function initEnquiry(): void {
     setSubmitting(true);
     const res = await submitLead(lead);
     if (res.ok) {
-      emit("generate_lead", { intent, project: slug, eventId: idempotencyKey });
+      emit("generate_lead", {
+        intent,
+        project: slug,
+        projectName: lead.projectName,
+        eventId: idempotencyKey,
+      });
       const next = thanks(res.leadId);
       if (!reduceMotion()) {
         // Confirm in place, close the form with its exit animation, then show the thank-you page.

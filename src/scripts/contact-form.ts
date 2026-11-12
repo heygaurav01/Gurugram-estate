@@ -131,7 +131,12 @@ export function initContactForm(): void {
       if (!role) {
         window.dispatchEvent(
           new CustomEvent("gp:generate_lead", {
-            detail: { intent: "general", project: "general", eventId: idempotencyKey },
+            detail: {
+              intent: "general",
+              project: "general",
+              projectName: "General enquiry",
+              eventId: idempotencyKey,
+            },
           }),
         );
       }

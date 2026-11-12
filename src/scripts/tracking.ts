@@ -10,7 +10,7 @@
  *   [data-track] call/WhatsApp -> Contact
  */
 type Fbq = (...args: unknown[]) => void;
-type Detail = { intent?: string; project?: string; eventId?: string };
+type Detail = { intent?: string; project?: string; projectName?: string; eventId?: string };
 
 function fbq(...args: unknown[]): void {
   const f = (window as unknown as { fbq?: Fbq }).fbq;
@@ -27,7 +27,10 @@ export function initTracking(): void {
     fbq(
       "track",
       "Lead",
-      { content_name: d.project ?? "general", content_category: d.intent ?? "general" },
+      {
+        content_name: d.projectName ?? d.project ?? "General enquiry",
+        content_category: d.intent ?? "general",
+      },
       d.eventId ? { eventID: d.eventId } : undefined,
     ),
   );

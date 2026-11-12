@@ -45,6 +45,10 @@ careers:
       title: "Sales"
       summary: "Sell flats and residential units across our real estate projects in Gurugram, from the first client meeting and site visit through to closing the sale."
 
+# Public tracking IDs (safe to publish). Never send name, phone or email to these.
+analytics:
+  meta_pixel_id: "2009668023753276" # Meta Events Manager, dataset created 2026-11-12
+
 leads:
   crm: "TBD" # frappe | espocrm | krayin | none
   notify_email: "TBD"

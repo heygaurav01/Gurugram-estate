@@ -84,6 +84,15 @@ export const siteSettingsSchema = z.object({
     notify_email: z.string(),
     otp_enabled: z.boolean(),
   }),
+  /** Public tracking IDs (not secrets). Empty = tool not loaded. */
+  analytics: z
+    .object({
+      meta_pixel_id: z
+        .string()
+        .regex(/^\d{10,20}$/)
+        .optional(),
+    })
+    .default({}),
 });
 
 /* ------------------------------------------------------------------ */

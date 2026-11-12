@@ -370,8 +370,18 @@ describe("helpers", () => {
   });
 
   it("shows On request for a TBD agent RERA number", () => {
-    expect(agentDisclosure(realSettings)).toContain("HARERA agent registration no. On request.");
-    expect(agentDisclosure(realSettings)).toContain("independent real estate agent");
+    const tbd = {
+      ...realSettings,
+      business: { ...realSettings.business, agent_rera_number: "TBD" },
+    };
+    expect(agentDisclosure(tbd)).toContain("HARERA agent registration no. On request.");
+    expect(agentDisclosure(tbd)).toContain("independent real estate agent");
+  });
+
+  it("shows the real agent RERA number once it is set", () => {
+    expect(agentDisclosure(realSettings)).toContain(
+      "HARERA agent registration no. RC/HARERA/GGM/2613/2208/2024/326.",
+    );
   });
 
   it("names the developer only for authorized channel partners", () => {

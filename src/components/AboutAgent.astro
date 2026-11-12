@@ -19,8 +19,14 @@ const c = contactView(settings, project);
       <p class="eyebrow">About us</p>
       <h2 id="about-title">About {c.brand}</h2>
       <p class="about__lead">
-        We are a real estate agent in Gurugram. We help buyers compare projects, arrange site visits
-        and handle paperwork, and we tell you what is confirmed and what is not.
+        A Gurugram real estate company since 2019, led by director Ashish Gutt and his 15 years in
+        Gurgaon real estate. We help buyers find and compare the right new home, visit the sites
+        with them and see every step of the paperwork through.
+      </p>
+      <p class="about__more">
+        We advise across Golf Course Road, Golf Course Extension Road, Dwarka Expressway and New
+        Gurugram. Every fact we share comes with its source, and one advisor stays with you from the
+        first call to the keys.
       </p>
       <Disclosure settings={settings} developer={project?.developer} />
     </div>
@@ -81,6 +87,10 @@ const c = contactView(settings, project);
   .about__lead {
     font-size: var(--step-1);
     line-height: 1.5;
+  }
+  .about__more {
+    max-width: 56ch;
+    color: var(--ink-2);
   }
   .about__facts {
     display: grid;

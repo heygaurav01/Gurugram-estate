@@ -1,26 +1,28 @@
 ---
-/** Project RERA status with a link to verify on HARERA. */
+/** Project RERA status with a link to verify on the state regulator's portal. */
 import type { Project } from "~/lib/schemas";
-import { HARERA_URL, reraStatusLine } from "~/lib/compliance";
+import { reraAuthority, reraStatusLine } from "~/lib/compliance";
 import { RERA_LABEL } from "~/lib/view";
 
 type Props = { project: Project; tone?: "light" | "dark"; detail?: boolean };
 const { project, tone = "light", detail = true } = Astro.props;
 const registered = project.rera.status === "registered";
-const verifyUrl = project.rera.verifyUrl ?? HARERA_URL;
+const authority = reraAuthority(project);
+const verifyUrl = project.rera.verifyUrl ?? authority.url;
 ---
 
 <div class:list={["rera", `rera--${tone}`, { "rera--registered": registered }]}>
   <p class="rera__chip">
     <span class="rera__dot" aria-hidden="true"></span>
     <span>
-      RERA: {RERA_LABEL[project.rera.status]}
+      {authority.name === "HARERA" ? "RERA" : authority.name}: {RERA_LABEL[project.rera.status]}
       {registered && project.rera.number && `, ${project.rera.number}`}
     </span>
   </p>
   {detail && <p class="rera__line">{reraStatusLine(project)}</p>}
   <a class="rera__verify" href={verifyUrl} rel="noopener" target="_blank">
-    Verify on haryanarera.gov.in<span class="visually-hidden"> (opens in a new tab)</span>
+    Verify on {authority.host}
+    <span class="visually-hidden"> (opens in a new tab)</span>
   </a>
 </div>
 

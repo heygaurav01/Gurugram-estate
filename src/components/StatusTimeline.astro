@@ -2,6 +2,7 @@
 /** Status timeline: done/pending states, dates only where sourced. */
 import type { Project } from "~/lib/schemas";
 import { formatDate } from "~/lib/format";
+import { reraAuthority } from "~/lib/compliance";
 import { buildSources, ctaCopy, verifiedView } from "~/lib/view";
 import SectionHeading from "./SectionHeading.astro";
 import SourceRef from "./SourceRef.astro";
@@ -20,7 +21,7 @@ const cta = ctaCopy(project);
         id="status-title"
         eyebrow="Status"
         title="Where the project stands"
-        intro="Updated as each step is confirmed. Pending steps have no date until the developer or HARERA confirms one."
+        intro={`Updated as each step is confirmed. Pending steps have no date until the developer or ${reraAuthority(project).name} confirms one.`}
       />
       <ol class="timeline" role="list">
         {steps.map((s) => (

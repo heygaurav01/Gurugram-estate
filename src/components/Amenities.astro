@@ -1,8 +1,8 @@
----
+﻿---
 /** Amenities grid (#amenities). Hidden when no amenity is verified. */
 import type { Asset, Project } from "~/lib/schemas";
 import type { ProjectBundle } from "~/lib/data";
-import { buildSources, verifiedView } from "~/lib/view";
+import { buildSources, propertyWords, verifiedView } from "~/lib/view";
 import SectionHeading from "./SectionHeading.astro";
 import SourceRef from "./SourceRef.astro";
 import Picture from "./Picture.astro";
@@ -17,6 +17,7 @@ type Props = {
 const { project, asset, moodImages = [] } = Astro.props;
 const dev = project.developer.authorizedToUseName ? project.developer.name : "The developer";
 const items = verifiedView(project).amenities;
+const words = propertyWords(project);
 const { ref } = buildSources(project);
 ---
 
@@ -27,7 +28,7 @@ const { ref } = buildSources(project);
         <SectionHeading
           id="amenities-title"
           eyebrow="Amenities"
-          title="Clubhouse and amenities"
+          title={words.amenitiesTitle}
           intro={`${dev} has not announced the amenity list yet. We will publish the official list here, item by item, once it is released.`}
         />
       </div>
@@ -36,7 +37,7 @@ const { ref } = buildSources(project);
         asset={project.sectionImages.amenities ? asset(project.sectionImages.amenities) : undefined}
         eyebrow="Releases at launch"
         title="The official amenity list"
-        text="Clubhouse, sports and landscape details as confirmed by the developer."
+        text={words.amenitiesText}
         cta="Get the amenity details first"
         intent="amenities"
         tall

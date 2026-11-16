@@ -96,11 +96,43 @@ export const RERA_LABEL: Record<Project["rera"]["status"], string> = {
   registered: "Registered",
 };
 
+/** Section wording for what the project sells: built homes or plots. */
+export function propertyWords(p: Pick<Project, "propertyType">) {
+  return p.propertyType === "plots"
+    ? {
+        unit: "plot",
+        sectionTitle: "Plots and sizes",
+        types: "Plot sizes",
+        emptyTitle: "Plot sizes have not been announced.",
+        masterText: "Site layout, plots, roads and open spaces",
+        floorTitle: "Plot plans",
+        floorText: "Plot dimensions and layouts for every size, shared the day they are official.",
+        floorCta: "Get the plot plans first",
+        amenitiesTitle: "Wellness and amenities",
+        amenitiesText: "Wellness, sports and landscape details as confirmed by the developer.",
+      }
+    : {
+        unit: "unit",
+        sectionTitle: "Homes and sizes",
+        types: "Home types",
+        emptyTitle: "Home types and sizes have not been announced.",
+        masterText: "Site layout, towers and open spaces",
+        floorTitle: "Floor plans",
+        floorText: "Unit layouts and sizes for every home type, shared the day they are official.",
+        floorCta: "Get the floor plans first",
+        amenitiesTitle: "Clubhouse and amenities",
+        amenitiesText: "Clubhouse, sports and landscape details as confirmed by the developer.",
+      };
+}
+
 /** Resolve {{tokens}} used in FAQ answers. */
 export function resolveTokens(text: string, p: Project, settings: SiteSettings): string {
   return text
     .replaceAll("{{rera_status}}", reraStatusLine(p))
-    .replaceAll("{{agent_disclosure}}", agentDisclosure(settings, p.developer));
+    .replaceAll(
+      "{{agent_disclosure}}",
+      agentDisclosure(settings, p.developer, p.agentRegistration),
+    );
 }
 
 /* Contact ------------------------------------------------------------- */
@@ -130,13 +162,18 @@ export function contactView(settings: SiteSettings, project?: Pick<Project, "nam
 }
 
 /* Enquiry modal headings by intent (used by EnquiryModal in Phase 3). */
-export function intentHeading(intent: FormIntent, p: Pick<Project, "rera">): string {
+export function intentHeading(
+  intent: FormIntent,
+  p: Pick<Project, "rera"> & Partial<Pick<Project, "propertyType">>,
+): string {
   const ri = isRegisterInterestMode(p);
   switch (intent) {
     case "pricing":
       return ri ? "Get pricing when it is released" : "Get the latest pricing";
     case "floor-plan":
-      return "Get the official floor plans";
+      return p.propertyType === "plots"
+        ? "Get the official master and plot plans"
+        : "Get the official floor plans";
     case "location":
       return "Get location details";
     case "gallery":

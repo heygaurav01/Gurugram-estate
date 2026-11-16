@@ -1,7 +1,7 @@
 ---
 /** Shared thank-you content: animated check, confirmation, next steps, contact actions. */
 import type { SiteSettings } from "~/lib/schemas";
-import { HARERA_URL, isPlaceholder } from "~/lib/compliance";
+import { RERA_AUTHORITIES, type ReraAuthority, isPlaceholder } from "~/lib/compliance";
 import { contactView } from "~/lib/view";
 
 type Props = {
@@ -13,8 +13,17 @@ type Props = {
   back: { href: string; label: string };
   /** Replaces the buyer wording (job applications). */
   copy?: { lead: string; steps: Array<{ title: string; text: string }> } | undefined;
+  /** Regulator to link to (defaults to HARERA). */
+  authority?: ReraAuthority | undefined;
 };
-const { settings, from, projectName, back, copy } = Astro.props;
+const {
+  settings,
+  from,
+  projectName,
+  back,
+  copy,
+  authority = RERA_AUTHORITIES.HARERA,
+} = Astro.props;
 const c = contactView(settings, projectName ? { name: projectName } : undefined);
 const promise = isPlaceholder(settings.site.callback_promise)
   ? undefined
@@ -82,8 +91,8 @@ const steps = copy?.steps ?? [
       <p class="ty__links">
         <a href={back.href}>&larr; {back.label}</a>
         {!copy && (
-          <a href={HARERA_URL} rel="noopener" target="_blank">
-            Check a project on haryanarera.gov.in
+          <a href={authority.url} rel="noopener" target="_blank">
+            Check a project on {authority.host}
             <span class="visually-hidden"> (opens in a new tab)</span>
           </a>
         )}

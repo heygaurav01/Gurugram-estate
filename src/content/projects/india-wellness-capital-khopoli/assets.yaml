@@ -1,0 +1,43 @@
+# Asset inventory for India Wellness Capital, Khopoli. Every file in images/ is listed.
+# license: owned | authorized | licensed | open   ("unknown" fails the build)
+#
+# Shapoorji Pallonji material: fromDeveloper: true, license: authorized, licenseProof: the
+# channel partner agreement reference (owner confirmed written authorization 2026-11-17).
+# Do not add the supplied g1-g4 renders, location.jpg or master.jpg: they show other
+# projects (see project.yaml). Deck images are internal-only.
+
+assets:
+  - id: sp-logo
+    file: shapoorji-pallonji-logo.png
+    alt: "Shapoorji Pallonji"
+    kind: logo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: channel partner agreement reference"
+    source: "Shapoorji Pallonji mark and wordmark, cropped from the logo file supplied by the site owner, 2026-11-17"
+    usage: [developer]
+
+  - id: sp-logo-white
+    file: shapoorji-pallonji-logo-white.png
+    alt: "Shapoorji Pallonji"
+    kind: logo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: channel partner agreement reference"
+    onDark: true
+    source: "White version of the supplied logo, for dark backgrounds"
+    usage: [developer]
+
+  # Aerial photo supplied by the owner from the project marketing material. It shows
+  # the Khopoli hills, but is not confirmed as the township site: "Representative image".
+  - id: khopoli-hills
+    file: khopoli-hills-aerial.jpg
+    alt: "Aerial view over forested green hills with a winding track and low cloud on the ridges beyond, in the Khopoli area."
+    caption: "Representative image"
+    kind: photo
+    fromDeveloper: true
+    license: authorized
+    licenseProof: "TBD: channel partner agreement reference"
+    focus: "50% 45%"
+    source: "Supplied by the site owner (authorized Shapoorji Pallonji channel partner), 2026-11-17"
+    usage: [hero, og, section]

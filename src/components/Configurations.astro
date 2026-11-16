@@ -1,4 +1,4 @@
----
+﻿---
 /**
  * Homes table (#homes). Prices show only for RERA-registered projects; the
  * schema already rejects prices otherwise. Calm empty state when nothing is verified.
@@ -6,7 +6,7 @@
 import type { Project } from "~/lib/schemas";
 import { isRegisterInterestMode } from "~/lib/compliance";
 import { formatInr, formatSqftRange } from "~/lib/format";
-import { buildSources, ctaCopy, verifiedView } from "~/lib/view";
+import { buildSources, ctaCopy, propertyWords, verifiedView } from "~/lib/view";
 import SectionHeading from "./SectionHeading.astro";
 import SourceRef from "./SourceRef.astro";
 import SectionFigure from "./SectionFigure.astro";
@@ -16,6 +16,7 @@ type Props = { project: Project; asset: ProjectBundle["asset"] };
 const { project, asset } = Astro.props;
 const image = project.sectionImages.homes ? asset(project.sectionImages.homes) : undefined;
 const rows = verifiedView(project).configurations;
+const words = propertyWords(project);
 const { ref } = buildSources(project);
 const priceAllowed = !isRegisterInterestMode(project);
 const cta = ctaCopy(project);
@@ -30,13 +31,13 @@ const showImage = rows.length === 0 && image !== undefined;
       <SectionHeading
         id="homes-title"
         eyebrow="Homes"
-        title="Homes and sizes"
+        title={words.sectionTitle}
         intro={rows.length > 0 ? "Sizes as published by the developer." : undefined}
       />
       {rows.length > 0 ? (
         <div class="table-wrap" data-reveal>
           <table class="homes">
-            <caption class="visually-hidden">Home types, sizes and pricing</caption>
+            <caption class="visually-hidden">{words.types}, sizes and pricing</caption>
             <thead>
               <tr>
                 <th scope="col">Type</th>
@@ -70,7 +71,7 @@ const showImage = rows.length === 0 && image !== undefined;
         </div>
       ) : (
         <div class="card empty" data-reveal>
-          <p class="empty__title">Home types and sizes have not been announced.</p>
+          <p class="empty__title">{words.emptyTitle}</p>
           <p>
             We publish configurations only after the developer releases them. Pricing is shared
             after RERA registration.

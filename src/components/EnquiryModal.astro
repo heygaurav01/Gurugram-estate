@@ -1,4 +1,4 @@
----
+﻿---
 /**
  * Enquiry modal (one per page). Opened by any [data-enquire="<intent>"] trigger.
  * Desktop: two panels (image + benefits, form). Mobile: bottom sheet.
@@ -9,7 +9,7 @@ import type { Asset, Project, SiteSettings } from "~/lib/schemas";
 import type { ProjectBundle } from "~/lib/data";
 import { formIntents } from "~/lib/schemas";
 import { CONSENT_VERSION, consentText } from "~/lib/validation";
-import { contactView, intentHeading, RERA_LABEL } from "~/lib/view";
+import { contactView, intentHeading, propertyWords, RERA_LABEL } from "~/lib/view";
 import { isRegisterInterestMode } from "~/lib/compliance";
 import Picture from "./Picture.astro";
 import PartnerLogo from "./PartnerLogo.astro";
@@ -29,15 +29,18 @@ const consentLead = consent.replace(/ the Privacy Policy.$/, "");
 const ri = isRegisterInterestMode(project);
 const asideId = project.sectionImages.virtualTour ?? project.theme.heroImageId;
 const asideImage = asideId ? asset(asideId) : undefined;
+const plots = project.propertyType === "plots";
 const benefits = ri
   ? [
       "The official price list the day it is released",
-      "Master plan and floor plans as soon as they are out",
+      plots
+        ? "Master plan and plot plans as soon as they are out"
+        : "Master plan and floor plans as soon as they are out",
       "Help with site visits, comparison and paperwork",
     ]
   : [
       "The latest official price list",
-      "Floor plans for every home type",
+      plots ? "Plans for every plot size" : "Floor plans for every home type",
       "Help with site visits, comparison and paperwork",
     ];
 ---
@@ -93,7 +96,7 @@ const benefits = ri
       </h2>
       <p class="enquiry__intro">
         {ri
-          ? "Free, with no obligation. Registering does not reserve a unit."
+          ? `Free, with no obligation. Registering does not reserve a ${propertyWords(project).unit}.`
           : "Free, with no obligation. An advisor will call you back."}
       </p>
 

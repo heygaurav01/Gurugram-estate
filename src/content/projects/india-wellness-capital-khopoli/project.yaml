@@ -1,0 +1,177 @@
+# India Wellness Capital, Khopoli (Shapoorji Pallonji Real Estate)
+# Facts below are sourced and dated. Do not fill gaps with plausible text.
+#
+# Public sources (checked 2026-11-17). Both are secondary reports of the same
+# Economic Times story; swap in SPRE's own release or MahaRERA when available.
+#   Lapaas Voice, 2026-11-04 (names Khopoli):
+#     https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/
+#   Free Press Journal, 2026-11-04 (citing ET):
+#     https://www.freepressjournal.in/business/shapoorji-pallonji-real-estate-plans-10000-crore-revenue-from-3000-acre-maharashtra-landbank
+#
+# NOT published (claim verification, 2026-11-17):
+#   - Sales deck "IWC Sales Deck 24.09.2026" is marked "For internal training purposes
+#     only": ~380 acres private forest, the lake, ~1,400 ft highest point, the amenity
+#     list, open-space and units-per-acre figures, appreciation/yield figures, and
+#     "Rs 95L all inclusive, 2,000 sq ft onwards". Awaiting SPRE approval for public use.
+#   - Partner sites conflict: plot sizes (1,200 / 1,750 / 2,000 sq ft), prices (79L / 95L),
+#     possession (June 2028 / "Immediate"), a "27 acres" figure, and MahaRERA no.
+#     PP1270002602610 (not found on any official source). Unverified.
+#   - Supplied images g1-g4 are "Proposed view" renders of high-rise towers and a
+#     sea-view dining room; location.jpg is a map of another project (Agarwal Sky
+#     Heights, Vasai); master.jpg (320 px) shows a tower cluster. None is used.
+#
+# TO GO FULL (prices, plans): set rera.status: registered with the MahaRERA project
+# number, and agentRegistration.number with our MahaRERA agent number.
+
+slug: india-wellness-capital-khopoli
+name: "India Wellness Capital, Khopoli"
+tagline: "A wellness-led plotted township by Shapoorji Pallonji, among the hills of Khopoli."
+published: true
+propertyType: plots
+
+overview:
+  title: "A township planned around living well"
+  body:
+    - "India Wellness Capital is Shapoorji Pallonji Real Estate's proposed plotted township in Khopoli, Maharashtra, on the corridor between Mumbai and Pune. Published reports put the full development at about 900 acres, set among hills and water bodies, with the master plan for the whole site finalised."
+    - "The first phase covers about 200 acres, and the developer expects it to be fully developed within 30 months. Wellness facilities form the core of the plan, with sports and adventure components to follow in later phases."
+    - "Gurugram Estate Pvt Ltd is an authorized channel partner of Shapoorji Pallonji. Register interest and we will share the developer's official details, including plot sizes, plans and pricing, as soon as they are released for public use. Registering is free and does not reserve a plot."
+
+developer:
+  name: "Shapoorji Pallonji"
+  # Owner confirmed written authorization on 2026-11-17.
+  authorizedChannelPartner: true
+  authorizedToUseName: true
+  authorizedToUseLogo: true
+  authorizedAssets: true
+  # REQUIRED before production: agreement reference and date.
+  authorizationProof: "TBD"
+  about: "Shapoorji Pallonji Real Estate is the real estate business of the Shapoorji Pallonji Group. It is developing a land bank of more than 3,000 acres in Maharashtra through plotted projects, with the Khopoli township as its centrepiece."
+  aboutSource: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
+
+status: pre-registration
+
+rera:
+  authority: MahaRERA
+  # Owner says the project is registered; the number has not been supplied yet.
+  status: not-registered
+  verifyUrl: "https://maharera.maharashtra.gov.in"
+
+# Our MahaRERA agent registration (HARERA does not cover Maharashtra). TBD until supplied.
+agentRegistration:
+  authority: MahaRERA
+  number: "TBD"
+
+location:
+  sector: "Mumbai-Pune corridor"
+  city: "Khopoli"
+  region: "Maharashtra"
+  # Area only: the exact site location is not confirmed by the developer.
+  mapQuery: "Khopoli, Maharashtra"
+  connectivity: [] # add only measured, dated distances
+
+land:
+  areaAcres: 900
+  note: "Proposed plotted township, to be developed in phases"
+  source: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
+  verifiedOn: "2026-11-17"
+
+highlights:
+  - text: "A proposed plotted township of about 900 acres in Khopoli, on the Mumbai-Pune corridor."
+    short: "About 900 acres"
+    source: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
+    verifiedOn: "2026-11-17"
+  - text: "First phase of about 200 acres, expected to be fully developed within 30 months."
+    short: "Phase 1: about 200 acres"
+    source: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
+    verifiedOn: "2026-11-17"
+  - text: "Planned as a wellness destination: wellness facilities first, sports and adventure in later phases."
+    short: "Wellness-led"
+    source: "https://www.freepressjournal.in/business/shapoorji-pallonji-real-estate-plans-10000-crore-revenue-from-3000-acre-maharashtra-landbank"
+    verifiedOn: "2026-11-17"
+  - text: "Set among hills and water bodies, according to the developer's reported plans."
+    short: "Hills and water bodies"
+    source: "https://www.freepressjournal.in/business/shapoorji-pallonji-real-estate-plans-10000-crore-revenue-from-3000-acre-maharashtra-landbank"
+    verifiedOn: "2026-11-17"
+  - text: "Master plan finalised for the full site, with key approvals reported for the first phase."
+    short: "Master plan finalised"
+    source: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
+    verifiedOn: "2026-11-17"
+
+configurations: [] # plot sizes differ across sources; awaiting the developer's official list
+amenities: [] # the deck's amenity list is internal-only until SPRE approves it
+
+timeline:
+  - label: "Master plan finalised for the full 900 acres"
+    done: true
+    date: "2026-11-04"
+    source: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
+  - label: "Key approvals for Phase 1"
+    done: true
+    date: "2026-11-04"
+    source: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
+  - label: "MahaRERA registration details published here"
+    done: false
+  - label: "Official plot list and pricing"
+    done: false
+  - label: "Phase 1 fully developed (expected within 30 months)"
+    done: false
+
+faqs:
+  - q: "What is India Wellness Capital?"
+    a: "A proposed plotted township by Shapoorji Pallonji Real Estate in Khopoli, Maharashtra. Published reports describe it as about 900 acres among hills and water bodies, planned around wellness, with a first phase of about 200 acres."
+  - q: "Where is it?"
+    a: "In Khopoli, Maharashtra, on the corridor between Mumbai and Pune. The developer has not yet published the exact site address, so the map shows the Khopoli area. We will add travel distances only after we have measured and dated them."
+  - q: "Is it registered with MahaRERA?"
+    a: "{{rera_status}} You can check any Maharashtra project yourself on the MahaRERA portal, maharera.maharashtra.gov.in, by searching the project name or registration number."
+  - q: "What plot sizes and prices are available?"
+    a: "Figures quoted on other websites differ from one another. We will share Shapoorji Pallonji's official plot list and price list as soon as they are released for public use. Register interest to receive them first."
+  - q: "Which amenities are confirmed?"
+    a: "The developer has said wellness facilities will form the core of the township, with sports and adventure components in later phases. We will list specific amenities once the developer confirms them for public use."
+  - q: "Can I visit the site?"
+    a: "Yes. Register interest or call us and an advisor will arrange a visit with the developer's team."
+  - q: "Do I need to pay anything to register interest?"
+    a: "No. Registering interest is free and does not reserve a plot."
+  - q: "Who are you?"
+    a: "{{agent_disclosure}} We help buyers compare projects, arrange site visits and handle paperwork."
+
+seo:
+  title: "India Wellness Capital Khopoli | Shapoorji Pallonji"
+  description: "Authorized channel partner of Shapoorji Pallonji. India Wellness Capital: a wellness-led plotted township in Khopoli. Register for official details."
+  primaryKeyword: "India Wellness Capital Khopoli"
+  secondaryKeywords:
+    - "Shapoorji Pallonji Khopoli"
+    - "Shapoorji Pallonji plots Khopoli"
+    - "Khopoli plotted township"
+  ogImageId: khopoli-hills
+
+theme:
+  accent: "#0353A4" # Shapoorji Pallonji blue, from the logo
+  accentSoft: "#C9DDF0"
+  mode: light
+  motif: sanctuary
+  heroLayout: full
+  heroImageId: khopoli-hills
+  heroFocus: "50% 45%"
+
+form:
+  otp: false
+  intents:
+    [hero, pricing, floor-plan, gallery, location, footer, sticky, nav, amenities, virtual-tour]
+
+sourceInfo:
+  - url: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
+    title: "Shapoorji Pallonji plans to monetise 3,000 acres of land, targets over Rs 10,000 crore revenue"
+    publisher: "Lapaas Voice"
+    published: "2026-11-04"
+  - url: "https://www.freepressjournal.in/business/shapoorji-pallonji-real-estate-plans-10000-crore-revenue-from-3000-acre-maharashtra-landbank"
+    title: "Shapoorji Pallonji Real Estate plans Rs 10,000 crore revenue from 3,000-acre Maharashtra landbank"
+    publisher: "Free Press Journal"
+    published: "2026-11-04"
+
+sectionImages:
+  overview: khopoli-hills
+
+sections:
+  plans: true # gated master and floor plan cards; files added once SPRE releases them
+  gallery: false # no approved project gallery images yet
+  developer: true

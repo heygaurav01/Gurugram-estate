@@ -8,11 +8,10 @@
  */
 import type { Asset, Project, SiteSettings } from "~/lib/schemas";
 import {
-  HARERA_URL,
-  ON_REQUEST,
+  agentRegistration,
   brandWithLegalName,
   companyName,
-  isPlaceholder,
+  reraAuthority,
   reraStatusLine,
 } from "~/lib/compliance";
 import { contactView, RERA_LABEL } from "~/lib/view";
@@ -36,9 +35,8 @@ const legalLine = isCompany
   ? companyName(settings)
   : brandWithLegalName(settings).replace(/,$/, "");
 const c = contactView(settings, project);
-const reraNo = isPlaceholder(settings.business.agent_rera_number)
-  ? ON_REQUEST
-  : settings.business.agent_rera_number;
+const agent = agentRegistration(settings, project?.agentRegistration);
+const authority = reraAuthority(project);
 const year = new Date().getFullYear();
 const coBrand = project?.developer.authorizedChannelPartner === true;
 const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
@@ -134,8 +132,8 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
         <h2 class="footer__h">RERA</h2>
         <ul role="list" class="footer__list">
           <li>
-            <span class="footer__k">Agent HARERA registration</span>
-            <span>{reraNo}</span>
+            <span class="footer__k">Agent {agent.authority} registration</span>
+            <span>{agent.number}</span>
           </li>
           {project && (
             <li>
@@ -150,8 +148,9 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
           )}
           <li>
             <span class="footer__k">Verify any project</span>
-            <a href={HARERA_URL} rel="noopener" target="_blank">
-              haryanarera.gov.in<span class="visually-hidden"> (opens in a new tab)</span>
+            <a href={authority.url} rel="noopener" target="_blank">
+              {authority.host}
+              <span class="visually-hidden"> (opens in a new tab)</span>
             </a>
           </li>
         </ul>
@@ -159,7 +158,12 @@ const hasContact = Boolean(c.phone || c.whatsapp || c.email || c.address);
     </div>
 
     <div class="footer__disclosure">
-      <Disclosure settings={settings} developer={project?.developer} tone="dark" />
+      <Disclosure
+        settings={settings}
+        developer={project?.developer}
+        agent={project?.agentRegistration}
+        tone="dark"
+      />
       {project && <p class="footer__status">{reraStatusLine(project)}</p>}
     </div>
 

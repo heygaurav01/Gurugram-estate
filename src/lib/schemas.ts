@@ -100,6 +100,7 @@ export const siteSettingsSchema = z.object({
 /* ------------------------------------------------------------------ */
 
 export const reraStatuses = ["not-registered", "applied", "registered"] as const;
+export const reraAuthorities = ["HARERA", "MahaRERA"] as const;
 export const formIntents = [
   "hero",
   "pricing",
@@ -143,6 +144,8 @@ export const projectSchema = z
       })
       .optional(),
     published: z.boolean(),
+    /** What is sold: built homes (apartments, villas) or plots. Changes section wording. */
+    propertyType: z.enum(["homes", "plots"]).default("homes"),
     developer: z.object({
       name: z.string().min(1),
       authorizedToUseName: z.boolean(),
@@ -159,11 +162,24 @@ export const projectSchema = z
     }),
     status: z.enum(["pre-registration", "registered", "launched", "under-construction", "ready"]),
     rera: z.object({
+      /** State regulator the project registers with (HARERA for Haryana, MahaRERA for Maharashtra). */
+      authority: z.enum(reraAuthorities).default("HARERA"),
       status: z.enum(reraStatuses),
       number: z.string().optional(),
       verifyUrl: z.url().optional(),
       verifiedOn: z.string().optional(),
     }),
+    /**
+     * Our agent registration for this project's state, when it differs from the
+     * HARERA number in settings.yaml (e.g. MahaRERA for a Maharashtra project).
+     * "TBD" renders as "On request".
+     */
+    agentRegistration: z
+      .object({
+        authority: z.enum(reraAuthorities),
+        number: z.string().min(1),
+      })
+      .optional(),
     location: z.object({
       sector: z.string().min(1),
       city: z.string().min(1),
@@ -250,9 +266,13 @@ export const projectSchema = z
          * curtain reveals (warm black and champagne gold, styles/aurum.css); "horology"
          * adds a live watch dial, guilloche patterns and bezel cards (styles/horology.css);
          * "botanica" adds dappled light, drifting leaves, pebble cards, pill buttons with a
-         * magnetic hover, a scroll progress line and a garden-sheet popup (styles/botanica.css).
+         * magnetic hover, a scroll progress line and a garden-sheet popup (styles/botanica.css);
+         * "sanctuary" adds drifting mist, topographic contour lines, altitude-style section
+         * markers and a forest-and-ivory editorial rhythm (styles/sanctuary.css).
          */
-        motif: z.enum(["none", "neon", "aurum", "horology", "botanica"]).default("none"),
+        motif: z
+          .enum(["none", "neon", "aurum", "horology", "botanica", "sanctuary"])
+          .default("none"),
         /**
          * Hero layout: "full" (full-bleed image), or split with the image in an
          * "arch" frame or a "tonneau" frame (the barrel shape of a watch case), or

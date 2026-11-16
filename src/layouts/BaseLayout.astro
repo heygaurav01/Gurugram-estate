@@ -1,4 +1,4 @@
----
+﻿---
 /**
  * Root layout: SEO head, fonts, global styles and motion.
  * Pages render their own Nav and Footer so each can configure them.
@@ -20,6 +20,7 @@ import "~/styles/neon.css";
 import "~/styles/aurum.css";
 import "~/styles/horology.css";
 import "~/styles/botanica.css";
+import "~/styles/sanctuary.css";
 
 type Props = {
   title: string;
@@ -33,7 +34,7 @@ type Props = {
         accentInk: string;
         accentSoft?: string | undefined;
         mode?: "light" | "dark";
-        motif?: "none" | "neon" | "aurum" | "horology" | "botanica";
+        motif?: "none" | "neon" | "aurum" | "horology" | "botanica" | "sanctuary";
       }
     | undefined;
   /** Reserve space for the mobile sticky bar. */

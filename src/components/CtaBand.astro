@@ -1,8 +1,8 @@
----
+﻿---
 /** Final CTA band: short reassurance and the form trigger (intent "footer"). */
 import type { Project } from "~/lib/schemas";
 import { isRegisterInterestMode } from "~/lib/compliance";
-import { ctaCopy } from "~/lib/view";
+import { ctaCopy, propertyWords } from "~/lib/view";
 
 type Props = { project: Project };
 const { project } = Astro.props;
@@ -18,7 +18,7 @@ const ri = isRegisterInterestMode(project);
     <div class="band__side">
       <p>
         {ri
-          ? "Registering interest is free and does not reserve a unit. We will contact you when official details are released."
+          ? `Registering interest is free and does not reserve a ${propertyWords(project).unit}. We will contact you when official details are released.`
           : "An advisor will answer your questions and share the latest official information."}
       </p>
       <a class="btn band__btn" href="#contact" data-enquire="footer">

@@ -4,13 +4,16 @@
  * so it always offers a way to get in touch. TBD values are hidden.
  */
 import type { Project, SiteSettings } from "~/lib/schemas";
-import { ON_REQUEST } from "~/lib/compliance";
+import { agentRegistration, reraAuthority } from "~/lib/compliance";
 import { contactView } from "~/lib/view";
 import Disclosure from "./Disclosure.astro";
 
 type Props = { settings: SiteSettings; project?: Project | undefined };
 const { settings, project } = Astro.props;
 const c = contactView(settings, project);
+const agent = agentRegistration(settings, project?.agentRegistration);
+// Projects outside Haryana get their own line instead of the Gurugram corridors.
+const outOfState = reraAuthority(project).name !== "HARERA";
 ---
 
 <section class="section about" id="contact" aria-labelledby="about-title">
@@ -23,18 +26,30 @@ const c = contactView(settings, project);
         Gurgaon real estate. We help buyers find and compare the right new home, visit the sites
         with them and see every step of the paperwork through.
       </p>
-      <p class="about__more">
-        We advise across Golf Course Road, Golf Course Extension Road, Dwarka Expressway and New
-        Gurugram. Every fact we share comes with its source, and one advisor stays with you from the
-        first call to the keys.
-      </p>
-      <Disclosure settings={settings} developer={project?.developer} />
+      {outOfState ? (
+        <p class="about__more">
+          For {project?.name}, in {project?.location.city}, {project?.location.region}, we bring the
+          same approach: every fact we share comes with its source, and one advisor stays with you
+          from the first call to the keys.
+        </p>
+      ) : (
+        <p class="about__more">
+          We advise across Golf Course Road, Golf Course Extension Road, Dwarka Expressway and New
+          Gurugram. Every fact we share comes with its source, and one advisor stays with you from
+          the first call to the keys.
+        </p>
+      )}
+      <Disclosure
+        settings={settings}
+        developer={project?.developer}
+        agent={project?.agentRegistration}
+      />
     </div>
     <div data-reveal>
       <dl class="about__facts">
         <div>
-          <dt>HARERA agent registration</dt>
-          <dd>{c.reraNo ?? ON_REQUEST}</dd>
+          <dt>{agent.authority} agent registration</dt>
+          <dd>{agent.number}</dd>
         </div>
         {c.phone && (
           <div>

@@ -94,7 +94,11 @@ const links = [
   hasGallery && { href: "#gallery", label: "Gallery", intent: "gallery" },
   { href: "#location", label: "Map", intent: "location" },
   { href: "#virtual-tour", label: "Virtual Tour", intent: "virtual-tour" },
-  { href: "#plans", label: "Master & Floor Plan", intent: "floor-plan" },
+  {
+    href: "#plans",
+    label: project.propertyType === "plots" ? "Master & Plot Plan" : "Master & Floor Plan",
+    intent: "floor-plan",
+  },
   { href: "#pricing", label: "Pricing", intent: "pricing" },
 ].filter((l): l is NavLink => Boolean(l));
 
@@ -102,7 +106,10 @@ const links = [
 const footerLinks = [
   project.overview && { href: "#overview", label: "Overview" },
   hasGallery && { href: "#gallery", label: "Gallery" },
-  { href: "#homes", label: "Homes and sizes" },
+  {
+    href: "#homes",
+    label: project.propertyType === "plots" ? "Plots and sizes" : "Homes and sizes",
+  },
   { href: "#pricing", label: "Pricing" },
   { href: "#plans", label: "Master and floor plans" },
   { href: "#amenities", label: "Amenities" },

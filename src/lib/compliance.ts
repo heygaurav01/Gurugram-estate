@@ -58,21 +58,60 @@ export function isRegisterInterestMode(project: Pick<Project, "rera">): boolean 
 /** The text shown in place of a TBD value. */
 export const ON_REQUEST = "On request";
 
+/** State RERA regulators: display name, portal and short host for link text. */
+export const RERA_AUTHORITIES = {
+  HARERA: {
+    name: "HARERA",
+    url: "https://haryanarera.gov.in",
+    host: "haryanarera.gov.in",
+    state: "Haryana",
+  },
+  MahaRERA: {
+    name: "MahaRERA",
+    url: "https://maharera.maharashtra.gov.in",
+    host: "maharera.maharashtra.gov.in",
+    state: "Maharashtra",
+  },
+} as const;
+export type ReraAuthority = (typeof RERA_AUTHORITIES)[keyof typeof RERA_AUTHORITIES];
+
+/** The regulator for a project (HARERA unless the project says otherwise). */
+export function reraAuthority(project?: {
+  rera?: { authority?: ReraAuthorityKey };
+}): ReraAuthority {
+  return RERA_AUTHORITIES[project?.rera?.authority ?? "HARERA"];
+}
+type ReraAuthorityKey = keyof typeof RERA_AUTHORITIES;
+
+/**
+ * Our agent registration for a page: the project's own state registration when
+ * set, otherwise the HARERA number from settings. TBD becomes "On request".
+ */
+export function agentRegistration(
+  settings: SiteSettings,
+  agent?: Project["agentRegistration"],
+): { authority: string; number: string } {
+  const raw = agent ? agent.number : settings.business.agent_rera_number;
+  return {
+    authority: agent ? RERA_AUTHORITIES[agent.authority].name : "HARERA",
+    number: isPlaceholder(raw) ? ON_REQUEST : raw,
+  };
+}
+
 /** Agent disclosure required on every page. */
 export function agentDisclosure(
   settings: SiteSettings,
   developer?: Pick<Project["developer"], "name" | "authorizedChannelPartner">,
+  agent?: Project["agentRegistration"],
 ): string {
   const authorizedChannelPartner = developer?.authorizedChannelPartner === true;
   const brand = brandWithLegalName(settings);
-  const reraNo = isPlaceholder(settings.business.agent_rera_number)
-    ? ON_REQUEST
-    : settings.business.agent_rera_number;
+  const reg = agentRegistration(settings, agent);
   const role =
     authorizedChannelPartner && developer
       ? `an authorized channel partner of ${developer.name}`
       : "an independent real estate agent";
-  return `${brand} is ${role}, HARERA agent registration no. ${reraNo}. This is not the developer's official website.`;
+  return `${brand} is ${role}, ${reg.authority} agent registration no. ${reg.number}. This is not the developer's official website.`;
 }
 
 /** Compares company names ignoring "Pvt Ltd" vs "Private Limited", case and dots. */
@@ -106,13 +145,11 @@ export function companyName(settings: SiteSettings): string {
   return legal && !isPlaceholder(legal) ? legal : settings.business.brand_name;
 }
 
-export const HARERA_URL = "https://haryanarera.gov.in";
-
 /** One-line RERA status for the hero, configurations and footer. */
 export function reraStatusLine(project: Pick<Project, "rera">): string {
   switch (project.rera.status) {
     case "registered":
-      return `RERA registration no. ${project.rera.number}. Verify at haryanarera.gov.in.`;
+      return `${reraAuthority(project).name} registration no. ${project.rera.number}. Verify at ${reraAuthority(project).host}.`;
     case "applied":
       return "RERA registration: applied, not yet granted. We will share pricing and plans only after registration.";
     default:

@@ -6,12 +6,16 @@ import { agentDisclosure } from "~/lib/compliance";
 type Props = {
   settings: SiteSettings;
   developer?: Project["developer"] | undefined;
+  /** The project's own agent registration (e.g. MahaRERA), when it has one. */
+  agent?: Project["agentRegistration"] | undefined;
   tone?: "light" | "dark";
 };
-const { settings, developer, tone = "light" } = Astro.props;
+const { settings, developer, agent, tone = "light" } = Astro.props;
 ---
 
-<p class:list={["disclosure", `disclosure--${tone}`]}>{agentDisclosure(settings, developer)}</p>
+<p class:list={["disclosure", `disclosure--${tone}`]}>
+  {agentDisclosure(settings, developer, agent)}
+</p>
 
 <style>
   .disclosure {

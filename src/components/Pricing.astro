@@ -5,7 +5,7 @@
  * are ever rendered for an unregistered project.
  */
 import type { Project } from "~/lib/schemas";
-import { isRegisterInterestMode } from "~/lib/compliance";
+import { isRegisterInterestMode, reraAuthority } from "~/lib/compliance";
 import type { ProjectBundle } from "~/lib/data";
 import SectionFigure from "./SectionFigure.astro";
 
@@ -34,8 +34,8 @@ const dev = project.developer.authorizedToUseName ? project.developer.name : "Th
           <p class="pricing__lead">{dev} has not released pricing yet.</p>
           <p>
             Under the RERA Act, a project can be priced and marketed only after it is registered
-            with HARERA. Register now and we will send you the official price list the day it is
-            released.
+            with {reraAuthority(project).name}. Register now and we will send you the official price
+            list the day it is released.
           </p>
         </div>
       ) : (

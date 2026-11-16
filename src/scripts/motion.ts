@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Scroll reveals for [data-reveal]. Skipped entirely under reduced motion and
  * when IntersectionObserver is missing, so content is never left hidden.
  * Hero entrance motion is pure CSS (styles/motion.css).
@@ -28,7 +28,8 @@ export function initMotion(): void {
   });
   document.documentElement.classList.add("reveal-ready");
   const motif = document.documentElement.dataset.motif;
-  if (motif === "aurum" || motif === "horology" || motif === "botanica") initCountUp();
+  if (motif === "aurum" || motif === "horology" || motif === "botanica" || motif === "sanctuary")
+    initCountUp();
   if (motif === "botanica") initMagnetic();
 }
 

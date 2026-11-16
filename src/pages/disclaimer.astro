@@ -1,7 +1,7 @@
 ---
 import LegalLayout from "~/layouts/LegalLayout.astro";
 import { getSettings } from "~/lib/data";
-import { HARERA_URL, agentDisclosure } from "~/lib/compliance";
+import { RERA_AUTHORITIES, agentDisclosure } from "~/lib/compliance";
 import { contactView } from "~/lib/view";
 
 const settings = await getSettings();
@@ -15,7 +15,7 @@ const c = contactView(settings);
   path="/disclaimer/"
   heading="Disclaimer"
   summary="What the information on this site means, where it comes from, and what it does not promise."
-  lastUpdated="2026-10-18"
+  lastUpdated="2026-11-17"
 >
   <h2>Who we are</h2>
   <p>{agentDisclosure(settings)}</p>
@@ -32,7 +32,8 @@ const c = contactView(settings);
     Every fact on a project page links to a source and shows the date we checked it. Developers
     change plans, and public reports can be wrong or out of date. Please verify any information
     independently before making a decision, and rely only on documents issued by the developer and
-    registered with HARERA.
+    registered with the state's RERA authority: HARERA for projects in Haryana, MahaRERA for
+    projects in Maharashtra.
   </p>
 
   <h2>Images</h2>
@@ -44,7 +45,7 @@ const c = contactView(settings);
   <h2>Prices and availability</h2>
   <p>
     Prices, sizes and availability are set by the developer and can change at any time. We do not
-    show any pricing for a project before it is registered with HARERA.
+    show any pricing for a project before it is registered with its state's RERA authority.
   </p>
 
   <h2>No offer or contract</h2>
@@ -53,14 +54,18 @@ const c = contactView(settings);
     free and does not reserve a unit.
   </p>
 
-  <h2>How to verify a project on HARERA</h2>
+  <h2>How to verify a project's RERA registration</h2>
   <ul>
     <li>
-      Open{" "}
-      <a href={HARERA_URL} rel="noopener" target="_blank">
-        haryanarera.gov.in
-      </a>{" "}
-      and use the project search.
+      For Haryana, open{" "}
+      <a href={RERA_AUTHORITIES.HARERA.url} rel="noopener" target="_blank">
+        {RERA_AUTHORITIES.HARERA.host}
+      </a>
+      ; for Maharashtra, open{" "}
+      <a href={RERA_AUTHORITIES.MahaRERA.url} rel="noopener" target="_blank">
+        {RERA_AUTHORITIES.MahaRERA.host}
+      </a>
+      . Use the project search.
     </li>
     <li>Search by project name, developer or registration number.</li>
     <li>Check that the registration number, developer and address match what you were told.</li>

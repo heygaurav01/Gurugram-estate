@@ -59,6 +59,22 @@ const bars = [
   [93, 10, 28, 480],
   [97, 24, 20, 260],
 ].map(([left, top, height, delay]) => ({ left, top, height, delay }));
+// Sanctuary motif: mist banks drifting across the hills and topographic contour
+// lines, drawn from fixed values so builds are stable.
+const sanctuary = project.theme.motif === "sanctuary";
+const contours = Array.from({ length: 11 }, (_, k) => {
+  const base = 520 - k * 34;
+  const pts = Array.from({ length: 33 }, (_, i) => {
+    const x = i * 50;
+    const y =
+      base -
+      Math.sin((i + k * 1.7) / 4.2) * (26 + k * 3) -
+      Math.sin((i * 0.9 + k) / 2.1) * 9 -
+      Math.max(0, 1 - Math.abs(i - 22) / 12) * (90 - k * 6);
+    return `${x},${y.toFixed(1)}`;
+  });
+  return `M${pts.join(" L")}`;
+});
 const cta = ctaCopy(project);
 
 // "L&T Sector 86, Gurgaon" -> "L&T Sector 86," + italic "Gurgaon" on its own line.
@@ -109,6 +125,19 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
         />
       ))}
       <span class="hero__floor" />
+    </div>
+  )}
+
+  {sanctuary && (
+    <div class="hero__sanctuary" aria-hidden="true">
+      <svg class="hero__contours" viewBox="0 0 1600 600" preserveAspectRatio="none">
+        {contours.map((d, i) => (
+          <path d={d} style={`--i:${i}`} />
+        ))}
+      </svg>
+      <span class="hero__mist hero__mist--a" />
+      <span class="hero__mist hero__mist--b" />
+      <span class="hero__mist hero__mist--c" />
     </div>
   )}
 
@@ -166,7 +195,12 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
     <div class="hero__meta" data-hero-line>
       <ReraBadge project={project} tone="dark" detail={false} />
       <p class="hero__status">{reraStatusLine(project)}</p>
-      <Disclosure settings={settings} developer={project.developer} tone="dark" />
+      <Disclosure
+        settings={settings}
+        developer={project.developer}
+        agent={project.agentRegistration}
+        tone="dark"
+      />
     </div>
   </div>
 </section>
@@ -585,6 +619,87 @@ const titleAccent = comma > 0 ? project.name.slice(comma + 1).trim() : "";
   .hero--window :global(.hero__corner) {
     right: calc(var(--gutter) * 2);
     top: calc(4.25rem + 6px + var(--space-4));
+  }
+
+  /* Sanctuary: contour lines rising over the hills, and slow banks of mist. */
+  .hero__sanctuary {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .hero__contours {
+    position: absolute;
+    right: -4%;
+    bottom: 0;
+    width: 108%;
+    height: 62%;
+    fill: none;
+    stroke: var(--accent-soft);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.32;
+    mix-blend-mode: screen;
+  }
+  .hero__contours path {
+    vector-effect: non-scaling-stroke;
+    stroke-opacity: calc(0.35 + var(--i) * 0.055);
+  }
+  .hero__mist {
+    position: absolute;
+    left: -30%;
+    width: 160%;
+    height: 34%;
+    border-radius: 50%;
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgb(240 244 240 / 0.34),
+      rgb(240 244 240 / 0.12) 45%,
+      transparent 72%
+    );
+    filter: blur(18px);
+  }
+  .hero__mist--a {
+    top: 18%;
+  }
+  .hero__mist--b {
+    top: 44%;
+    opacity: 0.75;
+  }
+  .hero__mist--c {
+    top: 66%;
+    opacity: 0.55;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__contours path {
+      stroke-dasharray: 2400;
+      stroke-dashoffset: 2400;
+      animation: hero-contour 2.6s var(--ease) forwards;
+      animation-delay: calc(0.2s + var(--i) * 0.12s);
+    }
+    .hero__mist--a {
+      animation: hero-mist 48s ease-in-out infinite alternate;
+    }
+    .hero__mist--b {
+      animation: hero-mist 62s ease-in-out -20s infinite alternate-reverse;
+    }
+    .hero__mist--c {
+      animation: hero-mist 76s ease-in-out -35s infinite alternate;
+    }
+  }
+  @keyframes hero-contour {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes hero-mist {
+    from {
+      transform: translateX(-8%);
+    }
+    to {
+      transform: translateX(12%);
+    }
   }
 
   /* Garden: dappled sunlight drifting over the image, and a few falling leaves. */

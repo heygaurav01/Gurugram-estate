@@ -13,6 +13,7 @@ import {
   isPlaceholder,
   isRealIndianMobileE164,
   isVerified,
+  reraStatusLine,
   scanHtml,
   type ProjectCheckInput,
 } from "../../src/lib/compliance";
@@ -376,6 +377,26 @@ describe("helpers", () => {
     };
     expect(agentDisclosure(tbd)).toContain("HARERA agent registration no. On request.");
     expect(agentDisclosure(tbd)).toContain("independent real estate agent");
+  });
+
+  it("uses a project's own MahaRERA agent registration, On request while TBD", () => {
+    const text = agentDisclosure(
+      realSettings,
+      { name: "Shapoorji Pallonji", authorizedChannelPartner: true },
+      { authority: "MahaRERA", number: "TBD" },
+    );
+    expect(text).toContain("authorized channel partner of Shapoorji Pallonji");
+    expect(text).toContain("MahaRERA agent registration no. On request.");
+    expect(text).not.toContain("HARERA");
+  });
+
+  it("points a registered MahaRERA project to the MahaRERA portal", () => {
+    const line = reraStatusLine({
+      rera: { authority: "MahaRERA", status: "registered", number: "P5200000000" },
+    });
+    expect(line).toBe(
+      "MahaRERA registration no. P5200000000. Verify at maharera.maharashtra.gov.in.",
+    );
   });
 
   it("shows the real agent RERA number once it is set", () => {

@@ -1,4 +1,4 @@
-/** Typed access to site settings and projects, with build-time guards. */
+﻿/** Typed access to site settings and projects, with build-time guards. */
 import { getCollection, getEntry } from "astro:content";
 import type { Asset, Project, SiteSettings } from "./schemas";
 import { approvedLicenses } from "./schemas";
@@ -29,7 +29,7 @@ export type ProjectBundle = {
     accentInk: string;
     accentSoft?: string | undefined;
     mode: "light" | "dark";
-    motif: "none" | "neon" | "aurum" | "horology" | "botanica";
+    motif: "none" | "neon" | "aurum" | "horology" | "botanica" | "sanctuary";
   };
 };
 

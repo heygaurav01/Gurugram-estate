@@ -1,4 +1,4 @@
----
+﻿---
 /**
  * Master plan and floor plans (#plans).
  * With authorized plan assets: blurred previews that open the enquiry modal.
@@ -9,12 +9,14 @@ import type { ProjectBundle } from "~/lib/data";
 import SectionHeading from "./SectionHeading.astro";
 import Picture from "./Picture.astro";
 import LockedCard from "./LockedCard.astro";
+import { propertyWords } from "~/lib/view";
 
 type Props = { project: Project; assets: Asset[]; asset: ProjectBundle["asset"] };
 const { project, assets, asset } = Astro.props;
 const authorized = project.sections.plans && project.developer.authorizedAssets;
 const plans = authorized ? assets.filter((a) => a.kind === "plan" && a.usage.includes("plan")) : [];
 const dev = project.developer.authorizedToUseName ? project.developer.name : "the developer";
+const words = propertyWords(project);
 const img = (id?: string) => (id ? asset(id) : undefined);
 ---
 
@@ -55,7 +57,7 @@ const img = (id?: string) => (id ? asset(id) : undefined);
           id="master-plan"
           eyebrow="Releases at launch"
           title="Master plan"
-          text={`Site layout, towers and open spaces, as released by ${dev}.`}
+          text={`${words.masterText}, as released by ${dev}.`}
           cta="Get the master plan first"
           intent="floor-plan"
           tall
@@ -65,9 +67,9 @@ const img = (id?: string) => (id ? asset(id) : undefined);
           asset={img(project.sectionImages.floorPlans)}
           id="floor-plans"
           eyebrow="Releases at launch"
-          title="Floor plans"
-          text="Unit layouts and sizes for every home type, shared the day they are official."
-          cta="Get the floor plans first"
+          title={words.floorTitle}
+          text={words.floorText}
+          cta={words.floorCta}
           intent="floor-plan"
           tall
         />

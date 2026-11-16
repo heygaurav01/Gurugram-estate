@@ -181,7 +181,7 @@ const jsonLd = graph([
           <p class="eyebrow">Our projects</p>
           <h2 id="projects-title">Explore the live project pages.</h2>
         </header>
-        <div class="home-projects__grid">
+        <div class="home-projects__grid" data-count-mod={cards.length % 3}>
           {cards.map((card) => (
             <ProjectCard project={card.project} image={card.image} />
           ))}
@@ -442,24 +442,36 @@ const jsonLd = graph([
     gap: var(--space-3);
     margin-bottom: var(--space-7);
   }
+  /*
+   * Cards share one height per row, and their parts (image, place, title, tagline,
+   * RERA chip) line up across the row through subgrid rows (ProjectCard.astro).
+   */
   .home-projects__grid {
     display: grid;
-    gap: var(--space-5);
+    column-gap: var(--space-5);
+    row-gap: var(--space-6);
+    /* Room for the hover lift, so the enlarged card is never clipped. */
+    padding-block: var(--space-2);
   }
   @media (min-width: 700px) {
     .home-projects__grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
   @media (min-width: 1100px) {
     .home-projects__grid {
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(6, minmax(0, 1fr));
     }
     .home-projects__grid > :global(*) {
       grid-column: span 2;
     }
-    .home-projects__grid > :global(:nth-last-child(-n + 2)) {
+    /* Only when the last row would hold two cards: make them half-width features. */
+    .home-projects__grid[data-count-mod="2"] > :global(:nth-last-child(-n + 2)) {
       grid-column: span 3;
+    }
+    /* A single card left on its own row is centred instead of hanging left. */
+    .home-projects__grid[data-count-mod="1"] > :global(:last-child) {
+      grid-column: 3 / span 2;
     }
   }
 

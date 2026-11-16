@@ -1,12 +1,12 @@
-# India Wellness Capital, Khopoli (Shapoorji Pallonji Real Estate)
+﻿# India Wellness Capital, Khopoli (Shapoorji Pallonji Real Estate)
 # Facts below are sourced and dated. Do not fill gaps with plausible text.
 #
 # Public sources (checked 2026-11-17). Both are secondary reports of the same
 # Economic Times story; swap in SPRE's own release or MahaRERA when available.
 #   Lapaas Voice, 2026-11-04 (names Khopoli):
 #     https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/
-#   Free Press Journal, 2026-11-04 (citing ET):
-#     https://www.freepressjournal.in/business/shapoorji-pallonji-real-estate-plans-10000-crore-revenue-from-3000-acre-maharashtra-landbank
+#   Free Press Journal (2026-11-04, citing ET) reports the same plans but does not
+#   name Khopoli, so it is not cited on the page.
 #
 # NOT published (claim verification, 2026-11-17):
 #   - Sales deck "IWC Sales Deck 24.09.2026" is marked "For internal training purposes
@@ -86,11 +86,11 @@ highlights:
     verifiedOn: "2026-11-17"
   - text: "Planned as a wellness destination: wellness facilities first, sports and adventure in later phases."
     short: "Wellness-led"
-    source: "https://www.freepressjournal.in/business/shapoorji-pallonji-real-estate-plans-10000-crore-revenue-from-3000-acre-maharashtra-landbank"
+    source: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
     verifiedOn: "2026-11-17"
   - text: "Set among hills and water bodies, according to the developer's reported plans."
     short: "Hills and water bodies"
-    source: "https://www.freepressjournal.in/business/shapoorji-pallonji-real-estate-plans-10000-crore-revenue-from-3000-acre-maharashtra-landbank"
+    source: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
     verifiedOn: "2026-11-17"
   - text: "Master plan finalised for the full site, with key approvals reported for the first phase."
     short: "Master plan finalised"
@@ -162,10 +162,6 @@ sourceInfo:
   - url: "https://lapaasvoice.com/shapoorji-pallonji-plans-to-monetise-3000-acres-of-land-targets-over-%E2%82%B910000-crore-revenue/"
     title: "Shapoorji Pallonji plans to monetise 3,000 acres of land, targets over Rs 10,000 crore revenue"
     publisher: "Lapaas Voice"
-    published: "2026-11-04"
-  - url: "https://www.freepressjournal.in/business/shapoorji-pallonji-real-estate-plans-10000-crore-revenue-from-3000-acre-maharashtra-landbank"
-    title: "Shapoorji Pallonji Real Estate plans Rs 10,000 crore revenue from 3,000-acre Maharashtra landbank"
-    publisher: "Free Press Journal"
     published: "2026-11-04"
 
 sectionImages:

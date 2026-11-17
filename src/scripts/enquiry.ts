@@ -122,6 +122,34 @@ export function initEnquiry(): void {
     emit("form_open", { intent });
   };
 
+  // Auto-open 3 s after landing, once per project per browser session (owner's
+  // request, 2026-11-17). Skipped if another dialog (menu, gallery) is open or the
+  // tab is in the background; the session flag is non-personal.
+  const autoKey = `gp:auto-enquiry:${dialog.dataset.slug ?? location.pathname}`;
+  const seen = () => {
+    try {
+      return sessionStorage.getItem(autoKey) === "1";
+    } catch {
+      return false;
+    }
+  };
+  if (!seen()) {
+    const tryAutoOpen = () => {
+      if (seen() || document.querySelector("dialog[open]")) return;
+      if (document.hidden) {
+        document.addEventListener("visibilitychange", tryAutoOpen, { once: true });
+        return;
+      }
+      try {
+        sessionStorage.setItem(autoKey, "1");
+      } catch {
+        // Storage blocked: the popup still opens once for this page view.
+      }
+      open("general", null);
+    };
+    window.setTimeout(tryAutoOpen, 3000);
+  }
+
   // Delegated so any trigger on the page works, including ones added later.
   document.addEventListener("click", (e) => {
     const t = (e.target as Element | null)?.closest<HTMLElement>("[data-enquire]");
@@ -147,8 +175,10 @@ export function initEnquiry(): void {
   dialog.addEventListener("close", () => {
     document.documentElement.style.overflow = "";
     // A trigger inside the closed mobile menu is hidden; fall back to the menu button.
+    // The auto-opened popup has no trigger, so focus stays where it was.
+    if (!trigger) return;
     const target =
-      trigger && trigger.getClientRects().length > 0
+      trigger.getClientRects().length > 0
         ? trigger
         : document.querySelector<HTMLElement>("[data-nav-open]");
     target?.focus();

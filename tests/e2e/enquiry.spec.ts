@@ -44,9 +44,29 @@ async function fillValid(page: Page) {
   await page.getByLabel("Mobile number").fill("98765 43210");
 }
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, testInfo) => {
   await page.clock.install();
+  // The popup also opens by itself 3 s after landing; switch that off except in
+  // the test that covers it, so clock fast-forwards do not open it mid-test.
+  if (!testInfo.title.startsWith("auto-open")) {
+    await page.addInitScript(() =>
+      sessionStorage.setItem("gp:auto-enquiry:l-and-t-sector-86-gurgaon", "1"),
+    );
+  }
   await page.goto(PROJECT);
+});
+
+test("auto-open: the popup opens 3 s after landing, once per session", async ({ page }) => {
+  const dialog = page.locator("[data-enquiry]");
+  await page.clock.fastForward(2000);
+  await expect(dialog).not.toHaveAttribute("open", "");
+  await page.clock.fastForward(1500);
+  await expect(dialog).toHaveAttribute("open", "");
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toHaveAttribute("open", "");
+  await page.reload();
+  await page.clock.fastForward(4000);
+  await expect(dialog).not.toHaveAttribute("open", "");
 });
 
 test.describe("triggers", () => {
